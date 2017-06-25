@@ -1,5 +1,5 @@
 all:
-	cd hashtable; make all
+	# cd hashtable; make all
 	yacc -d paco.y
 	lex paco.l
 	gcc *.c -ly -o pacopp.out

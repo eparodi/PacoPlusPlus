@@ -4,6 +4,7 @@
 
 alpha [A-Za-z]
 digit [0-9]
+varName [A-Za-z][0-9A-Za-z_-]*
 
 %%
 
@@ -21,7 +22,11 @@ digit [0-9]
 \/=                   return DIVEQ;
 \^                    return POW;
 =                     return EQ;
-{alpha}+              { yylval.ch = yytext[0]; return VAR; }
+{varName}		      {
+						yylval.str = malloc(strlen(yytext)+1);
+						strcpy(yylval.str, yytext);
+						return VAR;
+					  }
 \".+\"                return STRING;
 .                     return yytext[0];
 

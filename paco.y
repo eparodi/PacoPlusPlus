@@ -1,11 +1,17 @@
 %{
-    void yyerror(char* s);
     #include <stdio.h>
     #include <stdlib.h>
     #include <math.h>
-    int symbols[2];
-    int symbolVal(char symbol);
-    void updateSymbolVal(char symbol, int val);
+    #include <string.h>
+
+    #define MAXVAR 8192
+
+    void yyerror(char* s);
+    int symbolVal(char* symbol);
+    void updateSymbolVal(char* symbol, int val);
+
+    char* varsName[MAXVAR];
+    int symbols[MAXVAR];
 %}
 
 
@@ -19,7 +25,7 @@
 %token <num> INT
 %token <str> STRING
 %token <fl> FLOAT
-%token <ch> VAR
+%token <str> VAR
 
 %type <num> PROGRAM INST ASSIGN EXPRESS NUMBER VALUE OPERAT
 
@@ -44,11 +50,11 @@ INST    : ASSIGN ';'            { ; }
         | EXPRESS NEWLINE       { printf("%d\n",  $1); }
         ;
 
-ASSIGN  : VAR EQ EXPRESS        { $$ = $3; updateSymbolVal($1,$$);}
-        | VAR PLUSEQ EXPRESS    { $$ = symbolVal($1) + $3; updateSymbolVal($1,$$);}
-        | VAR MINUSEQ EXPRESS   { $$ = symbolVal($1) - $3; updateSymbolVal($1,$$);}
-        | VAR MULTEQ EXPRESS    { $$ = symbolVal($1) * $3; updateSymbolVal($1,$$);}
-        | VAR DIVEQ EXPRESS     { $$ = symbolVal($1) / $3; updateSymbolVal($1,$$);}
+ASSIGN  : VAR EQ EXPRESS        { $$ = $3; updateSymbolVal($1,$$); }
+        | VAR PLUSEQ EXPRESS    { $$ = symbolVal($1) + $3; updateSymbolVal($1,$$); }
+        | VAR MINUSEQ EXPRESS   { $$ = symbolVal($1) - $3; updateSymbolVal($1,$$); }
+        | VAR MULTEQ EXPRESS    { $$ = symbolVal($1) * $3; updateSymbolVal($1,$$); }
+        | VAR DIVEQ EXPRESS     { $$ = symbolVal($1) / $3; updateSymbolVal($1,$$); }
         ;
 
 EXPRESS : VAR                   { $$ = symbolVal($1); }
@@ -78,31 +84,35 @@ int yywrap(void)
 int
 main(void)
 {
-    int i;
-    for (i = 0; i < 52; i++) {
-        symbols[i] = 0;
-    }
     return yyparse();
 }
 
-int computeSymbolIndex(char token)
-{
-    int idx = -1;
-    if(islower(token)) {
-        idx = token -'a' + 26;
-    } else if(isupper(token)) {
-        idx = token - 'A';
+int computeSymbolIndex(char* token)
+{ 
+    int i = 0;
+    for (; i < MAXVAR && varsName[i] != NULL; i++) {
+        if (strcmp(varsName[i], token) == 0) {
+            return i;
+        }
     }
-    return idx;
+    if (i == MAXVAR) {
+        yyerror("all variables slots have been used.");
+        return -1;
+    }
+
+    varsName[i] = malloc(strlen(token)+1);
+    strcpy(varsName[i],token);
+
+    return i;
 }
 
-int symbolVal(char symbol)
+int symbolVal(char* symbol)
 {
     int bucket = computeSymbolIndex(symbol);
     return symbols[bucket];
 }
 
-void updateSymbolVal(char symbol, int val)
+void updateSymbolVal(char* symbol, int val)
 {
     int bucket = computeSymbolIndex(symbol);
     symbols[bucket] = val;
