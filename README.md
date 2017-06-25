@@ -15,5 +15,5 @@
 ### Run
 
 ```
-  ./pacopp.out << file.ppp
+  ./pacopp.out < sample.ppp
 ```
