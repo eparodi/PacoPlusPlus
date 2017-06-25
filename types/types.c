@@ -53,6 +53,7 @@ startTypes(){
   if (!type_type){
     return TYPE_ERR;
   }
+  return TYPE_OK;
 }
 
 TypeT
