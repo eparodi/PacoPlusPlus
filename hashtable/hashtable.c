@@ -1,4 +1,5 @@
 #include "include/hashtable.h"
+#include <stdlib.h>
 
 /* 
  * When the quotient between the size and the capacity is bigger than this

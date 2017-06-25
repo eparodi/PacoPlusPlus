@@ -1,9 +1,7 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-#include <stdlib.h>
 #include <stddef.h>
-#include <stdio.h>
 
 /*
  * A value that is returned if an error ocurrs.
@@ -81,6 +79,9 @@ addElementHT(hashTableT hash_table, void * key, void * value);
 int
 deleteElementHT(hashTableT hash_table, void * key);
 
+/*
+ * Returns the element associated to the key.
+ */
 void *
 getElementHT(hashTableT hash_table, void * key);
 
