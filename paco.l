@@ -7,9 +7,10 @@ digit [0-9]
 
 %%
 
--?{digit}+            yylval=atoi(yytext); return INT;
-[\t \n]               ;
--?{digit}+\.{digit}+  yylval=atof(yytext); return FLOAT;
+-?{digit}+            { yylval.num = atoi(yytext); return INT; }
+[\t ]                 ;
+[\n]				  return NEWLINE;
+-?{digit}+\.{digit}+  { yylval.fl = atof(yytext); return FLOAT; }
 \+                    return PLUS;
 \+=                   return PLUSEQ;
 -                     return MINUS;
@@ -18,8 +19,9 @@ digit [0-9]
 \*=                   return MULTEQ;
 \/                    return DIV;
 \/=                   return DIVEQ;
+\^                    return POW;
 =                     return EQ;
-{alpha}+              return VAR;
+{alpha}+              { yylval.ch = yytext[0]; return VAR; }
 \".+\"                return STRING;
 .                     return yytext[0];
 
