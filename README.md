@@ -8,8 +8,12 @@
 
 ### Compile
 
-* Run YACC:
+```
+  make
+```
+
+### Run
 
 ```
-  yacc -d paco.y
+  ./pacopp.out << file.ppp
 ```
