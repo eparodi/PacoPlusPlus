@@ -1,4 +1,4 @@
-#include "hashtable.h"
+#include "include/hashtable.h"
 
 /* 
  * When the quotient between the size and the capacity is bigger than this
@@ -98,6 +98,7 @@ addElementHT(hashTableT hash_table, void * key, void * value){
     }
     current = current->next;
   }
+  return HT_ERROR;
 }
 
 int
