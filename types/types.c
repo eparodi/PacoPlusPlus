@@ -21,6 +21,17 @@ static hashTableT types_table;
 static TypeT type_type;
 
 /*
+ * This table contains all the operations so the compiler can take them and 
+ * execute them to improve the code or get the name of the functions to create
+ * the C file. The first pointer contains a list of pointer in which every index 
+ * is associated with an operator (OpValue enum). In this list every pointer
+ * belongs to a type, and so the pointed list. This way, there are two types and 
+ * the function associated with the operation corresponding both types can be
+ * accessed.
+ */
+static OperationT *** op_table;
+
+/*
  * The hash function for the HashTable.
  */
 int
@@ -39,6 +50,11 @@ equalsType(int * v1, int * v2);
 char *
 copyTypeName(char * name);
 
+int
+buildOpTable();
+
+void 
+freeFailOpTable();
 //------------------------------------------------------------------------------
 //                         Function implementation.
 //------------------------------------------------------------------------------
@@ -51,7 +67,8 @@ startTypes(){
   }
   
   type_type = createType(TYPE_NAME, sizeof(Type));
-  if (!type_type){
+  int check = buildOpTable();
+  if (!type_type || check == TYPE_ERR){
     return TYPE_ERR;
   }
   return TYPE_OK;
@@ -113,4 +130,62 @@ copyTypeName(char * name){
     return NULL;
   }
   return strcpy(copy, name);
+}
+
+int
+buildOpTable(){
+  int size = sizeof(enum)/sizeof(int);
+  op_table = calloc(size);
+  
+  if (!op_table){
+    return TYPE_ERR;
+  }
+  
+  for (int i = 0; i < size ; i++){
+    OperationT ** array = calloc(type_id);
+    if (!array){
+      freeFailOpTable();
+      return TYPE_ERR;
+    }
+    op_table[i] = array;
+    for (int j = 0; j < type_id; j++){
+      array[j] = calloc(type_id);
+      if (!array[j]){
+        freeFailOpTable();
+        return TYPE_ERR;
+      }
+    }
+  }
+  return TYPE_OK;
+}
+
+void 
+freeFailOpTable() {
+  int size = sizeof(enum)/sizeof(int);
+  for(int i = 0; i < size; i++ ){
+    for(int j = 0; j < type_id; j++){
+      free(op_table[i][j]);
+    }
+    free(op_table[i]);
+  }
+  free(op_table);
+}
+
+int
+addOperation(void * function, const char * name, TypeT first_op, \
+            Type2 second_op, TypeT return_type){
+  OperationT op = malloc(sizeof(Operation));
+  if (!op){
+    return TYPE_ERR;
+  }
+  char * cp_name = copyTypeName(name);
+  if (!cp_name){
+    free(op);
+    return TYPE_ERR;
+  }
+  op->func = function;
+  op->return_type = return_type;
+  op->name = cp_name;
+  
+  return TYPE_OK;
 }

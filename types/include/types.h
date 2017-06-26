@@ -22,6 +22,10 @@
 
 typedef struct Object * ObjectT;
 
+/*
+ * This is the structure of a Type. It has an id, the number that represents the
+ * type, a name, the size of the type.
+ */
 typedef struct Type{
   uint64_t id;
   char * name;
@@ -29,6 +33,9 @@ typedef struct Type{
   ObjectT obj;
 }Type;
 
+/*
+ * Pointer to the Type Structure.
+ */
 typedef Type * TypeT;
 
 /*
@@ -43,4 +50,20 @@ startTypes();
  */
 TypeT
 createType(char * name, size_t size);
+
+enum OpValue{
+  ADD,
+  SUB,
+  MUL,
+  DIV,
+}
+
+typedef struct Operation{
+  void * func;
+  TypeT return_type;
+  char * func_name;
+}Operation;
+
+typedef Operation * OperationT;
+
 #endif
