@@ -56,7 +56,7 @@ enum OpValue{
   SUB,
   MUL,
   DIV,
-}
+};
 
 typedef struct Operation{
   void * func;

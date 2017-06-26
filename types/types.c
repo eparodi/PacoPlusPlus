@@ -48,7 +48,7 @@ equalsType(int * v1, int * v2);
  * stack with the type names.
  */
 char *
-copyTypeName(char * name);
+copyTypeName(const char * name);
 
 int
 buildOpTable();
@@ -123,7 +123,7 @@ equalsType(int * v1, int * v2){
 }
 
 char *
-copyTypeName(char * name){
+copyTypeName(const char * name){
   int length = strlen(name) + 1;
   char * copy = malloc(length);
   if (!copy){
@@ -134,22 +134,22 @@ copyTypeName(char * name){
 
 int
 buildOpTable(){
-  int size = sizeof(enum)/sizeof(int);
-  op_table = calloc(size);
+  int size = sizeof(enum OpValue)/sizeof(int);
+  op_table = calloc(1, size);
   
   if (!op_table){
     return TYPE_ERR;
   }
   
   for (int i = 0; i < size ; i++){
-    OperationT ** array = calloc(type_id);
+    OperationT ** array = calloc(1, type_id);
     if (!array){
       freeFailOpTable();
       return TYPE_ERR;
     }
     op_table[i] = array;
     for (int j = 0; j < type_id; j++){
-      array[j] = calloc(type_id);
+      array[j] = calloc(1, type_id);
       if (!array[j]){
         freeFailOpTable();
         return TYPE_ERR;
@@ -161,7 +161,7 @@ buildOpTable(){
 
 void 
 freeFailOpTable() {
-  int size = sizeof(enum)/sizeof(int);
+  int size = sizeof(enum OpValue)/sizeof(int);
   for(int i = 0; i < size; i++ ){
     for(int j = 0; j < type_id; j++){
       free(op_table[i][j]);
@@ -173,7 +173,7 @@ freeFailOpTable() {
 
 int
 addOperation(void * function, const char * name, TypeT first_op, \
-            Type2 second_op, TypeT return_type){
+            TypeT second_op, TypeT return_type){
   OperationT op = malloc(sizeof(Operation));
   if (!op){
     return TYPE_ERR;
@@ -185,7 +185,7 @@ addOperation(void * function, const char * name, TypeT first_op, \
   }
   op->func = function;
   op->return_type = return_type;
-  op->name = cp_name;
+  op->func_name = cp_name;
   
   return TYPE_OK;
 }
