@@ -38,19 +38,6 @@ typedef struct Type{
  */
 typedef Type * TypeT;
 
-/*
- * Creates the table that contains all the types. This function must be
- * called after starting the compiler.
- */
-int
-startTypes();
-
-/*
- * Creates a new type.
- */
-TypeT
-createType(char * name, size_t size);
-
 enum OpValue{
   ADD,
   SUB,
@@ -65,5 +52,21 @@ typedef struct Operation{
 }Operation;
 
 typedef Operation * OperationT;
+/*
+ * Creates the table that contains all the types. This function must be
+ * called after starting the compiler.
+ */
+int
+startTypes();
+
+/*
+ * Creates a new type.
+ */
+TypeT
+createType(char * name, size_t size);
+
+int
+addOperation(void * function, const char * name, TypeT first_op, \
+            TypeT second_op, TypeT return_type);
 
 #endif
