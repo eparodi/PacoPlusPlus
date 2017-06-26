@@ -1,9 +1,12 @@
+FLAGS= -Wall -ly
+PROGRAM_NAME = pacopp.out
+
 all:
 	cd hashtable; make all
 	cd types; make all
 	yacc -d paco.y
 	lex paco.l
-	gcc *.c -ly -o pacopp.out
+	gcc $(FLAGS) *.c -o $(PROGRAM_NAME)
   
 clean:
 	cd hashtable; make clean

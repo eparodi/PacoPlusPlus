@@ -2,6 +2,7 @@
 #include "../hashtable/include/hashtable.h"
 #include <string.h>
 #include <stdlib.h>
+#include "include/integer.h"
 
 /*
  * This is a global variable that stores the id of the next element added to the
