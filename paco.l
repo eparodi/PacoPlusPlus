@@ -1,6 +1,8 @@
 %{
+  #include "types_2/operations.h"
   #include "types_2/object.h" 
   #include "y.tab.h"
+    extern _object sum(_object, _object);
 %}
 
 alpha [A-Za-z]
@@ -15,8 +17,8 @@ varName [A-Za-z][0-9A-Za-z_-]*
 -?{digit}+\.{digit}+  { yylval.fl = atof(yytext); return FLOAT; }
 \+                    return PLUS;
 \+=                   return PLUSEQ;
--                     return MINUS;
--=                    return MINUSEQ;
+'-'                   return MINUS;
+"-="                  return MINUSEQ;
 \*                    return MULT;
 \*=                   return MULTEQ;
 \/                    return DIV;

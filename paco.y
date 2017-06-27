@@ -3,9 +3,12 @@
     #include <stdlib.h>
     #include <math.h>
     #include <string.h>
+    #include "types_2/operations.h"
     #include "types_2/object.h"
 
     #define MAXVAR 8192
+
+    extern _object sum(_object, _object);
 
     void yyerror(char* s);
     int symbolVal(char* symbol);
@@ -55,10 +58,10 @@ INST    : ASSIGN ';'            { ; }
         ;
 
 ASSIGN  : VAR EQ EXPRESS        { $$ = $3; updateSymbolObj($1,$$.cont.num,INTEGER); }
-        | VAR PLUSEQ EXPRESS    { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num + $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
-        | VAR MINUSEQ EXPRESS   { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num - $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
-        | VAR MULTEQ EXPRESS    { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num * $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
-        | VAR DIVEQ EXPRESS     { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num / $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
+        | VAR PLUSEQ EXPRESS    { $$ = add(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
+        | VAR MINUSEQ EXPRESS   { $$ = substract(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
+        | VAR MULTEQ EXPRESS    { $$ = multiply(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
+        | VAR DIVEQ EXPRESS     { $$ = divide(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
         ;
 
 EXPRESS : VAR                   { $$ = symbolObj($1); }
@@ -66,10 +69,10 @@ EXPRESS : VAR                   { $$ = symbolObj($1); }
         | OPERAT                { $$ = $1; }
         ;
 
-OPERAT  : EXPRESS PLUS EXPRESS  { _object o; o.type= INTEGER; o.cont.num = $1.cont.num + $3.cont.num; $$ = o; }
-        | EXPRESS MINUS EXPRESS { _object o; o.type= INTEGER; o.cont.num = $1.cont.num - $3.cont.num; $$ = o; }
-        | EXPRESS MULT EXPRESS  { _object o; o.type= INTEGER; o.cont.num = $1.cont.num * $3.cont.num; $$ = o; }
-        | EXPRESS DIV EXPRESS   { _object o; o.type= INTEGER; o.cont.num = $1.cont.num / $3.cont.num; $$ = o; }
+OPERAT  : EXPRESS PLUS EXPRESS  { $$ = add($1,$3); }
+        | EXPRESS MINUS EXPRESS { $$ = substract($1,$3); }
+        | EXPRESS MULT EXPRESS  { $$ = multiply($1,$3); }
+        | EXPRESS DIV EXPRESS   { $$ = divide($1,$3); }
         | EXPRESS POW EXPRESS   { _object o; int a=1, i; for(i=0; i<$3.cont.num; i++) {a*=$1.cont.num;} o.type = INTEGER; o.cont.num = a; $$ = o; }
         ;
 
