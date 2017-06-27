@@ -1,5 +1,5 @@
 %{
-  #include "types/include/operations.h"
+  #include "operations/include/operations.h"
   #include "types/include/object.h"
   #include "y.tab.h"
 %}
