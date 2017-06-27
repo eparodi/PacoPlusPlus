@@ -1,4 +1,5 @@
 %{
+  #include "types_2/object.h" 
   #include "y.tab.h"
 %}
 

@@ -3,19 +3,23 @@
     #include <stdlib.h>
     #include <math.h>
     #include <string.h>
+    #include "types_2/object.h"
 
     #define MAXVAR 8192
 
     void yyerror(char* s);
     int symbolVal(char* symbol);
     void updateSymbolVal(char* symbol, int val);
+    _object symbolObj(char* symbol);
+    void updateSymbolObj(char* symbol, int val, _type type);
 
     char* varsName[MAXVAR];
     int symbols[MAXVAR];
+    _object objects[MAXVAR];
 %}
 
 
-%union {int num; char* str; float fl; char ch;}
+%union {int num; char* str; float fl; char ch; _object obj}
 %start PROGRAM
 
 %token PLUS MINUS MULT DIV POW
@@ -27,7 +31,7 @@
 %token <fl> FLOAT
 %token <str> VAR
 
-%type <num> PROGRAM INST ASSIGN EXPRESS NUMBER VALUE OPERAT
+%type <obj> PROGRAM INST ASSIGN EXPRESS NUMBER VALUE OPERAT
 
 
 %precedence PLUS
@@ -46,32 +50,33 @@ INST    : ASSIGN ';'            { ; }
         | EXPRESS ';'           { ; }
         | ASSIGN ';' NEWLINE    { ; }
         | EXPRESS ';' NEWLINE   { ; }
-        | ASSIGN NEWLINE        { printf("%d\n",  $1); }
-        | EXPRESS NEWLINE       { printf("%d\n",  $1); }
+        | ASSIGN NEWLINE        { printf("%d\n",  $1.cont.num); }
+        | EXPRESS NEWLINE       { printf("%d\n",  $1.cont.num); }
         ;
 
-ASSIGN  : VAR EQ EXPRESS        { $$ = $3; updateSymbolVal($1,$$); }
-        | VAR PLUSEQ EXPRESS    { $$ = symbolVal($1) + $3; updateSymbolVal($1,$$); }
-        | VAR MINUSEQ EXPRESS   { $$ = symbolVal($1) - $3; updateSymbolVal($1,$$); }
-        | VAR MULTEQ EXPRESS    { $$ = symbolVal($1) * $3; updateSymbolVal($1,$$); }
-        | VAR DIVEQ EXPRESS     { $$ = symbolVal($1) / $3; updateSymbolVal($1,$$); }
+ASSIGN  : VAR EQ EXPRESS        { $$ = $3; updateSymbolObj($1,$$.cont.num,INTEGER); }
+        | VAR PLUSEQ EXPRESS    { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num + $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
+        | VAR MINUSEQ EXPRESS   { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num - $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
+        | VAR MULTEQ EXPRESS    { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num * $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
+        | VAR DIVEQ EXPRESS     { _object o; o.type = INTEGER; o.cont.num = symbolObj($1).cont.num / $3.cont.num; $$ = o; updateSymbolObj($1,o.cont.num,INTEGER); }
         ;
 
-EXPRESS : VAR                   { $$ = symbolVal($1); }
+EXPRESS : VAR                   { $$ = symbolObj($1); }
         | VALUE                 { $$ = $1; }
         | OPERAT                { $$ = $1; }
         ;
 
-OPERAT  : EXPRESS PLUS EXPRESS  { $$ = $1 + $3; }
-        | EXPRESS MINUS EXPRESS { $$ = $1 - $3; }
-        | EXPRESS MULT EXPRESS  { $$ = $1 * $3; }
-        | EXPRESS DIV EXPRESS   { $$ = $1 / $3; }
-        | EXPRESS POW EXPRESS   { int a=1, i; for(i=0; i<$3; i++) {a*=$1;} $$=a; }
+OPERAT  : EXPRESS PLUS EXPRESS  { _object o; o.type= INTEGER; o.cont.num = $1.cont.num + $3.cont.num; $$ = o; }
+        | EXPRESS MINUS EXPRESS { _object o; o.type= INTEGER; o.cont.num = $1.cont.num - $3.cont.num; $$ = o; }
+        | EXPRESS MULT EXPRESS  { _object o; o.type= INTEGER; o.cont.num = $1.cont.num * $3.cont.num; $$ = o; }
+        | EXPRESS DIV EXPRESS   { _object o; o.type= INTEGER; o.cont.num = $1.cont.num / $3.cont.num; $$ = o; }
+        /*| EXPRESS POW EXPRESS   { int a=1, i; for(i=0; i<$3; i++) {a*=$1;} $$=a; }*/
+        ;
 
 VALUE   : NUMBER                { $$ = $1; }
         ;
 
-NUMBER  : INT                   { $$ = $1; }
+NUMBER  : INT                   { _object o; o.type = INTEGER; o.cont.num = $1; $$ = o; }
         ;
 
 %%
@@ -112,10 +117,28 @@ int symbolVal(char* symbol)
     return symbols[bucket];
 }
 
+_object symbolObj(char* symbol)
+{
+    int bucket = computeSymbolIndex(symbol);
+    return objects[bucket];
+}
+
 void updateSymbolVal(char* symbol, int val)
 {
     int bucket = computeSymbolIndex(symbol);
     symbols[bucket] = val;
+}
+
+void updateSymbolObj(char* symbol, int val, _type type)
+{
+    _object o;
+    int bucket = computeSymbolIndex(symbol);
+
+    o.type = type;
+    if (type == INTEGER) {
+        o.cont.num = val;
+    }
+    objects[bucket] = o;
 }
 
 void yyerror(char* s)

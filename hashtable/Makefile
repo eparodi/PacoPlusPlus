@@ -1,6 +1,6 @@
 SOURCES=$(wildcard *.c)
 GCC=gcc
-FLAGS= -Wall -c
+FLAGS= -Wall -c -std=c99
 
 all:
 	$(GCC) $(FLAGS) $(SOURCES) -I./include

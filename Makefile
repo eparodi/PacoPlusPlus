@@ -1,4 +1,5 @@
-FLAGS= -Wall -ly
+FLAGS= -Wall -std=c99
+ENDGLADS= -ly
 PROGRAM_NAME = pacopp.out
 
 all:
@@ -6,7 +7,7 @@ all:
 	cd types; make all
 	yacc -d paco.y
 	lex paco.l
-	gcc $(FLAGS) *.c -o $(PROGRAM_NAME)
+	gcc $(FLAGS) *.c -o $(PROGRAM_NAME) $(ENDFLAGS)
   
 clean:
 	cd hashtable; make clean
