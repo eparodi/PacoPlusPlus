@@ -5,7 +5,12 @@ How to start the compiler types.
 TASKS                               | FILE
 ------------------------------------|-------------------------------------------
 1) startTypes();                    | types/types.c
-2) Create all types:                |
+2) Create all types in startTypes();|
   createType(char *, size_t size);  | types/types.c
 3) buildOpTable();                  | types/types.c
 4) Load the operation table.        | Soon.
+
+
+-- Remove sizeof Type.
+
+The functions returns an object.

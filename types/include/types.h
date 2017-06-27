@@ -1,7 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "objects.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -18,9 +17,7 @@
 /*
  * The Type type name.
  */
-#define TYPE_NAME "Type" 
-
-typedef struct Object * ObjectT;
+#define TYPE_NAME "Type"
 
 /*
  * This is the structure of a Type. It has an id, the number that represents the
@@ -29,8 +26,6 @@ typedef struct Object * ObjectT;
 typedef struct Type{
   uint64_t id;
   char * name;
-  size_t size;
-  ObjectT obj;
 }Type;
 
 /*
@@ -38,20 +33,27 @@ typedef struct Type{
  */
 typedef Type * TypeT;
 
-enum OpValue{
+typedef enum OpValue{
   ADD,
   SUB,
   MUL,
-  DIV,
-};
+  DVN,
+}OpValue;
+
+typedef enum TypesID{
+	TYPE,
+	INTEGER,
+	DECIMAL,
+	STR
+}TypesID;
 
 typedef struct Operation{
-  void * func;
-  TypeT return_type;
+  void * (*func)(void *, void *);
   char * func_name;
 }Operation;
 
 typedef Operation * OperationT;
+
 /*
  * Creates the table that contains all the types. This function must be
  * called after starting the compiler.
@@ -63,10 +65,16 @@ startTypes();
  * Creates a new type.
  */
 TypeT
-createType(char * name, size_t size);
+createType(char * name);
 
 int
-addOperation(void * function, const char * name, TypeT first_op, \
-            TypeT second_op, TypeT return_type);
+addOperation(void * function, const char * name, TypesID first_op, \
+            TypesID second_op, OpValue operator);
+
+TypeT
+getType(TypesID id);
+
+OperationT
+getOperation(OpValue op, TypeT type1, TypeT type2);
 
 #endif

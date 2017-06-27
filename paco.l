@@ -1,8 +1,7 @@
 %{
-  #include "types_2/operations.h"
-  #include "types_2/object.h" 
+  #include "types/include/operations.h"
+  #include "types/include/object.h"
   #include "y.tab.h"
-    extern _object sum(_object, _object);
 %}
 
 alpha [A-Za-z]
