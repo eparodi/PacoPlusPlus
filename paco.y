@@ -14,7 +14,7 @@
     int symbolVal(char* symbol);
     void updateSymbolVal(char* symbol, int val);
     _object symbolObj(char* symbol);
-    void updateSymbolObj(char* symbol, int val, _type type);
+    void updateSymbolObj(char* symbol, _object o);
 
     char* varsName[MAXVAR];
     int symbols[MAXVAR];
@@ -53,15 +53,15 @@ INST    : ASSIGN ';'            { ; }
         | EXPRESS ';'           { ; }
         | ASSIGN ';' NEWLINE    { ; }
         | EXPRESS ';' NEWLINE   { ; }
-        | ASSIGN NEWLINE        { printf("%d\n",  $1.cont.num); }
-        | EXPRESS NEWLINE       { printf("%d\n",  $1.cont.num); }
+        | ASSIGN NEWLINE        { printResult($1); }
+        | EXPRESS NEWLINE       { printResult($1); }
         ;
 
-ASSIGN  : VAR EQ EXPRESS        { $$ = $3; updateSymbolObj($1,$$.cont.num,INTEGER); }
-        | VAR PLUSEQ EXPRESS    { $$ = add(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
-        | VAR MINUSEQ EXPRESS   { $$ = substract(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
-        | VAR MULTEQ EXPRESS    { $$ = multiply(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
-        | VAR DIVEQ EXPRESS     { $$ = divide(symbolObj($1),$3); updateSymbolObj($1,$$.cont.num,INTEGER); }
+ASSIGN  : VAR EQ EXPRESS        { $$ = $3; updateSymbolObj($1,$$); }
+        | VAR PLUSEQ EXPRESS    { $$ = add(symbolObj($1),$3); updateSymbolObj($1,$$); }
+        | VAR MINUSEQ EXPRESS   { $$ = substract(symbolObj($1),$3); updateSymbolObj($1,$$); }
+        | VAR MULTEQ EXPRESS    { $$ = multiply(symbolObj($1),$3); updateSymbolObj($1,$$); }
+        | VAR DIVEQ EXPRESS     { $$ = divide(symbolObj($1),$3); updateSymbolObj($1,$$); }
         ;
 
 EXPRESS : VAR                   { $$ = symbolObj($1); }
@@ -80,6 +80,7 @@ VALUE   : NUMBER                { $$ = $1; }
         ;
 
 NUMBER  : INT                   { _object o; o.type = INTEGER; o.cont.num = $1; $$ = o; }
+        | FLOAT                 { _object o; o.type = DECIMAL; o.cont.fl = $1; $$ = o;}
         ;
 
 %%
@@ -132,16 +133,22 @@ void updateSymbolVal(char* symbol, int val)
     symbols[bucket] = val;
 }
 
-void updateSymbolObj(char* symbol, int val, _type type)
+void updateSymbolObj(char* symbol, _object o)
 {
-    _object o;
-    int bucket = computeSymbolIndex(symbol);
 
-    o.type = type;
-    if (type == INTEGER) {
-        o.cont.num = val;
-    }
+    int bucket = computeSymbolIndex(symbol);
     objects[bucket] = o;
+}
+
+void printResult(_object o) {
+    switch(o.type) {
+        case INTEGER:
+            printf("%d\n", o.cont.num);
+            break;
+        case DECIMAL:
+            printf("%f\n", o.cont.fl);
+            break;
+    }
 }
 
 void yyerror(char* s)

@@ -2,7 +2,7 @@
 #ifndef OBJECT2_H
 #define OBJECT2_H
 
-typedef enum { INTEGER, FLOAT } _type;
+typedef enum { INTEGER, DECIMAL} _type;
 
 typedef union Content {
 	int num;
