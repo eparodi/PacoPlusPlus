@@ -13,7 +13,9 @@ static uint64_t type_id = 0;
 /*
  * This HashTable contains the types created.
  */
-static hashTableT types_table;
+static TypeT * types_table;
+static size_t table_size = 16;
+static uint64_t elements = 0;
 
 /*
  * This is the Type type.
@@ -55,13 +57,13 @@ buildOpTable();
 
 void 
 freeFailOpTable();
+
 //------------------------------------------------------------------------------
 //                         Function implementation.
 //------------------------------------------------------------------------------
 int
 startTypes(){
-  types_table = createHashTable(sizeof(int*), sizeof(TypeT), \
-        (hashFunction) &hashType, 25, (equalsFunction) &equalsType);
+  types_table = malloc(sizeof(TypeT) * table_size);
   if (!types_table){
     return TYPE_ERR;
   }
@@ -101,11 +103,46 @@ createType(char * name, size_t size){
   obj->data = type;
   obj->type = type_type;
 
-  int err = addElementHT(types_table, id, type);
-  if (err == HT_ERROR){
-    return NULL;
+  if (elements == table_size){
+    table_size *= 2;
+    types_table = realloc(types_table, table_size);
+    if(!types_table){
+      return NULL;
+    }
   }
+  types_table[*id] = type;
+  elements++;
+  
   return type;
+}
+
+int
+addOperation(void * function, const char * name, TypeT first_op, \
+            TypeT second_op, TypeT return_type){
+  OperationT op = malloc(sizeof(Operation));
+  if (!op){
+    return TYPE_ERR;
+  }
+  char * cp_name = copyTypeName(name);
+  if (!cp_name){
+    free(op);
+    return TYPE_ERR;
+  }
+  op->func = function;
+  op->return_type = return_type;
+  op->func_name = cp_name;
+  
+  return TYPE_OK;
+}
+
+OperationT
+getOperation(OpValue op, TypeT type1, TypeT type2){
+  return op_table[op][type1->id][type2->id];
+}
+
+TypeT
+getType(uint64_t type_num){
+  return types_table[type_num];
 }
 
 //------------------------------------------------------------------------------
@@ -169,23 +206,4 @@ freeFailOpTable() {
     free(op_table[i]);
   }
   free(op_table);
-}
-
-int
-addOperation(void * function, const char * name, TypeT first_op, \
-            TypeT second_op, TypeT return_type){
-  OperationT op = malloc(sizeof(Operation));
-  if (!op){
-    return TYPE_ERR;
-  }
-  char * cp_name = copyTypeName(name);
-  if (!cp_name){
-    free(op);
-    return TYPE_ERR;
-  }
-  op->func = function;
-  op->return_type = return_type;
-  op->func_name = cp_name;
-  
-  return TYPE_OK;
 }

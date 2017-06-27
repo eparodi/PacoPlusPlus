@@ -9,18 +9,18 @@
 /*
  * Macro for creating a new Integer type.
  */
-#define NEW_INT() ( malloc(sizeof(int)) )
+#define NEW_INT() ( malloc(sizeof(Integer)) )
 
 /*
  * Macro for operations. Op is the operator to use ( + | - | * | / ).
  */
-#define OPERATION(op) ({                         \
-                        Integer ret = NEW_INT(); \
-                        if (!ret){               \
-                          return NULL;           \
-                        }                        \
-                        *ret = *i1 op *i2;       \
-                        return ret;              \
+#define OPERATION(op) ({                                              \
+                        Integer ret = NEW_INT();                      \
+                        if (!ret){                                    \
+                          return NULL;                                \
+                        }                                             \
+                        ret->number = i1->number op i2->number;       \
+                        return ret;                                   \
                       })
 
 //------------------------------------------------------------------------------
@@ -29,12 +29,12 @@
 
 TypeT
 createIntegerType(){
-  return createType("Integer", sizeof(int));
+  return createType("Integer", sizeof(IntegerC));
 }
 
 Integer
 newInteger(int number){
-  return (Integer) NEW_INT(); 
+  return NEW_INT(); 
 }
 
 Integer

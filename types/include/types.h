@@ -38,12 +38,12 @@ typedef struct Type{
  */
 typedef Type * TypeT;
 
-enum OpValue{
+typedef enum OpValue{
   ADD,
   SUB,
   MUL,
-  DIV,
-};
+  DVN,
+}OpValue;
 
 typedef struct Operation{
   void * func;
@@ -68,5 +68,11 @@ createType(char * name, size_t size);
 int
 addOperation(void * function, const char * name, TypeT first_op, \
             TypeT second_op, TypeT return_type);
+
+OperationT
+getOperation(OpValue op, TypeT type1, TypeT type2);
+
+TypeT
+getType(uint64_t type_num);
 
 #endif

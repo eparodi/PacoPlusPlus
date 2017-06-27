@@ -3,10 +3,15 @@
 
 #include "types.h"
 
+typedef struct IntegerC{
+  int number;
+  ObjectT obj;
+}IntegerC;
+
 /*
  * Integer Type.
  */
-typedef int * Integer;
+typedef IntegerC * Integer;
 
 /*
  * Adds the Integer Type to the current types.
