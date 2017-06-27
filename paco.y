@@ -70,7 +70,7 @@ OPERAT  : EXPRESS PLUS EXPRESS  { _object o; o.type= INTEGER; o.cont.num = $1.co
         | EXPRESS MINUS EXPRESS { _object o; o.type= INTEGER; o.cont.num = $1.cont.num - $3.cont.num; $$ = o; }
         | EXPRESS MULT EXPRESS  { _object o; o.type= INTEGER; o.cont.num = $1.cont.num * $3.cont.num; $$ = o; }
         | EXPRESS DIV EXPRESS   { _object o; o.type= INTEGER; o.cont.num = $1.cont.num / $3.cont.num; $$ = o; }
-        /*| EXPRESS POW EXPRESS   { int a=1, i; for(i=0; i<$3; i++) {a*=$1;} $$=a; }*/
+        | EXPRESS POW EXPRESS   { _object o; int a=1, i; for(i=0; i<$3.cont.num; i++) {a*=$1.cont.num;} o.type = INTEGER; o.cont.num = a; $$ = o; }
         ;
 
 VALUE   : NUMBER                { $$ = $1; }
