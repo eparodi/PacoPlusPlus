@@ -10,5 +10,7 @@
 #include "dvn.h"
 
 _object createInt(int num);
+_object createDecimal(float num);
+_object powIntInt(_object o1, _object o2);
 
 #endif

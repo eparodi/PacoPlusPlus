@@ -116,8 +116,8 @@ copyTypeName(const char * name){
 
 int
 buildOpTable(){
-  int size = sizeof(OpValue);
-  op_table = calloc(sizeof(OpValue), sizeof(void *));
+  int size = CANT_OPERATIONS;
+  op_table = calloc(CANT_OPERATIONS, sizeof(void *));
 
   if (!op_table){
     return TYPE_ERR;
@@ -143,7 +143,7 @@ buildOpTable(){
 
 void
 freeFailOpTable() {
-  int size = sizeof(OpValue);
+  int size = CANT_OPERATIONS;
   for(int i = 0; i < size; i++ ){
     for(int j = 0; j < type_id; j++){
       free(op_table[i][j]);

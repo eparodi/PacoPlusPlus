@@ -38,6 +38,8 @@ typedef enum OpValue{
   SUB,
   MUL,
   DVN,
+  PWR,
+  CANT_OPERATIONS // ALWAYS AT THE END. Use this instead of sizeof(OpValues), it does not work.
 }OpValue;
 
 typedef enum TypesID{
@@ -66,6 +68,9 @@ startTypes();
  */
 TypeT
 createType(char * name);
+
+int
+buildOpTable();
 
 int
 addOperation(void * function, const char * name, TypesID first_op, \

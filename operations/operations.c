@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "include/operations.h"
 
 
@@ -11,6 +12,20 @@ _object createInt(int num){
 	o->type = getType(INTEGER);
 	o->cont.num = num;
 	return o;
+}
+
+_object createDecimal(float num){
+	_object o = malloc(sizeof(Object));
+	if (!o){
+		return NULL;
+	}
+	o->type = getType(DECIMAL);
+	o->cont.fl = num;
+	return o;
+}
+
+_object powIntInt(_object o1, _object o2) {
+	return createInt((int)pow(o1->cont.num, o2->cont.num));
 }
 // _object addInt(_object o1, _object o2) {
 // 	return createInt(o1->cont.num + o2->cont.num);

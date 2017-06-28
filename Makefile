@@ -1,5 +1,5 @@
 FLAGS= -Wall -g -std=c99
-ENDFLADS= -ly
+ENDFLADS= -ly -lm
 PROGRAM_NAME = pacopp.out
 OBJECTS = types/*.o hashtable/*.o operations/*.o
 
