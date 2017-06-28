@@ -109,6 +109,7 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 									OperationT operation = getOperation(PWR, $1->type, $3->type);
 									$$ = operation->func($1,$3);
 								}
+		| EXPRESS '?'			{ $$ = createString($1->type->name);}
 		;
 
 VALUE   : NUMBER                { $$ = $1; }
@@ -168,13 +169,13 @@ main(void)
 		addOperation(&addStrInt,"addStrInt",STR, INTEGER,ADD);
 		addOperation(&subStrInt,"subStrInt",STR, INTEGER,SUB);
 		addOperation(&mulStrInt,"mulStrInt",STR, INTEGER,MUL);
-		// addOperation(&dvnStrInt,"dvnStrInt",STR, INTEGER,DVN);
+		addOperation(&dvnStrInt,"dvnStrInt",STR, INTEGER,DVN);
 
 		// INT STRING OPERATIONS		
 		addOperation(&addIntStr,"addIntStr",INTEGER, STR,ADD);
 		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB);
 		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL);
-		// addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN);
+		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN);
 
 	return yyparse();
 }

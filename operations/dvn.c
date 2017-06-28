@@ -24,3 +24,13 @@ _object dvnStrStr(_object o1, _object o2) {
 	deleteSubstr(o1->cont.str, o2->cont.str, auxStr);
 	return createString(auxStr);
 }
+
+_object dvnIntStr(_object o1, _object o2) {
+	char* auxStr = itoa(o1->cont.num);
+	return dvnStrStr(createString(auxStr), o2);
+}
+
+_object dvnStrInt(_object o1, _object o2) {
+	char* auxStr = itoa(o2->cont.num);
+	return dvnStrStr(o1, createString(auxStr));
+}
