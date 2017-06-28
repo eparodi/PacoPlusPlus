@@ -161,8 +161,8 @@ main(void)
 		// STRING STRING OPERATIONS		
 		addOperation(&addStrStr,"addStrStr",STR, STR,ADD);
 		addOperation(&subStrStr,"subStrStr",STR, STR,SUB);
-		// addOperation(&mulStrStr,"mulStrStr",STR, STR,MUL);
-		// addOperation(&dvnStrStr,"dvnStrStr",STR, STR,DVN);
+		addOperation(&mulStrStr,"mulStrStr",STR, STR,MUL);
+		addOperation(&dvnStrStr,"dvnStrStr",STR, STR,DVN);
 
 		// STRING INT OPERATIONS		
 		addOperation(&addStrInt,"addStrInt",STR, INTEGER,ADD);

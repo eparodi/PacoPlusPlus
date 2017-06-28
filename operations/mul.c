@@ -32,3 +32,15 @@ _object mulStrInt(_object o1, _object o2) {
 _object mulIntStr(_object o1, _object o2) {
 	return mulStrInt(o2, o1);
 }
+
+_object mulStrStr(_object o1, _object o2) {
+	int len1 = strlen(o1->cont.num);
+	int len2 = strlen(o2->cont.num);
+	char* auxStr = calloc(1, len1*(len2 + 1) + 1);
+	int i,j;
+	for (i = 0; i < len1; i++) {
+		auxStr[i*(len2+1)] = o1->cont.str[i];
+		strcat(auxStr,o2->cont.str);
+	}
+	return createString(auxStr);
+}

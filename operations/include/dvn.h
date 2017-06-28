@@ -8,5 +8,6 @@ _object dvnIntInt(_object o1, _object o2);
 _object dvnDecDec(_object o1, _object o2);
 _object dvnIntDec(_object o1, _object o2);
 _object dvnDecInt(_object o1, _object o2);
+_object dvnStrStr(_object o1, _object o2);
 
 #endif

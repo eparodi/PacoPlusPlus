@@ -65,7 +65,7 @@ void invertStr(char * str) {
 
 /*
  * Assigns to dest a pointer to a string with n times str concatenated.
- * The functions assumes that dest have enough space to hold n times str and '\0' and is initially filled with 0.
+ * The functions assumes that dest have enough space to hold n times str and '\0'.
  */
 void multiplyString(char* str, int n, char* dest) {
 	while(n-- > 0) {
@@ -77,4 +77,38 @@ char* itoa(int n){
 	char* intStr = calloc(1, digitCount(n) + 1);
 	sprintf(intStr, "%d", n);
 	return intStr;
+}
+
+/*
+ * Assigns to dest a pointer to the string str without any substring substr
+ */
+void deleteSubstr(char* str, char* substr, char* dest) {
+	int i = 0, j = 0, k = 0;
+	int startSubstr = -1;
+	int strLen = strlen(str);
+	int substrLen = strlen(substr);
+
+	if (substrLen <= 0) {
+		strcpy(dest, str);
+		return;
+	}
+
+	while(str[i] != 0) {
+		dest[k] = str[i];
+		if (str[i] == substr[j]) {
+			if (startSubstr == -1) {
+				startSubstr = k;
+			}
+			if (k-startSubstr+1 == substrLen) {
+				j = 0;
+				k = startSubstr-1;
+				startSubstr = -1;
+			} else {
+				j++;
+			}
+		}
+		i++;
+		k++;
+	}
+	dest[k] = '\0';
 }

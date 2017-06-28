@@ -10,5 +10,6 @@ _object mulIntDec(_object o1, _object o2);
 _object mulDecInt(_object o1, _object o2);
 _object mulStrInt(_object o1, _object o2);
 _object mulIntStr(_object o1, _object o2);
+_object mulStrStr(_object o1, _object o2);
 
 #endif

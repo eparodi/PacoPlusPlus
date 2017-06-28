@@ -18,3 +18,9 @@ _object dvnIntDec(_object o1, _object o2) {
 _object dvnDecInt(_object o1, _object o2) {
 	return createDecimal(o1->cont.fl / o2->cont.num);
 }
+
+_object dvnStrStr(_object o1, _object o2) {
+	char* auxStr = calloc(1, strlen(o1->cont.str) + 1);
+	deleteSubstr(o1->cont.str, o2->cont.str, auxStr);
+	return createString(auxStr);
+}

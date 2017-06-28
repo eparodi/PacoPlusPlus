@@ -19,5 +19,6 @@ _object powIntInt(_object o1, _object o2);
 int digitCount(int n);
 void invertStr(char* str);
 char* itoa(int n);
+void deleteSubstr(char* str, char* substr, char* dest);
 
 #endif
