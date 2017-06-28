@@ -28,34 +28,11 @@ _object addStrStr(_object o1, _object o2) {
 }
 
 _object addStrInt(_object o1, _object o2) {
-	char* intStr = calloc(1, digitCount(o2->cont.num) + 1);
-	sprintf(intStr, "%d", o2->cont.num);
-
-	char* auxStr = malloc(strlen(o1->cont.str) + intStr + 1);
-	strcpy(auxStr, o1->cont.str);
-	strcat(auxStr, intStr);
-	return createString(auxStr);
+	char* intStr = itoa(o2->cont.num);
+	return addStrStr(o1, createString(intStr));
 }
 
 _object addIntStr(_object o1, _object o2) {
-	char* intStr = calloc(1, digitCount(o1->cont.num) + 1);
-	sprintf(intStr, "%d", o1->cont.num);
-
-	char* auxStr = malloc(strlen(o2->cont.str) + intStr + 1);
-	strcpy(auxStr, intStr);
-	strcat(auxStr, o2->cont.str);
-	return createString(auxStr);
-}
-
-
-// ------------------------ AUX FUNCTIONS ------------------------------
-
-int digitCount(int n) {
-	int count = 0;
-	while(n != 0)
-	{
-        n /= 10;
-        ++count;
-    }
-    return count;
+	char* intStr = itoa(o1->cont.num);
+	return addStrStr(createString(intStr), o2);
 }

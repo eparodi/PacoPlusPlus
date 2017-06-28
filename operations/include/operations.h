@@ -14,4 +14,10 @@ _object createDecimal(float num);
 _object createString(char* num);
 _object powIntInt(_object o1, _object o2);
 
+
+// ---- AUX FUNCTIONS ----
+int digitCount(int n);
+void invertStr(char* str);
+char* itoa(int n);
+
 #endif

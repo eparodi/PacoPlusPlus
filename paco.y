@@ -67,7 +67,7 @@ ASSIGN  : VAR EQ EXPRESS        {
 									$$ = operation->func(((_object)getElementHT(var_table, $1)),$3);
 									addElementHT(var_table, $1, $$);
 								}
-		| VAR MINUSEQ EXPRESS   {printf("MINUSEQ\n");
+		| VAR MINUSEQ EXPRESS   {
 									OperationT operation = getOperation(ADD, ((_object)getElementHT(var_table, $1))->type, $3->type);
 									$$ = operation->func(((_object)getElementHT(var_table, $1)),$3);
 									addElementHT(var_table, $1, $$);
@@ -160,21 +160,21 @@ main(void)
 
 		// STRING STRING OPERATIONS		
 		addOperation(&addStrStr,"addStrStr",STR, STR,ADD);
-		// addOperation(&subStrStr,"subStrStr",STRING, STRING,SUB);
-		// addOperation(&mulStrStr,"mulStrStr",STRING, STRING,MUL);
-		// addOperation(&dvnStrStr,"dvnStrStr",STRING, STRING,DVN);
+		addOperation(&subStrStr,"subStrStr",STR, STR,SUB);
+		// addOperation(&mulStrStr,"mulStrStr",STR, STR,MUL);
+		// addOperation(&dvnStrStr,"dvnStrStr",STR, STR,DVN);
 
 		// STRING INT OPERATIONS		
 		addOperation(&addStrInt,"addStrInt",STR, INTEGER,ADD);
-		// addOperation(&subStrInt,"subStrInt",STRING, INTEGER,SUB);
-		// addOperation(&mulStrInt,"mulStrInt",STRING, INTEGER,MUL);
-		// addOperation(&dvnStrInt,"dvnStrInt",STRING, INTEGER,DVN);
+		addOperation(&subStrInt,"subStrInt",STR, INTEGER,SUB);
+		addOperation(&mulStrInt,"mulStrInt",STR, INTEGER,MUL);
+		// addOperation(&dvnStrInt,"dvnStrInt",STR, INTEGER,DVN);
 
-		// STRING INT OPERATIONS		
+		// INT STRING OPERATIONS		
 		addOperation(&addIntStr,"addIntStr",INTEGER, STR,ADD);
-		// addOperation(&subStrInt,"subStrInt",STRING, INTEGER,SUB);
-		// addOperation(&mulStrInt,"mulStrInt",STRING, INTEGER,MUL);
-		// addOperation(&dvnStrInt,"dvnStrInt",STRING, INTEGER,DVN);
+		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB);
+		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL);
+		// addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN);
 
 	return yyparse();
 }
