@@ -116,6 +116,7 @@ VALUE   : NUMBER                { $$ = $1; }
 
 NUMBER  : INT                   { $$ = createInt($1); }
 		| FLOAT                 { $$ = createDecimal($1); }
+		| STRING 				{ $$ = createString($1); }
 		;
 
 %%
@@ -156,6 +157,25 @@ main(void)
 		addOperation(&subDecInt,"subDecInt",DECIMAL, INTEGER,SUB);
 		addOperation(&mulDecInt,"mulDecInt",DECIMAL, INTEGER,MUL);
 		addOperation(&dvnDecInt,"dvnDecInt",DECIMAL, INTEGER,DVN);
+
+		// STRING STRING OPERATIONS		
+		addOperation(&addStrStr,"addStrStr",STR, STR,ADD);
+		// addOperation(&subStrStr,"subStrStr",STRING, STRING,SUB);
+		// addOperation(&mulStrStr,"mulStrStr",STRING, STRING,MUL);
+		// addOperation(&dvnStrStr,"dvnStrStr",STRING, STRING,DVN);
+
+		// STRING INT OPERATIONS		
+		addOperation(&addStrInt,"addStrInt",STR, INTEGER,ADD);
+		// addOperation(&subStrInt,"subStrInt",STRING, INTEGER,SUB);
+		// addOperation(&mulStrInt,"mulStrInt",STRING, INTEGER,MUL);
+		// addOperation(&dvnStrInt,"dvnStrInt",STRING, INTEGER,DVN);
+
+		// STRING INT OPERATIONS		
+		addOperation(&addIntStr,"addIntStr",INTEGER, STR,ADD);
+		// addOperation(&subStrInt,"subStrInt",STRING, INTEGER,SUB);
+		// addOperation(&mulStrInt,"mulStrInt",STRING, INTEGER,MUL);
+		// addOperation(&dvnStrInt,"dvnStrInt",STRING, INTEGER,DVN);
+
 	return yyparse();
 }
 
@@ -168,6 +188,9 @@ void printResult(_object o) {
 			break;
 		case DECIMAL:
 			printf("%f\n", o->cont.fl);
+			break;
+		case STR:
+			printf("%s\n", o->cont.str);
 			break;
 	}
 }

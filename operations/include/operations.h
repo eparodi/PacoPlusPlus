@@ -11,6 +11,7 @@
 
 _object createInt(int num);
 _object createDecimal(float num);
+_object createString(char* num);
 _object powIntInt(_object o1, _object o2);
 
 #endif

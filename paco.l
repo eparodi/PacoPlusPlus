@@ -29,7 +29,13 @@ varName [A-Za-z][0-9A-Za-z_-]*
 						strcpy(yylval.str, yytext);
 						return VAR;
 					  }
-\".+\"                return STRING;
+
+\"[^\"]+\"			{
+						char * str = malloc(strlen(yytext) - 1);
+						strncpy(str, yytext + 1, strlen(yytext) - 2);
+						yylval.str = str;
+						return STRING;
+					}
 .                     return yytext[0];
 
 %%

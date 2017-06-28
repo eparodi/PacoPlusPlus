@@ -1,0 +1,87 @@
+cd hashtable; make all
+make[1]: Entering directory `/home/epord/Desktop/PacoPlusPlus/hashtable'
+gcc -Wall -c -std=c99 hashtable.c -I./include
+make[1]: Leaving directory `/home/epord/Desktop/PacoPlusPlus/hashtable'
+cd types; make all
+make[1]: Entering directory `/home/epord/Desktop/PacoPlusPlus/types'
+gcc -Wall -c -std=c99 types.c -I./include
+make[1]: Leaving directory `/home/epord/Desktop/PacoPlusPlus/types'
+cd operations; make all
+make[1]: Entering directory `/home/epord/Desktop/PacoPlusPlus/operations'
+gcc -Wall -c -std=c99 dvn.c mul.c operations.c sub.c sum.c -I./include
+sum.c: In function ‘addStrStr’:
+sum.c:24:2: warning: implicit declaration of function ‘strlen’ [-Wimplicit-function-declaration]
+  char* auxStr = malloc(strlen(o1->cont.str) + strlen(o1->cont.str) + 1);
+  ^
+sum.c:24:24: warning: incompatible implicit declaration of built-in function ‘strlen’ [enabled by default]
+  char* auxStr = malloc(strlen(o1->cont.str) + strlen(o1->cont.str) + 1);
+                        ^
+sum.c:25:2: warning: implicit declaration of function ‘strcpy’ [-Wimplicit-function-declaration]
+  strcpy(auxStr, o1->cont.str);
+  ^
+sum.c:25:2: warning: incompatible implicit declaration of built-in function ‘strcpy’ [enabled by default]
+sum.c:26:2: warning: implicit declaration of function ‘strcat’ [-Wimplicit-function-declaration]
+  strcat(auxStr, o2->cont.str);
+  ^
+sum.c:26:2: warning: incompatible implicit declaration of built-in function ‘strcat’ [enabled by default]
+make[1]: Leaving directory `/home/epord/Desktop/PacoPlusPlus/operations'
+yacc -d paco.y
+paco.y: warning: 5 shift/reduce conflicts [-Wconflicts-sr]
+lex paco.l
+gcc -Wall -g -std=c99 *.c types/*.o hashtable/*.o operations/*.o -o pacopp.out -ly -lm
+In file included from paco.l:4:0:
+y.tab.h:91:1: warning: no semicolon at end of struct or union [enabled by default]
+ };
+ ^
+paco.l: In function ‘yylex’:
+paco.l:36:13: error: ‘YYSTYPE’ has no member named ‘strval’
+       yylval.strval = str;
+             ^
+lex.yy.c: In function ‘yy_init_buffer’:
+lex.yy.c:1427:9: warning: implicit declaration of function ‘fileno’ [-Wimplicit-function-declaration]
+         b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
+         ^
+paco.l: At top level:
+lex.yy.c:1179:17: warning: ‘yyunput’ defined but not used [-Wunused-function]
+     static void yyunput (int c, register char * yy_bp )
+                 ^
+lex.yy.c:1220:16: warning: ‘input’ defined but not used [-Wunused-function]
+     static int input  (void)
+                ^
+y.tab.c:167:1: warning: no semicolon at end of struct or union [enabled by default]
+ };
+ ^
+y.tab.c: In function ‘yyparse’:
+y.tab.c:1198:7: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+       yychar = yylex ();
+       ^
+paco.y:57:5: warning: implicit declaration of function ‘printResult’ [-Wimplicit-function-declaration]
+   | ASSIGN NEWLINE        { printResult($1); }
+     ^
+paco.y: In function ‘main’:
+paco.y:132:3: warning: passing argument 3 of ‘createHashTable’ from incompatible pointer type [enabled by default]
+   var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
+   ^
+In file included from paco.y:10:0:
+hashtable/include/hashtable.h:61:1: note: expected ‘hashFunction’ but argument is of type ‘unsigned int (*)(char *)’
+ createHashTable(size_t key_size, size_t value_size, \
+ ^
+paco.y:132:3: warning: passing argument 5 of ‘createHashTable’ from incompatible pointer type [enabled by default]
+   var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
+   ^
+In file included from paco.y:10:0:
+hashtable/include/hashtable.h:61:1: note: expected ‘equalsFunction’ but argument is of type ‘unsigned int (*)(const char *, const char *)’
+ createHashTable(size_t key_size, size_t value_size, \
+ ^
+paco.y: At top level:
+paco.y:177:6: warning: conflicting types for ‘printResult’ [enabled by default]
+ void printResult(_object o) {
+      ^
+paco.y:57:7: note: previous implicit declaration of ‘printResult’ was here
+   | ASSIGN NEWLINE        { printResult($1); }
+       ^
+paco.y: In function ‘printResult’:
+paco.y:179:5: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘uint64_t’ [-Wformat=]
+     printf("TYPE = %d\n", o->type->id);
+     ^
+make: *** [all] Error 1

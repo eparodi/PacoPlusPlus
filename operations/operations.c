@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include "include/operations.h"
 
@@ -21,6 +22,17 @@ _object createDecimal(float num){
 	}
 	o->type = getType(DECIMAL);
 	o->cont.fl = num;
+	return o;
+}
+
+_object createString(char* str){
+	_object o = malloc(sizeof(Object));
+	if (!o){
+		return NULL;
+	}
+	o->type = getType(STR);
+	o->cont.str = malloc(strlen(str)+1);
+	strcpy(o->cont.str, str);
 	return o;
 }
 
