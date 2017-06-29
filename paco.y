@@ -185,7 +185,7 @@ WHILETOKEN	: WHILE 				{
 
 BOOLEXPR: EXPRESS LT EXPRESS 	{
 									$$ = malloc(sizeof(*$$));
-									OperationT operation = getOperation(LTS, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+									OperationT operation = getOperation(LTS, $1->type, $3->type);
 									$$->compFunc = malloc(strlen(operation->func_name) + 1);
 									strcpy($$->compFunc, operation->func_name);
 									$$->exp1 = $1;
@@ -712,8 +712,8 @@ void printBoolExpr(y_boolExpr* expr) {
 	printf("%s(", expr->compFunc);
 	printExpr(expr->exp1);
 	printf(",");
-	printExpr(expr->exp1);
-	printf(")");
+	printExpr(expr->exp2);
+	printf(")->cont.num");
 }
 
 void printNum(y_number* num) {
