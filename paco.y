@@ -107,27 +107,27 @@ PROGRAM : INST PROGRAM	        {
 		;
 INST    : ASSIGN ';'            {
 									$$ = malloc(sizeof(*$$));
-									$$->type = 5;
+									$$->type = 0;
 									$$->content = $1;
 								}
 		| EXPRESS ';'           {
 									$$ = malloc(sizeof(*$$));
-									$$->type = 5;
+									$$->type = 1;
 									$$->content = $1;
 								}
 		| ASSIGN ';' NEWLINE    {
 									$$ = malloc(sizeof(*$$));
-									$$->type = 5;
+									$$->type = 2;
 									$$->content = $1;
 								}
 		| EXPRESS ';' NEWLINE   {
 									$$ = malloc(sizeof(*$$));
-									$$->type = 5;
+									$$->type = 3;
 									$$->content = $1;
 								}
 		| ASSIGN NEWLINE        {
 									$$ = malloc(sizeof(*$$));
-									$$->type = 5;
+									$$->type = 4;
 									$$->content = $1;
 								}
 		| EXPRESS NEWLINE       {
@@ -198,8 +198,13 @@ ASSIGN  : VAR EQ EXPRESS        {
 									$$->var = var;
 									$$->exp = $3;
 									$$->opName = calloc(1, 1);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
-									$$->isNew = 1;
+									void* p = getElementHT(var_table, $1);
+									if (p == NULL) {
+										addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+										$$->isNew = 1;
+									} else {
+										$$->isNew = 0;
+									}
 								}
 		| VAR PLUSEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
