@@ -30,6 +30,7 @@ typedef struct {
 typedef struct {
 	char* name;
 	TypeT type;
+	int blockNum;
 } y_variable;
 
 typedef struct {

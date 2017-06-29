@@ -88,33 +88,17 @@ void printObject(_object o) {
 		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB,getType(STR));
 		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL,getType(STR));
 		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN,getType(STR));
-printObject(addIntInt(createInt(2),createInt(2)));
+_object var1=createInt(1);
+printObject(createInt(1));
 printf("\n");
-printObject(addIntInt(createInt(5),createInt(4)));
+_object var2=createString("asd");
+printObject(createString("asd"));
 printf("\n");
-printObject(addDecInt(createDecimal(4.500000f),createInt(5)));
-printf("\n");
-printObject(dvnDecInt(createDecimal(9.000000f),createInt(6)));
-printf("\n");
-printObject(addStrStr(createString("asd"),createString("DSA")));
-printf("\n");
-printObject(addStrInt(createString("asd"),createInt(789)));
-printf("\n");
-printObject(mulIntStr(createInt(4),createString("b")));
-printf("\n");
-printObject(mulStrStr(createString("OOOO"),createString("qwe")));
-printf("\n");
-printObject(dvnStrStr(createString("holaBORRAME comBORRAMEo va?"),createString("BORRAME")));
-printf("\n");
-printObject(dvnStrInt(createString("Pe123456dro"),createInt(123456)));
-printf("\n");
-_object var1=createString("123");
-printObject(createString("123"));
-printf("\n");
-var1=createDecimal(12.200000f);
-printObject(createDecimal(12.200000f));
-printf("\n");
-_object var2=var1;
+if(BOOLEXPR){
+var2=createDecimal(2.000000f);
+
+}
+var2=addDecInt(var2,var1);
 printObject(var1);
 printf("\n");
 }

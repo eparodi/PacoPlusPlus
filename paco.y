@@ -34,6 +34,7 @@
 	
 	typedef _object(*opFunc)(_object, _object);
 
+	int blockNum = 0;
 
 	y_prog* prog;
 	y_prog* actualProg;
@@ -150,6 +151,7 @@ IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
 																	actualProg = $$->prevProg;
+																	blockNum--;
 																}
 		;
 
@@ -158,6 +160,7 @@ IFTOKEN	: IF 					{
 									$$->prevProg = actualProg;
 									actualProg = malloc(sizeof(y_prog));
 									actualProg->first = NULL;
+									blockNum++;
 								}
 
 WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
@@ -165,6 +168,7 @@ WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
 																	actualProg = $$->prevProg;
+																	blockNum--;
 																}
 		;
 
@@ -173,6 +177,7 @@ WHILETOKEN	: WHILE 				{
 									$$->prevProg = actualProg;
 									actualProg = malloc(sizeof(y_prog));
 									actualProg->first = NULL;
+									blockNum++;
 								}
 			;
 
@@ -189,87 +194,133 @@ BOOLEXPR: EXPRESS LT EXPRESS 	{
 
 ASSIGN  : VAR EQ EXPRESS        {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if( p == NULL) {
+										y_variable* var = malloc(sizeof(y_variable));
+										var->name = malloc(strlen($1) + 1);
+										strcpy(var->name, $1);
+										var->type = $3->type;
+										var->blockNum = blockNum;
+										$$->var = var;
+										$$->isNew = 1;
+										addElementHT(var_table,$1,var);		
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											$$->isNew = 1;
+										} else {
+											$$->isNew = 0;
+										}
+										$$->var = p;
+										p->type = $3->type;
+									}
 									$$->exp = $3;
 									$$->opName = calloc(1, 1);
-									void* p = getElementHT(var_table, $1);
-									if (p == NULL) {
-										addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
-										$$->isNew = 1;
-									} else {
-										$$->isNew = 0;
-									}
 								}
 		| VAR PLUSEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(ADD, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(ADD, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
+									
 								}
-		| VAR MINUSEQ EXPRESS   {
+		| VAR MINUSEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(SUB, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(SUB, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
 								}
 		| VAR MULTEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(MUL, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(MUL, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
 								}
-		| VAR DIVEQ EXPRESS     {
+		| VAR DIVEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(DVN, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(DVN, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
 								}
 		;
 
 EXPRESS : VAR                   { 
 									$$ = malloc(sizeof(*$$));
-									$$->contentType = EXPR_VAR;
-									$$->type = ((y_variable*) getElementHT(var_table, $1))->type;
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									$$->content = var; 
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->contentType = EXPR_VAR;
+											$$->content = p;
+											$$->type = p->type;
+										}
+									}
 										
 								}
 		| NUMBER                {
@@ -588,10 +639,9 @@ void addInstToProg(y_prog* prog, y_inst* i) {
 	}
 }
 
-void yyerror(char* s)
-{
-	fprintf(stderr, "Error: %s\n", s);
-}
+void yyerror(char *s) {
+    fprintf(stderr, "line %d: %s\n", 42, s);
+}	
 
 static unsigned int str_hash(char* key){
 	unsigned int h = 5381;
