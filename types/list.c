@@ -1,6 +1,9 @@
 #include "include/list.h"
 
 _object
+operationOneByOne(List l, _object o, OpValue opV, ListOrder order);
+
+_object
 newList(){
   _object o = malloc(sizeof(Object));
   o->type = getType(LIST);
@@ -43,6 +46,46 @@ operationOneByOne(List l, _object o, OpValue opV, ListOrder order){
     }
   }
   return lNew;
+}
+
+_object
+addListAny(_object o1, _object o2){
+  return operationOneByOne((List) o1->cont.obj, o2, ADD, FIRST_LIST);
+}
+
+_object
+subListAny(_object o1, _object o2){
+  return operationOneByOne((List) o1->cont.obj, o2, SUB, FIRST_LIST);
+}
+
+_object
+multListAny(_object o1, _object o2){
+  return operationOneByOne((List) o1->cont.obj, o2, MUL, FIRST_LIST);
+}
+
+_object
+divListAny(_object o1, _object o2){
+  return operationOneByOne((List) o1->cont.obj, o2, DVN, FIRST_LIST);
+}
+
+_object
+addAnyList(_object o1, _object o2){
+  return operationOneByOne((List) o2->cont.obj, o1, ADD, SECOND_LIST);
+}
+
+_object
+subAnyList(_object o1, _object o2){
+  return operationOneByOne((List) o2->cont.obj, o1, SUB, SECOND_LIST);
+}
+
+_object
+multAnyList(_object o1, _object o2){
+  return operationOneByOne((List) o2->cont.obj, o1, MUL, SECOND_LIST);
+}
+
+_object
+divAnyList(_object o1, _object o2){
+  return operationOneByOne((List) o2->cont.obj, o1, DVN, SECOND_LIST);
 }
 
 void

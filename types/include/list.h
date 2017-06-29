@@ -33,10 +33,23 @@ newList();
 void
 addList(List l, _object o);
 
-_object
-operationOneByOne(List l, _object o, OpValue opV, ListOrder order);
-
 void
 printList(List l);
 
+_object
+addListAny(_object o1, _object o2);
+_object
+subListAny(_object o1, _object o2);
+_object
+multListAny(_object o1, _object o2);
+_object
+divListAny(_object o1, _object o2);
+_object
+addAnyList(_object o1, _object o2);
+_object
+subAnyList(_object o1, _object o2);
+_object
+multAnyList(_object o1, _object o2);
+_object
+divAnyList(_object o1, _object o2);
 #endif
