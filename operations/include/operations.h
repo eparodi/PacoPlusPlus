@@ -8,6 +8,7 @@
 #include "sub.h"
 #include "mul.h"
 #include "dvn.h"
+#include "compare.h"
 
 _object createInt(int num);
 _object createDecimal(float num);

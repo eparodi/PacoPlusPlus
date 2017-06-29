@@ -3,6 +3,9 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
+#include "object.h"
+#include "list.h"
 
 /*
  * A value that is returned if an error ocurrs.
@@ -18,6 +21,9 @@
  * The Type type name.
  */
 #define TYPE_NAME "Type"
+
+typedef struct Object Object;
+typedef Object * _object;
 
 /*
  * This is the structure of a Type. It has an id, the number that represents the
@@ -39,6 +45,11 @@ typedef enum OpValue{
   MUL,
   DVN,
   PWR,
+  EQL,
+  LTS,
+  LES,
+  GTS,
+  GES,
   CANT_OPERATIONS // ALWAYS AT THE END. Use this instead of sizeof(OpValues), it does not work.
 }OpValue;
 
@@ -46,7 +57,9 @@ typedef enum TypesID{
 	TYPE,
 	INTEGER,
 	DECIMAL,
-	STR
+	STR,
+  LIST,
+  CANT_TYPES
 }TypesID;
 
 typedef struct Operation{
@@ -82,5 +95,7 @@ getType(TypesID id);
 
 OperationT
 getOperation(OpValue op, TypeT type1, TypeT type2);
+
+void printObject(_object o);
 
 #endif

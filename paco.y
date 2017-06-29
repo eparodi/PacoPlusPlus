@@ -6,6 +6,7 @@
 	#include "operations/include/operations.h"
 	#include "types/include/object.h"
 	#include "types/include/types.h"
+	#include "types/include/list.h"
 	#include "hashtable/include/hashtable.h"
 	#include "yaccObjects.h"
 
@@ -31,9 +32,10 @@
 	void addInstToProg(y_prog* prog, y_inst* i);
 	void startC();
 	void endC();
-	
+
 	typedef _object(*opFunc)(_object, _object);
 
+	int blockNum = 0;
 
 	y_prog* prog;
 	y_prog* actualProg;
@@ -42,9 +44,9 @@
 
 
 %union {
-	int num; 
-	char* str; 
-	float fl; 
+	int num;
+	char* str;
+	float fl;
 	char ch;
 	_object obj;
 
@@ -72,6 +74,7 @@
 %token <str> VAR
 
 %type <obj> VALUE
+%type <obj> ARRAY
 %type <number> NUMBER
 %type <expression> EXPRESS
 %type <operation> OPERAT
@@ -94,11 +97,11 @@
 
 START 	: BEGINPROG NEWLINE PROGRAM END {  }
 
-PROGRAM : INST PROGRAM	        { 
+PROGRAM : INST PROGRAM	        {
 									addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
-		| INST                  { 
+		| INST                  {
 									addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
@@ -150,6 +153,7 @@ IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
 																	actualProg = $$->prevProg;
+																	blockNum--;
 																}
 		;
 
@@ -158,6 +162,7 @@ IFTOKEN	: IF 					{
 									$$->prevProg = actualProg;
 									actualProg = malloc(sizeof(y_prog));
 									actualProg->first = NULL;
+									blockNum++;
 								}
 
 WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
@@ -165,6 +170,7 @@ WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
 																	actualProg = $$->prevProg;
+																	blockNum--;
 																}
 		;
 
@@ -173,12 +179,15 @@ WHILETOKEN	: WHILE 				{
 									$$->prevProg = actualProg;
 									actualProg = malloc(sizeof(y_prog));
 									actualProg->first = NULL;
+									blockNum++;
 								}
 			;
 
 BOOLEXPR: EXPRESS LT EXPRESS 	{
 									$$ = malloc(sizeof(*$$));
-									$$->compFunc = malloc("ltStrStr" + 1);
+									OperationT operation = getOperation(LTS, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+									$$->compFunc = malloc(strlen(operation->func_name) + 1);
+									strcpy($$->compFunc, operation->func_name);
 									$$->exp1 = $1;
 									$$->exp2 = $3;
 								}
@@ -189,100 +198,145 @@ BOOLEXPR: EXPRESS LT EXPRESS 	{
 
 ASSIGN  : VAR EQ EXPRESS        {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if( p == NULL) {
+										y_variable* var = malloc(sizeof(y_variable));
+										var->name = malloc(strlen($1) + 1);
+										strcpy(var->name, $1);
+										var->type = $3->type;
+										var->blockNum = blockNum;
+										$$->var = var;
+										$$->isNew = 1;
+										addElementHT(var_table,$1,var);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											$$->isNew = 1;
+										} else {
+											$$->isNew = 0;
+										}
+										$$->var = p;
+										p->type = $3->type;
+									}
 									$$->exp = $3;
 									$$->opName = calloc(1, 1);
-									void* p = getElementHT(var_table, $1);
-									if (p == NULL) {
-										addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
-										$$->isNew = 1;
-									} else {
-										$$->isNew = 0;
-									}
 								}
 		| VAR PLUSEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(ADD, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(ADD, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
+
 								}
-		| VAR MINUSEQ EXPRESS   {
+		| VAR MINUSEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(SUB, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(SUB, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
 								}
 		| VAR MULTEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(MUL, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(MUL, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
 								}
-		| VAR DIVEQ EXPRESS     {
+		| VAR DIVEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									var->type = $3->type;
-									$$->var = var;
-									$$->exp = $3;
-									OperationT operation = getOperation(DVN, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
-									$$->opName = malloc(strlen(operation->func_name)+1);
-									strcpy($$->opName, operation->func_name);
-									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->var = p;
+											$$->exp = $3;
+											OperationT operation = getOperation(DVN, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+											$$->opName = malloc(strlen(operation->func_name)+1);
+											strcpy($$->opName, operation->func_name);
+										}
+									}
 									$$->isNew = 0;
 								}
 		;
 
-EXPRESS : VAR                   { 
+EXPRESS : VAR                   {
 									$$ = malloc(sizeof(*$$));
-									$$->contentType = EXPR_VAR;
-									$$->type = ((y_variable*) getElementHT(var_table, $1))->type;
-									y_variable* var = malloc(sizeof(y_variable));
-									var->name = malloc(strlen($1) + 1);
-									strcpy(var->name, $1);
-									$$->content = var; 
-										
+									y_variable* p = (y_variable*) getElementHT(var_table, $1);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											$$->contentType = EXPR_VAR;
+											$$->content = p;
+											$$->type = p->type;
+										}
+									}
 								}
 		| NUMBER                {
 									$$ = malloc(sizeof(*$$));
 									$$->contentType = EXPR_NUM;
 									$$->type = $1->obj->type;
-									$$->content = $1; 
+									$$->content = $1;
 								}
-		| OPERAT                { 
+		| OPERAT                {
 									$$ = malloc(sizeof(*$$));
 									$$->contentType = EXPR_OPER;
 									$$->type = $1->retType;
-									$$->content = $1; 
+									$$->content = $1;
 								}
 		;
 
@@ -340,26 +394,50 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 		;
 
 
-NUMBER  : INT                   { 	
+NUMBER  : INT                   {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createInt($1);
 									$$->funcCreator = malloc("createInt()" + digitCount($1) + 1);
 									sprintf($$->funcCreator, "createInt(%d)", $1);
 								}
-		| FLOAT                 { 
+		| FLOAT                 {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createDecimal($1);
 									$$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
 									sprintf($$->funcCreator, "createDecimal(%ff)", $1);
 								}
-		| STRING 				{ 
+		| STRING 		{
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createString($1);
 									$$->funcCreator = malloc("createString()" + strlen($1) + 1);
 									sprintf($$->funcCreator, "createString(\"%s\")", $1);
 								}
+    | ARRAY     {
+                  $$ = $1;
+                }
+		;
+/* TODO: To create a list use newList() and add a list with addList(l, obj) */
+ARRAY: '[' LIST ']' {
+                      /* $$ = $2; */
+                    }
+		| '[' EXPRESS ']' {
+                        /*_object l = newList();
+                        addList(l.cont.obj, $2);
+                        $$ = l;*/
+                      }
 		;
 
+LIST: EXPRESS ',' EXPRESS {
+														/*_object l = newList();
+                            addList(l.cont.obj, $3);
+                            addList(l.cont.obj, $1);
+                            $$ = l.cont.obj;*/
+													}
+		| LIST ',' EXPRESS {
+                          /*addList($1, $3);
+                          $$ = $1;*/
+                       }
+		;
 %%
 
 int yywrap(void)
@@ -466,6 +544,51 @@ main(void)
 		addOperation(&powIntInt,"powIntInt",INTEGER, INTEGER,PWR,getType(INTEGER));
 
 
+    // LIST INT OPERATIONS
+    addOperation(&addIntStr,"operationOneByOne",LIST, INTEGER,ADD,getType(LIST));
+    addOperation(&subIntStr,"operationOneByOne",LIST, INTEGER,SUB,getType(LIST));
+    addOperation(&mulIntStr,"operationOneByOne",LIST, INTEGER,MUL,getType(LIST));
+    addOperation(&dvnIntStr,"operationOneByOne",LIST, INTEGER,DVN,getType(LIST));
+
+		for (int i = 0 ; i < CANT_TYPES ; i++){
+			for (int j = 0 ; j < CANT_TYPES; j++){
+        if ( i != j ){
+          printf("i:%d, j:%d\n", i, j);
+          addOperation(&differentType,"differentType", i, j, EQL ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, LTS ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, LES ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, GTS ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, GES ,getType(INTEGER));
+        }
+			}
+		}
+
+    // EQUALS
+    addOperation(&compareInt,"compareInt",INTEGER, INTEGER,EQL,getType(INTEGER));
+    addOperation(&compareDecimal,"compareDecimal",DECIMAL, DECIMAL,EQL,getType(INTEGER));
+    addOperation(&compareString,"compareString",STR, STR, EQL,getType(INTEGER));
+    addOperation(&compareList,"compareList",LIST, LIST,EQL,getType(INTEGER));
+    // LESS THAN
+    addOperation(&ltInt,"ltInt",INTEGER, INTEGER,LTS,getType(INTEGER));
+    addOperation(&ltDecimal,"ltDecimal",DECIMAL, DECIMAL,LTS,getType(INTEGER));
+    addOperation(&ltString,"ltString",STR, STR, LTS,getType(INTEGER));
+    addOperation(&ltList,"ltList",LIST, LIST,LTS,getType(INTEGER));
+    // GREATER THAN
+    addOperation(&gtInt,"gtInt",INTEGER, INTEGER,GTS,getType(INTEGER));
+    addOperation(&gtDecimal,"gtDecimal",DECIMAL, DECIMAL,GTS,getType(INTEGER));
+    addOperation(&gtString,"gtString",STR, STR, GTS,getType(INTEGER));
+    addOperation(&gtList,"gtList",LIST, LIST, GTS,getType(INTEGER));
+    // LESS EQUALS
+    addOperation(&leInt,"leInt",INTEGER, INTEGER, LES,getType(INTEGER));
+    addOperation(&leDecimal,"leDecimal",DECIMAL, DECIMAL,LES,getType(INTEGER));
+    addOperation(&leString,"leString",STR, STR, LES,getType(INTEGER));
+    addOperation(&leList,"leList",LIST, LIST,LES,getType(INTEGER));
+    // GREATER EQUALS
+    addOperation(&geInt,"geInt",INTEGER, INTEGER,GES,getType(INTEGER));
+    addOperation(&geDecimal,"geDecimal",DECIMAL, DECIMAL,GES,getType(INTEGER));
+    addOperation(&geString,"geString",STR, STR, GES,getType(INTEGER));
+    addOperation(&geList,"geList",LIST, LIST,GES,getType(INTEGER));
+
 		startC();
 
 		actualProg = prog;
@@ -490,9 +613,9 @@ void printInst(y_inst* i) {
 			printf("\n");
 			break;
 		case 1:
-			printExpr((y_expression*) i->content); 
+			printExpr((y_expression*) i->content);
 			printf(";\n");
-			printf("\n"); 
+			printf("\n");
 			break;
 		case 2:
 			if (((y_assign*) i->content)->isNew) {
@@ -500,14 +623,14 @@ void printInst(y_inst* i) {
 			}
 			printAssign((y_assign*) i->content);
 			printf(";\n");
-			printf("\n"); 
+			printf("\n");
 			break;
 		case 3:
-			printExpr((y_expression*) i->content); 
+			printExpr((y_expression*) i->content);
 			printf(";\n");
-			printf("\n"); 
+			printf("\n");
 			break;
-		case 4:			
+		case 4:
 			if (((y_assign*) i->content)->isNew) {
 				printf("_object ");
 			}
@@ -520,7 +643,7 @@ void printInst(y_inst* i) {
 			break;
 		case 5:
 			printf("printObject(");
-			printExpr((y_expression*) i->content); 
+			printExpr((y_expression*) i->content);
 			printf(");\n");
 			printf("printf(\"\\n\");\n");
 			break;
@@ -581,34 +704,17 @@ void printExpr(y_expression* expr) {
 
 
 void printBoolExpr(y_boolExpr* expr) {
-	printf("BOOLEXPR");
-	// printf("%s(", expr->compFunc);
-	// printExpr(expr->exp1);
-	// printf(",");
-	// printExpr(expr->exp1);
-	// printf(")");
+	printf("%s(", expr->compFunc);
+	printExpr(expr->exp1);
+	printf(",");
+	printExpr(expr->exp1);
+	printf(")");
 }
 
 void printNum(y_number* num) {
 	printf("%s", num->funcCreator);
 
 }
-
-void printObject(_object o) {
-	switch(o->type->id) {
-				printf("TYPE = %d\n", o->type->id);
-		case INTEGER:
-			printf("%d", o->cont.num);
-			break;
-		case DECIMAL:
-			printf("%f", o->cont.fl);
-			break;
-		case STR:
-			printf("%s", o->cont.str);
-			break;
-	}
-}
-
 
 void printProg(y_prog* prog) {
 	y_node* n = prog->first;
@@ -635,9 +741,8 @@ void addInstToProg(y_prog* prog, y_inst* i) {
 	}
 }
 
-void yyerror(char* s)
-{
-	fprintf(stderr, "Error: %s\n", s);
+void yyerror(char *s) {
+    fprintf(stderr, "line %d: %s\n", 42, s);
 }
 
 static unsigned int str_hash(char* key){
