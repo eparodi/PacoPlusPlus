@@ -24,11 +24,18 @@
 	void printObject(_object o);
 	void printVariable(y_variable* var);
 	void printAssign(y_assign* assign);
+	void printBoolExpr(y_boolExpr* expr);
+	void printInst(y_inst* i);
+	void printProg(y_prog* prog);
 
+	void addInstToProg(y_prog* prog, y_inst* i);
 	void startC();
 	void endC();
 	
 	typedef _object(*opFunc)(_object, _object);
+
+
+	y_prog* prog;
 
 %}
 
@@ -45,6 +52,9 @@
 	y_operation* operation;
 	y_variable* variable;
 	y_assign* assign;
+	y_boolExpr* boolExpr;
+	y_inst* inst;
+	y_prog* prog;
 }
 %start PROGRAM
 
@@ -52,16 +62,21 @@
 %token PLUSEQ MINUSEQ MULTEQ DIVEQ EQ
 %token NEWLINE
 
+%token IF WHILE END BEGINPROG LT LE GT GE
+
 %token <num> INT
 %token <str> STRING
 %token <fl> FLOAT
 %token <str> VAR
 
-%type <obj> PROGRAM INSTs VALUE
+%type <obj> VALUE
 %type <number> NUMBER
 %type <expression> EXPRESS
 %type <operation> OPERAT
 %type <assign> ASSIGN
+%type <boolExpr> BOOLEXPR
+%type <inst> INST
+%type <prog> PROGRAM
 
 %precedence PLUS
 %precedence MINUS
@@ -71,53 +86,76 @@
 
 %%
 
-PROGRAM : INST PROGRAM          { ; }
-		| INST                  { ; }
-		;
+START 	: BEGINPROG NEWLINE PROGRAM END {  }
 
-INST    : ASSIGN ';'            { 	
-									if ($1->isNew) {
-										printf("_object ");
-									}
-									printAssign($1);
-									printf(";\n");
-									printf("\n"); 
+PROGRAM : INST PROGRAM	        { 
+									addInstToProg(prog,$1);
+									// printInst($1);
+								}
+		| INST                  { 
+									addInstToProg(prog,$1);
+									// printInst($1);
+								}
+		;
+INST    : ASSIGN ';'            {
+									$$ = malloc(sizeof(*$$));
+									$$->type = 5;
+									$$->content = $1;
 								}
 		| EXPRESS ';'           {
-									printExpr($1); 
-									printf(";\n");
-									printf("\n"); 
+									$$ = malloc(sizeof(*$$));
+									$$->type = 5;
+									$$->content = $1;
 								}
-		| ASSIGN ';' NEWLINE    { 
-									if ($1->isNew) {
-										printf("_object ");
-									}
-									printAssign($1);
-									printf(";\n");
-									printf("\n"); 
+		| ASSIGN ';' NEWLINE    {
+									$$ = malloc(sizeof(*$$));
+									$$->type = 5;
+									$$->content = $1;
 								}
 		| EXPRESS ';' NEWLINE   {
-									printExpr($1); 
-									printf(";\n");
-									printf("\n"); 
+									$$ = malloc(sizeof(*$$));
+									$$->type = 5;
+									$$->content = $1;
 								}
-		| ASSIGN NEWLINE        { 
-									if ($1->isNew) {
-										printf("_object ");
-									}
-									printAssign($1);
-									printf(";\n");
-									printf("printObject(");
-									printExpr($1->exp);
-									printf(");\n");
-									printf("printf(\"\\n\");\n");
+		| ASSIGN NEWLINE        {
+									$$ = malloc(sizeof(*$$));
+									$$->type = 5;
+									$$->content = $1;
 								}
 		| EXPRESS NEWLINE       {
-									printf("printObject(");
-									printExpr($1); 
-									printf(");\n");
-									printf("printf(\"\\n\");\n");
+									$$ = malloc(sizeof(*$$));
+									$$->type = 5;
+									$$->content = $1;
 								}
+		/*| IFBLOCK  { printf("IF BLOCK HERE\n");}
+		| WHILEBLOCK  { printf("IF BLOCK HERE\n");}*/
+		;
+
+IFBLOCK	: IF '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+																printf("if(");
+																printBoolExpr($3);
+																printf("){\n");
+																printf("}\n");
+															}
+		;
+
+WHILEBLOCK: WHILE '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+																	printf("while(");
+																	printBoolExpr($3);
+																	printf("){\n");
+																	printf("}\n");
+																}
+		;
+
+BOOLEXPR: EXPRESS LT EXPRESS 	{
+									$$ = malloc(sizeof(*$$));
+									$$->compFunc = malloc("ltStrStr" + 1);
+									$$->exp1 = $1;
+									$$->exp2 = $3;
+								}
+		| EXPRESS LE EXPRESS
+		| EXPRESS GT EXPRESS
+		| EXPRESS GE EXPRESS
 		;
 
 ASSIGN  : VAR EQ EXPRESS        {
@@ -301,6 +339,8 @@ main(void)
 		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
 		startTypes();
 		buildOpTable();
+		prog = malloc(sizeof(y_prog));
+		prog->first = NULL;
 
 		// INT INT OPERATIONS
 		addOperation(&addIntInt,"addIntInt",INTEGER, INTEGER,ADD,getType(INTEGER));
@@ -349,11 +389,65 @@ main(void)
 
 		yyparse();
 
+		printProg(prog);
+
 		endC();
 
 		return 0;
 }
 
+
+void printInst(y_inst* i) {
+	switch(i->type) {
+		// case 0:
+		// 	if ($1->isNew) {
+		// 		printf("_object ");
+		// 	}
+		// 	printAssign($1);
+		// 	printf(";\n");
+		// 	printf("\n");
+		// 	break;
+		// case 1:
+		// 	printExpr($1); 
+		// 	printf(";\n");
+		// 	printf("\n"); 
+		// 	break;
+		// case 2:
+		// 	if ($1->isNew) {
+		// 		printf("_object ");
+		// 	}
+		// 	printAssign($1);
+		// 	printf(";\n");
+		// 	printf("\n"); 
+		// 	break;
+		// case 3:
+		// 	printExpr($1); 
+		// 	printf(";\n");
+		// 	printf("\n"); 
+		// 	break;
+		// case 4:			
+		// 	if ($1->isNew) {
+		// 		printf("_object ");
+		// 	}
+		// 	printAssign($1);
+		// 	printf(";\n");
+		// 	printf("printObject(");
+		// 	printExpr($1->exp);
+		// 	printf(");\n");
+		// 	printf("printf(\"\\n\");\n");
+		// 	break;
+		case 5:
+			printf("printObject(");
+			printExpr((y_expression*) i->content); 
+			printf(");\n");
+			printf("printf(\"\\n\");\n");
+			break;
+		case 6:;
+			// IF BLOCK
+		case 7:;
+			// IF BLOCK
+	}
+}
 
 void printAssign(y_assign* assign) {
 	printVariable(assign->var);
@@ -393,6 +487,15 @@ void printExpr(y_expression* expr) {
 	}
 }
 
+
+void printBoolExpr(y_boolExpr* expr) {
+	printf("%s(", expr->compFunc);
+	printExpr(expr->exp1);
+	printf(",");
+	printExpr(expr->exp1);
+	printf(")");
+}
+
 void printNum(y_number* num) {
 	printf("%s", num->funcCreator);
 
@@ -410,6 +513,32 @@ void printObject(_object o) {
 		case STR:
 			printf("%s", o->cont.str);
 			break;
+	}
+}
+
+
+void printProg(y_prog* prog) {
+	y_node* n = prog->first;
+
+	while (n != NULL) {
+		printInst(n->inst);
+		n = n->next;
+	}
+}
+
+void addInstToProg(y_prog* prog, y_inst* i) {
+	if (prog->first == NULL) {
+		prog->first = malloc(sizeof(y_node));
+		y_node* n = malloc(sizeof(y_node));
+		n->next = NULL;
+		n->inst = i;
+		prog->first = n;
+	} else {
+		y_node* f = prog->first;
+		y_node* n = malloc(sizeof(y_node));
+		n->next = f;
+		n->inst = i;
+		prog->first = n;
 	}
 }
 

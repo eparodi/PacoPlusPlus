@@ -10,7 +10,12 @@ digit [0-9]
 varName [A-Za-z][0-9A-Za-z_-]*
 
 %%
-zzz						yyterminate();
+
+
+if 					  return IF;
+while				  return WHILE;
+startPaco			  return BEGINPROG;
+endPaco				  yyterminate();
 -?{digit}+            { yylval.num = atoi(yytext); return INT; }
 [\t ]                 ;
 [\n]				  return NEWLINE;
@@ -30,6 +35,11 @@ zzz						yyterminate();
 						strcpy(yylval.str, yytext);
 						return VAR;
 					  }
+
+\<					  return LT;
+\<=					  return LE;
+\>					  return GT;
+\>=					  return GE;
 
 \"[^\"]*\"			{
 						char * str = malloc(strlen(yytext) - 1);

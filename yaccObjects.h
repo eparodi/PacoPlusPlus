@@ -39,4 +39,24 @@ typedef struct {
 	char* opName;
 } y_assign;
 
+typedef struct {
+	char* compFunc;
+	y_expression* exp1;
+	y_expression* exp2;
+} y_boolExpr;
+
+typedef struct {
+	int type;
+	void* content;
+} y_inst;
+
+typedef struct Node {
+	struct Node* next;
+	y_inst* inst;
+} y_node;
+
+typedef struct {
+	y_node* first;
+} y_prog;
+
 #endif
