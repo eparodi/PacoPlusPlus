@@ -1,16 +1,10 @@
--Change Types Table from HashTable to Dynamic Vector.
-
-How to start the compiler types.
-
-TASKS                               | FILE
-------------------------------------|-------------------------------------------
-1) startTypes();                    | types/types.c
-2) Create all types in startTypes();|
-  createType(char *, size_t size);  | types/types.c
-3) buildOpTable();                  | types/types.c
-4) Load the operation table.        | Soon.
-
-
--- Remove sizeof Type.
-
-The functions returns an object.
+-TODO REALES
+>EOF
+>Si no compila que no genere a.out
+>imprimir las listas en C (Pedro)
+>warnings y shift/reduce
+>compradores en expresiones booleanas que no andan (mayor y quizas otros)
+>signo -
+>declaracion de variables en bloques (Pedro)
+>informe y 5 test del lenguaje
+>stdin/stdout
