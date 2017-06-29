@@ -545,10 +545,16 @@ main(void)
 
 
     // LIST INT OPERATIONS
-    addOperation(&addIntStr,"operationOneByOne",LIST, INTEGER,ADD,getType(LIST));
-    addOperation(&subIntStr,"operationOneByOne",LIST, INTEGER,SUB,getType(LIST));
-    addOperation(&mulIntStr,"operationOneByOne",LIST, INTEGER,MUL,getType(LIST));
-    addOperation(&dvnIntStr,"operationOneByOne",LIST, INTEGER,DVN,getType(LIST));
+    for (int i = 0; i < CANT_TYPES ; i++){
+      addOperation(&addListAny,"addListAny",LIST, i,ADD,getType(LIST));
+      addOperation(&subListAny,"subListAny",LIST, i,SUB,getType(LIST));
+      addOperation(&multListAny,"multListAny",LIST, i,MUL,getType(LIST));
+      addOperation(&divListAny,"divListAny",LIST, i,DVN,getType(LIST));
+      addOperation(&addAnyList,"addAnyList",i, LIST,ADD,getType(LIST));
+      addOperation(&subAnyList,"subAnyList", i, LIST,SUB,getType(LIST));
+      addOperation(&multAnyList,"multAnyList", i, LIST,MUL,getType(LIST));
+      addOperation(&divAnyList,"divAnyList", i, LIST,DVN,getType(LIST));
+    }
 
 		for (int i = 0 ; i < CANT_TYPES ; i++){
 			for (int j = 0 ; j < CANT_TYPES; j++){
