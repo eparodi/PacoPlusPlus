@@ -50,8 +50,8 @@ typedef struct {
 	void* content;
 } y_inst;
 
-typedef struct Node {
-	struct Node* next;
+typedef struct y_node {
+	struct y_node* next;
 	y_inst* inst;
 } y_node;
 

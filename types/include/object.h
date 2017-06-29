@@ -9,7 +9,8 @@ typedef struct Type * TypeT;
 typedef union Content {
 	int num;
 	float fl;
-	char* str;
+	char * str;
+  void * obj;
 } _content;
 
 typedef struct Object {

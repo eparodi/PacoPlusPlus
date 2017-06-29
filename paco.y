@@ -6,6 +6,7 @@
 	#include "operations/include/operations.h"
 	#include "types/include/object.h"
 	#include "types/include/types.h"
+	#include "types/include/list.h"
 	#include "hashtable/include/hashtable.h"
 	#include "yaccObjects.h"
 
@@ -31,7 +32,7 @@
 	void addInstToProg(y_prog* prog, y_inst* i);
 	void startC();
 	void endC();
-	
+
 	typedef _object(*opFunc)(_object, _object);
 
 
@@ -42,9 +43,9 @@
 
 
 %union {
-	int num; 
-	char* str; 
-	float fl; 
+	int num;
+	char* str;
+	float fl;
 	char ch;
 	_object obj;
 
@@ -72,6 +73,7 @@
 %token <str> VAR
 
 %type <obj> VALUE
+%type <obj> ARRAY
 %type <number> NUMBER
 %type <expression> EXPRESS
 %type <operation> OPERAT
@@ -94,11 +96,11 @@
 
 START 	: BEGINPROG NEWLINE PROGRAM END {  }
 
-PROGRAM : INST PROGRAM	        { 
+PROGRAM : INST PROGRAM	        {
 									addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
-		| INST                  { 
+		| INST                  {
 									addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
@@ -257,27 +259,27 @@ ASSIGN  : VAR EQ EXPRESS        {
 								}
 		;
 
-EXPRESS : VAR                   { 
+EXPRESS : VAR                   {
 									$$ = malloc(sizeof(*$$));
 									$$->contentType = EXPR_VAR;
 									$$->type = ((y_variable*) getElementHT(var_table, $1))->type;
 									y_variable* var = malloc(sizeof(y_variable));
 									var->name = malloc(strlen($1) + 1);
 									strcpy(var->name, $1);
-									$$->content = var; 
-										
+									$$->content = var;
+
 								}
 		| NUMBER                {
 									$$ = malloc(sizeof(*$$));
 									$$->contentType = EXPR_NUM;
 									$$->type = $1->obj->type;
-									$$->content = $1; 
+									$$->content = $1;
 								}
-		| OPERAT                { 
+		| OPERAT                {
 									$$ = malloc(sizeof(*$$));
 									$$->contentType = EXPR_OPER;
 									$$->type = $1->retType;
-									$$->content = $1; 
+									$$->content = $1;
 								}
 		;
 
@@ -335,26 +337,50 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 		;
 
 
-NUMBER  : INT                   { 	
+NUMBER  : INT                   {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createInt($1);
 									$$->funcCreator = malloc("createInt()" + digitCount($1) + 1);
 									sprintf($$->funcCreator, "createInt(%d)", $1);
 								}
-		| FLOAT                 { 
+		| FLOAT                 {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createDecimal($1);
 									$$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
 									sprintf($$->funcCreator, "createDecimal(%ff)", $1);
 								}
-		| STRING 				{ 
+		| STRING 		{
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createString($1);
 									$$->funcCreator = malloc("createString()" + strlen($1) + 1);
 									sprintf($$->funcCreator, "createString(\"%s\")", $1);
 								}
+    | ARRAY     {
+                  $$ = $1;
+                }
+		;
+/* TODO: To create a list use newList() and add a list with addList(l, obj) */
+ARRAY: '[' LIST ']' {
+                      /* $$ = $2; */
+                    }
+		| '[' EXPRESS ']' {
+                        /*_object l = newList();
+                        addList(l.cont.obj, $2);
+                        $$ = l;*/
+                      }
 		;
 
+LIST: EXPRESS ',' EXPRESS {
+														/*_object l = newList();
+                            addList(l.cont.obj, $3);
+                            addList(l.cont.obj, $1);
+                            $$ = l.cont.obj;*/
+													}
+		| LIST ',' EXPRESS {
+                          /*addList($1, $3);
+                          $$ = $1;*/
+                       }
+		;
 %%
 
 int yywrap(void)
@@ -378,41 +404,47 @@ main(void)
 		addOperation(&dvnIntInt,"dvnIntInt",INTEGER, INTEGER,DVN,getType(INTEGER));
 		addOperation(&powIntInt,"powIntInt",INTEGER, INTEGER,PWR,getType(INTEGER));
 
-		// DECIMAL DECIMAL OPERATIONS		
+		// DECIMAL DECIMAL OPERATIONS
 		addOperation(&addDecDec,"addDecDec",DECIMAL, DECIMAL,ADD,getType(DECIMAL));
 		addOperation(&subDecDec,"subDecDec",DECIMAL, DECIMAL,SUB,getType(DECIMAL));
 		addOperation(&mulDecDec,"mulDecDec",DECIMAL, DECIMAL,MUL,getType(DECIMAL));
 		addOperation(&dvnDecDec,"dvnDecDec",DECIMAL, DECIMAL,DVN,getType(DECIMAL));
 
-		// INT DECIMAL OPERATIONS		
+		// INT DECIMAL OPERATIONS
 		addOperation(&addIntDec,"addIntDec",INTEGER, DECIMAL,ADD,getType(DECIMAL));
 		addOperation(&subIntDec,"subIntDec",INTEGER, DECIMAL,SUB,getType(DECIMAL));
 		addOperation(&mulIntDec,"mulIntDec",INTEGER, DECIMAL,MUL,getType(DECIMAL));
 		addOperation(&dvnIntDec,"dvnIntDec",INTEGER, DECIMAL,DVN,getType(DECIMAL));
 
-		// DECIMAL INT OPERATIONS		
+		// DECIMAL INT OPERATIONS
 		addOperation(&addDecInt,"addDecInt",DECIMAL, INTEGER,ADD,getType(DECIMAL));
 		addOperation(&subDecInt,"subDecInt",DECIMAL, INTEGER,SUB,getType(DECIMAL));
 		addOperation(&mulDecInt,"mulDecInt",DECIMAL, INTEGER,MUL,getType(DECIMAL));
 		addOperation(&dvnDecInt,"dvnDecInt",DECIMAL, INTEGER,DVN,getType(DECIMAL));
 
-		// STRING STRING OPERATIONS		
+		// STRING STRING OPERATIONS
 		addOperation(&addStrStr,"addStrStr",STR, STR,ADD,getType(STR));
 		addOperation(&subStrStr,"subStrStr",STR, STR,SUB,getType(STR));
 		addOperation(&mulStrStr,"mulStrStr",STR, STR,MUL,getType(STR));
 		addOperation(&dvnStrStr,"dvnStrStr",STR, STR,DVN,getType(STR));
 
-		// STRING INT OPERATIONS		
+		// STRING INT OPERATIONS
 		addOperation(&addStrInt,"addStrInt",STR, INTEGER,ADD,getType(STR));
 		addOperation(&subStrInt,"subStrInt",STR, INTEGER,SUB,getType(STR));
 		addOperation(&mulStrInt,"mulStrInt",STR, INTEGER,MUL,getType(STR));
 		addOperation(&dvnStrInt,"dvnStrInt",STR, INTEGER,DVN,getType(STR));
 
-		// INT STRING OPERATIONS		
+		// INT STRING OPERATIONS
 		addOperation(&addIntStr,"addIntStr",INTEGER, STR,ADD,getType(STR));
 		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB,getType(STR));
 		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL,getType(STR));
 		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN,getType(STR));
+
+    // LIST INT OPERATIONS
+    addOperation(&addIntStr,"operationOneByOne",LIST, INTEGER,ADD,getType(LIST));
+    addOperation(&subIntStr,"operationOneByOne",LIST, INTEGER,SUB,getType(LIST));
+    addOperation(&mulIntStr,"operationOneByOne",LIST, INTEGER,MUL,getType(LIST));
+    addOperation(&dvnIntStr,"operationOneByOne",LIST, INTEGER,DVN,getType(LIST));
 
 		startC();
 
@@ -438,9 +470,9 @@ void printInst(y_inst* i) {
 			printf("\n");
 			break;
 		case 1:
-			printExpr((y_expression*) i->content); 
+			printExpr((y_expression*) i->content);
 			printf(";\n");
-			printf("\n"); 
+			printf("\n");
 			break;
 		case 2:
 			if (((y_assign*) i->content)->isNew) {
@@ -448,14 +480,14 @@ void printInst(y_inst* i) {
 			}
 			printAssign((y_assign*) i->content);
 			printf(";\n");
-			printf("\n"); 
+			printf("\n");
 			break;
 		case 3:
-			printExpr((y_expression*) i->content); 
+			printExpr((y_expression*) i->content);
 			printf(";\n");
-			printf("\n"); 
+			printf("\n");
 			break;
-		case 4:			
+		case 4:
 			if (((y_assign*) i->content)->isNew) {
 				printf("_object ");
 			}
@@ -468,7 +500,7 @@ void printInst(y_inst* i) {
 			break;
 		case 5:
 			printf("printObject(");
-			printExpr((y_expression*) i->content); 
+			printExpr((y_expression*) i->content);
 			printf(");\n");
 			printf("printf(\"\\n\");\n");
 			break;
@@ -541,22 +573,6 @@ void printNum(y_number* num) {
 	printf("%s", num->funcCreator);
 
 }
-
-void printObject(_object o) {
-	switch(o->type->id) {
-				printf("TYPE = %d\n", o->type->id);
-		case INTEGER:
-			printf("%d", o->cont.num);
-			break;
-		case DECIMAL:
-			printf("%f", o->cont.fl);
-			break;
-		case STR:
-			printf("%s", o->cont.str);
-			break;
-	}
-}
-
 
 void printProg(y_prog* prog) {
 	y_node* n = prog->first;

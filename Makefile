@@ -14,6 +14,7 @@ all:
 clean:
 	cd hashtable; make clean
 	cd types; make clean
+	cd operations; make clean
 	rm -f y.tab.*
 	rm -f lex.yy.c
 	rm -f pacopp.out
