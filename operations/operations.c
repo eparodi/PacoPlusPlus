@@ -63,14 +63,18 @@ void invertStr(char * str) {
 	}
 }
 
-/*
- * Assigns to dest a pointer to a string with n times str concatenated.
- * The functions assumes that dest have enough space to hold n times str and '\0'.
- */
-void multiplyString(char * str, int n, char * dest) {
+char * multiplyString(char * str, float f) {
+	int len = strlen(str) * f;
+	char* aux = calloc(1, len + 1);
+	int n = (int) floor(f);
 	while (n-- > 0) {
-		strcat(dest, str);
+		strcat(aux, str);
 	}
+	n = (int)((f - floor(f)) * strlen(str));
+	if (n > 0) {
+		strncat(aux, str, n);
+	}
+	return aux;
 }
 
 char * itoa(int n) {

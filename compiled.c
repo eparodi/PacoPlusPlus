@@ -45,6 +45,6 @@ void printObject(_object o) {
 		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
 		startTypes();
 		buildOpTable();
-printObject(addDecStr(createDecimal(1.664900f),createString("hola")));
+printObject(dvnStrDec(createString("asd4.5asd4.5asd4.5"),createDecimal(4.500000f)));
 printf("\n");
 }

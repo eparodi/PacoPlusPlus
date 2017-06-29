@@ -17,6 +17,7 @@ _object powIntInt(_object o1, _object o2);
 
 // ---- AUX FUNCTIONS ----
 int digitCount(int n);
+char * multiplyString(char * str, float f);
 void invertStr(char* str);
 char* itoa(int n);
 char * floatToString(float f);

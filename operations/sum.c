@@ -4,6 +4,8 @@
 #include "include/sum.h"
 #include "include/operations.h"
 
+//--------------------------------------------------------
+
 _object addIntInt(_object o1, _object o2) {
 	return createInt(o1->cont.num + o2->cont.num);
 }
@@ -21,6 +23,8 @@ _object addIntArr(_object o1, _object o2) {
 	//TODO
 	return 1;
 }
+
+//--------------------------------------------------------
 
 _object addStrInt(_object o1, _object o2) {
 	char* intStr = itoa(o2->cont.num);
@@ -44,6 +48,8 @@ _object addStrArr(_object o1, _object o2) {
 	return 1;
 }
 
+//--------------------------------------------------------
+
 _object addDecInt(_object o1, _object o2) {
 	return createDecimal(o1->cont.fl + o2->cont.num);
 }
@@ -61,6 +67,8 @@ _object addDecArr(_object o1, _object o2) {
 	//TODO
 	return 1;
 }
+
+//--------------------------------------------------------
 
 _object addArrInt(_object o1, _object o2) {
 	//TODO

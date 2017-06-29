@@ -397,42 +397,74 @@ main(void)
         //addOperation(&addArrStr,"addArrStr",ARRAY, STR,ADD,getType(?));
         //addOperation(&addArrDec,"addArrDec",ARRAY, DECIMAL,ADD,getType(?));
         //addOperation(&addArrArr,"addArrArr",ARRAY, ARRAY,ADD,getType(?));
+		addOperation(&subStrStr,"subStrStr",STR, STR,SUB,getType(STR));
 
-		// INT INT OPERATIONS
+
+        // SUB OPERATIONS
 		addOperation(&subIntInt,"subIntInt",INTEGER, INTEGER,SUB,getType(INTEGER));
-		addOperation(&mulIntInt,"mulIntInt",INTEGER, INTEGER,MUL,getType(INTEGER));
-		addOperation(&dvnIntInt,"dvnIntInt",INTEGER, INTEGER,DVN,getType(INTEGER));
-		addOperation(&powIntInt,"powIntInt",INTEGER, INTEGER,PWR,getType(INTEGER));
-
-		// DECIMAL DECIMAL OPERATIONS
-		addOperation(&subDecDec,"subDecDec",DECIMAL, DECIMAL,SUB,getType(DECIMAL));
-		addOperation(&mulDecDec,"mulDecDec",DECIMAL, DECIMAL,MUL,getType(DECIMAL));
-		addOperation(&dvnDecDec,"dvnDecDec",DECIMAL, DECIMAL,DVN,getType(DECIMAL));
-
-		// INT DECIMAL OPERATIONS
+		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB,getType(STR));
 		addOperation(&subIntDec,"subIntDec",INTEGER, DECIMAL,SUB,getType(DECIMAL));
+		//addOperation(&subIntArr,"subIntArr",INTEGER, ARRAY,SUB,getType(?));
+
+		addOperation(&subDecInt,"subDecInt",DECIMAL, INTEGER,SUB,getType(DECIMAL));
+		addOperation(&subDecStr,"subDecStr",DECIMAL, STR,SUB,getType(STR));
+		addOperation(&subDecDec,"subDecDec",DECIMAL, DECIMAL,SUB,getType(DECIMAL));
+		//addOperation(&subDecArr,"subDecArr",DECIMAL, ARRAY,SUB,getType(?));
+
+		addOperation(&subStrInt,"subStrInt",STR, INTEGER,SUB,getType(STR));
+		addOperation(&subStrStr,"subStrStr",STR, STR,SUB,getType(STR));
+		addOperation(&subStrDec,"subStrDec",STR, DECIMAL,SUB,getType(STR));
+		//addOperation(&subStrArr,"subStrArr",STR, ARRAY,SUB,getType(?));
+
+		//addOperation(&subArrInt,"subArrInt",ARRAY, INTEGER,SUB,getType(?));
+        //addOperation(&subArrStr,"subArrStr",ARRAY, STR,SUB,getType(?));
+        //addOperation(&subArrDec,"subArrDec",ARRAY, DECIMAL,SUB,getType(?));
+        //addOperation(&subArrArr,"subArrArr",ARRAY, ARRAY,SUB,getType(?));
+
+
+        // MUL OPERATIONS
+		addOperation(&mulIntInt,"mulIntInt",INTEGER, INTEGER,MUL,getType(INTEGER));
+		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL,getType(STR));
 		addOperation(&mulIntDec,"mulIntDec",INTEGER, DECIMAL,MUL,getType(DECIMAL));
+		//addOperation(&mulIntArr,"mulIntArr",INTEGER, ARRAY,MUL,getType(?));
+
+		addOperation(&mulStrInt,"mulStrInt",STR, INTEGER,MUL,getType(STR));
+		addOperation(&mulStrStr,"mulStrStr",STR, STR,MUL,getType(STR));
+		addOperation(&mulStrDec,"mulStrDec",STR, DECIMAL,MUL,getType(STR));
+		//addOperation(&mulStrArr,"mulStrArr",STR, ARRAY,MUL,getType(?));
+
+		addOperation(&mulDecInt,"mulDecInt",DECIMAL, INTEGER,MUL,getType(DECIMAL));
+		addOperation(&mulDecStr,"mulDecStr",DECIMAL, STR,MUL,getType(STR));
+		addOperation(&mulDecDec,"mulDecDec",DECIMAL, DECIMAL,MUL,getType(DECIMAL));
+		//addOperation(&mulDecArr,"mulDecArr",DECIMAL, ARRAY,MUL,getType(?));
+
+		//addOperation(&mulArrInt,"mulArrInt",ARRAY, INTEGER,MUL,getType(?));
+        //addOperation(&mulArrStr,"mulArrStr",ARRAY, STR,MUL,getType(?));
+        //addOperation(&mulArrDec,"mulArrDec",ARRAY, DECIMAL,MUL,getType(?));
+        //addOperation(&mulArrArr,"mulArrArr",ARRAY, ARRAY,MUL,getType(?));
+
+		// DVN OPERATIONS
+		addOperation(&dvnIntInt,"dvnIntInt",INTEGER, INTEGER,DVN,getType(INTEGER));
+		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN,getType(STR));
 		addOperation(&dvnIntDec,"dvnIntDec",INTEGER, DECIMAL,DVN,getType(DECIMAL));
 
-		// DECIMAL INT OPERATIONS
-		addOperation(&subDecInt,"subDecInt",DECIMAL, INTEGER,SUB,getType(DECIMAL));
-		addOperation(&mulDecInt,"mulDecInt",DECIMAL, INTEGER,MUL,getType(DECIMAL));
-		addOperation(&dvnDecInt,"dvnDecInt",DECIMAL, INTEGER,DVN,getType(DECIMAL));
-
-		// STRING STRING OPERATIONS
-		addOperation(&subStrStr,"subStrStr",STR, STR,SUB,getType(STR));
-		addOperation(&mulStrStr,"mulStrStr",STR, STR,MUL,getType(STR));
-		addOperation(&dvnStrStr,"dvnStrStr",STR, STR,DVN,getType(STR));
-
-		// STRING INT OPERATIONS
-		addOperation(&subStrInt,"subStrInt",STR, INTEGER,SUB,getType(STR));
-		addOperation(&mulStrInt,"mulStrInt",STR, INTEGER,MUL,getType(STR));
 		addOperation(&dvnStrInt,"dvnStrInt",STR, INTEGER,DVN,getType(STR));
+		addOperation(&dvnStrStr,"dvnStrStr",STR, STR,DVN,getType(STR));
+		addOperation(&dvnStrDec,"dvnStrDec",STR, DECIMAL,DVN,getType(STR));
+		//addOperation(&dvnStrArr,"dvnStrArr",STR, ARRAY,DVN,getType(?));
 
-		// INT STRING OPERATIONS
-		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB,getType(STR));
-		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL,getType(STR));
-		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN,getType(STR));
+		addOperation(&dvnDecInt,"dvnDecInt",DECIMAL, INTEGER,DVN,getType(DECIMAL));
+		addOperation(&dvnDecStr,"dvnDecStr",DECIMAL, STR,DVN,getType(STR));
+		addOperation(&dvnDecDec,"dvnDecDec",DECIMAL, DECIMAL,DVN,getType(DECIMAL));
+		//addOperation(&dvnDecArr,"dvnDecArr",DECIMAL, ARRAY,DVN,getType(?));
+
+		//addOperation(&dvnArrInt,"dvnArrInt",ARRAY, INTEGER,DVN,getType(?));
+        //addOperation(&dvnArrStr,"dvnArrStr",ARRAY, STR,DVN,getType(?));
+        //addOperation(&dvnArrDec,"dvnArrDec",ARRAY, DECIMAL,DVN,getType(?));
+        //addOperation(&dvnArrArr,"dvnArrArr",ARRAY, ARRAY,DVN,getType(?));
+
+		addOperation(&powIntInt,"powIntInt",INTEGER, INTEGER,PWR,getType(INTEGER));
+
 
 		startC();
 
