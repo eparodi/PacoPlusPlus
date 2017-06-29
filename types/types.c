@@ -155,7 +155,7 @@ freeFailOpTable() {
 
 int
 addOperation(void * function, const char * name, TypesID first_op, \
-            TypesID second_op, OpValue operator){
+            TypesID second_op, OpValue operator, TypeT return_type){
   OperationT op = malloc(sizeof(Operation));
   if (!op){
     return TYPE_ERR;
@@ -167,6 +167,7 @@ addOperation(void * function, const char * name, TypesID first_op, \
   }
   op->func = function;
   op->func_name = cp_name;
+  op->return_type = return_type;
 
 	op_table[operator][first_op][second_op] = op;
   return TYPE_OK;

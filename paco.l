@@ -1,6 +1,7 @@
 %{
   #include "operations/include/operations.h"
   #include "types/include/object.h"
+  #include "yaccObjects.h"
   #include "y.tab.h"
 %}
 

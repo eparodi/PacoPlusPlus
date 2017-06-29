@@ -52,6 +52,7 @@ typedef enum TypesID{
 typedef struct Operation{
   void * (*func)(void *, void *);
   char * func_name;
+  TypeT return_type;
 }Operation;
 
 typedef Operation * OperationT;
@@ -74,7 +75,7 @@ buildOpTable();
 
 int
 addOperation(void * function, const char * name, TypesID first_op, \
-            TypesID second_op, OpValue operator);
+            TypesID second_op, OpValue operator, TypeT return_type);
 
 TypeT
 getType(TypesID id);
