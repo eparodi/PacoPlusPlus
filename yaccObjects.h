@@ -55,8 +55,15 @@ typedef struct Node {
 	y_inst* inst;
 } y_node;
 
-typedef struct {
+typedef struct Prog{
 	y_node* first;
 } y_prog;
+
+typedef struct {
+	y_boolExpr* boolExp;
+	y_prog* prevProg;
+	y_prog* prog;
+} y_if;
+
 
 #endif

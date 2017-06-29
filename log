@@ -62,89 +62,69 @@ sub.c:31:2: warning: implicit declaration of function ‘strncpy’ [-Wimplicit-
 sub.c:31:2: warning: incompatible implicit declaration of built-in function ‘strncpy’ [enabled by default]
 make[1]: Leaving directory `/home/epord/Desktop/PacoPlusPlus/operations'
 yacc -d paco.y
-paco.y:72.13-17: warning: symbol VALUE is used, but is not defined as a token and has no rules [-Wother]
+paco.y:74.13-17: warning: symbol VALUE is used, but is not defined as a token and has no rules [-Wother]
  %type <obj> VALUE
              ^^^^^
-paco.y:156.19-36: warning: type clash on default action: <boolExpr> != <expression> [-Wother]
+paco.y:171.19-36: warning: type clash on default action: <boolExpr> != <expression> [-Wother]
  		| EXPRESS LE EXPRESS
                    ^^^^^^^^^^^^^^^^^^
-paco.y:157.19-36: warning: type clash on default action: <boolExpr> != <expression> [-Wother]
+paco.y:172.19-36: warning: type clash on default action: <boolExpr> != <expression> [-Wother]
  		| EXPRESS GT EXPRESS
                    ^^^^^^^^^^^^^^^^^^
-paco.y:158.19-36: warning: type clash on default action: <boolExpr> != <expression> [-Wother]
+paco.y:173.19-36: warning: type clash on default action: <boolExpr> != <expression> [-Wother]
  		| EXPRESS GE EXPRESS
                    ^^^^^^^^^^^^^^^^^^
-paco.y: warning: 5 nonterminals useless in grammar [-Wother]
-paco.y: warning: 7 rules useless in grammar [-Wother]
-paco.y:89.1-5: warning: nonterminal useless in grammar: START [-Wother]
+paco.y: warning: 2 nonterminals useless in grammar [-Wother]
+paco.y: warning: 1 rule useless in grammar [-Wother]
+paco.y:93.1-5: warning: nonterminal useless in grammar: START [-Wother]
  START 	: BEGINPROG NEWLINE PROGRAM END {  }
  ^^^^^
-paco.y:134.1-7: warning: nonterminal useless in grammar: IFBLOCK [-Wother]
- IFBLOCK	: IF '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
- ^^^^^^^
-paco.y:142.1-10: warning: nonterminal useless in grammar: WHILEBLOCK [-Wother]
- WHILEBLOCK: WHILE '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
- ^^^^^^^^^^
-paco.y:77.18-25: warning: nonterminal useless in grammar: BOOLEXPR [-Wother]
- %type <boolExpr> BOOLEXPR
-                  ^^^^^^^^
-paco.y:72.13-17: warning: nonterminal useless in grammar: VALUE [-Wother]
+paco.y:74.13-17: warning: nonterminal useless in grammar: VALUE [-Wother]
  %type <obj> VALUE
              ^^^^^
-paco.y:89.11-44: warning: rule useless in grammar [-Wother]
+paco.y:93.11-44: warning: rule useless in grammar [-Wother]
  START 	: BEGINPROG NEWLINE PROGRAM END {  }
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-paco.y:134.11-139.121: warning: rule useless in grammar [-Wother]
- IFBLOCK	: IF '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-paco.y:142.13-147.129: warning: rule useless in grammar [-Wother]
- WHILEBLOCK: WHILE '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-paco.y:150.11-155.65: warning: rule useless in grammar [-Wother]
- BOOLEXPR: EXPRESS LT EXPRESS 	{
-           ^^^^^^^^^^^^^^^^^^^^^
-paco.y:156.19-36: warning: rule useless in grammar [-Wother]
- 		| EXPRESS LE EXPRESS
-                   ^^^^^^^^^^^^^^^^^^
-paco.y:157.19-36: warning: rule useless in grammar [-Wother]
- 		| EXPRESS GT EXPRESS
-                   ^^^^^^^^^^^^^^^^^^
-paco.y:158.19-36: warning: rule useless in grammar [-Wother]
- 		| EXPRESS GE EXPRESS
-                   ^^^^^^^^^^^^^^^^^^
 paco.y: warning: 5 shift/reduce conflicts [-Wconflicts-sr]
 lex paco.l
 gcc -Wall -g -std=c99 *.c types/*.o hashtable/*.o operations/*.o -o pacopp.out -ly -lm
 lex.yy.c: In function ‘yy_init_buffer’:
-lex.yy.c:1494:9: warning: implicit declaration of function ‘fileno’ [-Wimplicit-function-declaration]
+lex.yy.c:1499:9: warning: implicit declaration of function ‘fileno’ [-Wimplicit-function-declaration]
          b->yy_is_interactive = file ? (isatty( fileno(file) ) > 0) : 0;
          ^
 paco.l: At top level:
-lex.yy.c:1246:17: warning: ‘yyunput’ defined but not used [-Wunused-function]
+lex.yy.c:1251:17: warning: ‘yyunput’ defined but not used [-Wunused-function]
      static void yyunput (int c, register char * yy_bp )
                  ^
-lex.yy.c:1287:16: warning: ‘input’ defined but not used [-Wunused-function]
+lex.yy.c:1292:16: warning: ‘input’ defined but not used [-Wunused-function]
      static int input  (void)
                 ^
 y.tab.c: In function ‘yyparse’:
-y.tab.c:1245:7: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+y.tab.c:1268:7: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
        ^
-paco.y:312:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
+paco.y:167:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
+          $$->compFunc = malloc("ltStrStr" + 1);
+          ^
+In file included from paco.y:3:0:
+/usr/include/stdlib.h:466:14: note: expected ‘size_t’ but argument is of type ‘char *’
+ extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
+              ^
+paco.y:327:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
           $$->funcCreator = malloc("createInt()" + digitCount($1) + 1);
           ^
 In file included from paco.y:3:0:
 /usr/include/stdlib.h:466:14: note: expected ‘size_t’ but argument is of type ‘char *’
  extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
               ^
-paco.y:318:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
+paco.y:333:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
           $$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1); // 20 decimals max
           ^
 In file included from paco.y:3:0:
 /usr/include/stdlib.h:466:14: note: expected ‘size_t’ but argument is of type ‘char *’
  extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
               ^
-paco.y:324:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
+paco.y:339:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
           $$->funcCreator = malloc("createString()" + strlen($1) + 1);
           ^
 In file included from paco.y:3:0:
@@ -152,14 +132,14 @@ In file included from paco.y:3:0:
  extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
               ^
 paco.y: In function ‘main’:
-paco.y:339:3: warning: passing argument 3 of ‘createHashTable’ from incompatible pointer type [enabled by default]
+paco.y:354:3: warning: passing argument 3 of ‘createHashTable’ from incompatible pointer type [enabled by default]
    var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
    ^
 In file included from paco.y:9:0:
 hashtable/include/hashtable.h:61:1: note: expected ‘hashFunction’ but argument is of type ‘unsigned int (*)(char *)’
  createHashTable(size_t key_size, size_t value_size, \
  ^
-paco.y:339:3: warning: passing argument 5 of ‘createHashTable’ from incompatible pointer type [enabled by default]
+paco.y:354:3: warning: passing argument 5 of ‘createHashTable’ from incompatible pointer type [enabled by default]
    var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
    ^
 In file included from paco.y:9:0:
@@ -167,22 +147,17 @@ hashtable/include/hashtable.h:61:1: note: expected ‘equalsFunction’ but argu
  createHashTable(size_t key_size, size_t value_size, \
  ^
 paco.y: In function ‘printExpr’:
-paco.y:479:4: warning: implicit declaration of function ‘printNum’ [-Wimplicit-function-declaration]
+paco.y:499:4: warning: implicit declaration of function ‘printNum’ [-Wimplicit-function-declaration]
     printNum((y_number*)expr->content);
     ^
 paco.y: At top level:
-paco.y:499:6: warning: conflicting types for ‘printNum’ [enabled by default]
+paco.y:520:6: warning: conflicting types for ‘printNum’ [enabled by default]
  void printNum(y_number* num) {
       ^
-paco.y:479:4: note: previous implicit declaration of ‘printNum’ was here
+paco.y:499:4: note: previous implicit declaration of ‘printNum’ was here
     printNum((y_number*)expr->content);
     ^
 paco.y: In function ‘printObject’:
-paco.y:506:5: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘uint64_t’ [-Wformat=]
+paco.y:527:5: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘uint64_t’ [-Wformat=]
      printf("TYPE = %d\n", o->type->id);
      ^
-paco.y: In function ‘addInstToProg’:
-paco.y:542:2: error: expected ‘;’ before ‘}’ token
-  }
-  ^
-make: *** [all] Error 1

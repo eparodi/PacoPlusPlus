@@ -88,6 +88,12 @@ void printObject(_object o) {
 		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB,getType(STR));
 		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL,getType(STR));
 		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN,getType(STR));
+if(BOOLEXPR){
+printObject(addIntInt(createInt(5),createInt(5)));
+printf("\n");
+printObject(mulStrInt(createString("sadasd"),createInt(7)));
+printf("\n");
+}
 printObject(addIntInt(createInt(2),createInt(2)));
 printf("\n");
 printObject(addIntInt(createInt(5),createInt(4)));

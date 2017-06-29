@@ -14,6 +14,7 @@ varName [A-Za-z][0-9A-Za-z_-]*
 
 if 					  return IF;
 while				  return WHILE;
+end				  return END;
 startPaco			  return BEGINPROG;
 endPaco				  yyterminate();
 -?{digit}+            { yylval.num = atoi(yytext); return INT; }

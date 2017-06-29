@@ -36,6 +36,7 @@
 
 
 	y_prog* prog;
+	y_prog* actualProg;
 
 %}
 
@@ -55,6 +56,7 @@
 	y_boolExpr* boolExpr;
 	y_inst* inst;
 	y_prog* prog;
+	y_if* ifBlok;
 }
 %start PROGRAM
 
@@ -77,6 +79,8 @@
 %type <boolExpr> BOOLEXPR
 %type <inst> INST
 %type <prog> PROGRAM
+%type <ifBlok> IFBLOCK
+%type <ifBlok> IFTOKEN
 
 %precedence PLUS
 %precedence MINUS
@@ -89,11 +93,11 @@
 START 	: BEGINPROG NEWLINE PROGRAM END {  }
 
 PROGRAM : INST PROGRAM	        { 
-									addInstToProg(prog,$1);
+									addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
 		| INST                  { 
-									addInstToProg(prog,$1);
+									addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
 		;
@@ -127,17 +131,28 @@ INST    : ASSIGN ';'            {
 									$$->type = 5;
 									$$->content = $1;
 								}
-		/*| IFBLOCK  { printf("IF BLOCK HERE\n");}
-		| WHILEBLOCK  { printf("IF BLOCK HERE\n");}*/
+		| IFBLOCK  				{
+									$$ = malloc(sizeof(*$$));
+									$$->type = 6;
+									$$->content = $1;
+								}
+		| WHILEBLOCK  { printf("IF BLOCK HERE\n");}
 		;
 
-IFBLOCK	: IF '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
-																printf("if(");
-																printBoolExpr($3);
-																printf("){\n");
-																printf("}\n");
-															}
+IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+																	$$ = $1;
+																	$$->boolExp = $3;
+																	$$->prog = actualProg;
+																	actualProg = $$->prevProg;
+																}
 		;
+
+IFTOKEN	: IF 					{
+									$$ = malloc(sizeof(*$$));
+									$$->prevProg = actualProg;
+									actualProg = malloc(sizeof(y_prog));
+									actualProg->first = NULL;
+								}
 
 WHILEBLOCK: WHILE '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
 																	printf("while(");
@@ -387,9 +402,10 @@ main(void)
 
 		startC();
 
+		actualProg = prog;
 		yyparse();
 
-		printProg(prog);
+		printProg(actualProg);
 
 		endC();
 
@@ -399,43 +415,43 @@ main(void)
 
 void printInst(y_inst* i) {
 	switch(i->type) {
-		// case 0:
-		// 	if ($1->isNew) {
-		// 		printf("_object ");
-		// 	}
-		// 	printAssign($1);
-		// 	printf(";\n");
-		// 	printf("\n");
-		// 	break;
-		// case 1:
-		// 	printExpr($1); 
-		// 	printf(";\n");
-		// 	printf("\n"); 
-		// 	break;
-		// case 2:
-		// 	if ($1->isNew) {
-		// 		printf("_object ");
-		// 	}
-		// 	printAssign($1);
-		// 	printf(";\n");
-		// 	printf("\n"); 
-		// 	break;
-		// case 3:
-		// 	printExpr($1); 
-		// 	printf(";\n");
-		// 	printf("\n"); 
-		// 	break;
-		// case 4:			
-		// 	if ($1->isNew) {
-		// 		printf("_object ");
-		// 	}
-		// 	printAssign($1);
-		// 	printf(";\n");
-		// 	printf("printObject(");
-		// 	printExpr($1->exp);
-		// 	printf(");\n");
-		// 	printf("printf(\"\\n\");\n");
-		// 	break;
+		case 0:
+			if (((y_assign*) i->content)->isNew) {
+				printf("_object ");
+			}
+			printAssign((y_assign*) i->content);
+			printf(";\n");
+			printf("\n");
+			break;
+		case 1:
+			printExpr((y_expression*) i->content); 
+			printf(";\n");
+			printf("\n"); 
+			break;
+		case 2:
+			if (((y_assign*) i->content)->isNew) {
+				printf("_object ");
+			}
+			printAssign((y_assign*) i->content);
+			printf(";\n");
+			printf("\n"); 
+			break;
+		case 3:
+			printExpr((y_expression*) i->content); 
+			printf(";\n");
+			printf("\n"); 
+			break;
+		case 4:			
+			if (((y_assign*) i->content)->isNew) {
+				printf("_object ");
+			}
+			printAssign((y_assign*) i->content);
+			printf(";\n");
+			printf("printObject(");
+			printExpr(((y_assign*) i->content)->exp);
+			printf(");\n");
+			printf("printf(\"\\n\");\n");
+			break;
 		case 5:
 			printf("printObject(");
 			printExpr((y_expression*) i->content); 
@@ -443,7 +459,11 @@ void printInst(y_inst* i) {
 			printf("printf(\"\\n\");\n");
 			break;
 		case 6:;
-			// IF BLOCK
+			printf("if(");
+			printBoolExpr(((y_if*) i->content)->boolExp);
+			printf("){\n");
+			printProg(((y_if*) i->content)->prog);
+			printf("}\n");
 		case 7:;
 			// IF BLOCK
 	}
@@ -489,11 +509,12 @@ void printExpr(y_expression* expr) {
 
 
 void printBoolExpr(y_boolExpr* expr) {
-	printf("%s(", expr->compFunc);
-	printExpr(expr->exp1);
-	printf(",");
-	printExpr(expr->exp1);
-	printf(")");
+	printf("BOOLEXPR");
+	// printf("%s(", expr->compFunc);
+	// printExpr(expr->exp1);
+	// printf(",");
+	// printExpr(expr->exp1);
+	// printf(")");
 }
 
 void printNum(y_number* num) {
