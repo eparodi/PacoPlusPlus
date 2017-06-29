@@ -21,7 +21,9 @@
 	void printOperation(y_operation* oper);
 	void printObject(_object o);
 	void printObject(_object o);
-
+	void printVariable(y_variable* var);
+	void printAssign(y_assign* assign);
+	
 	typedef _object(*opFunc)(_object, _object);
 
 %}
@@ -37,6 +39,8 @@
 	y_number* number;
 	y_expression* expression;
 	y_operation* operation;
+	y_variable* variable;
+	y_assign* assign;
 }
 %start PROGRAM
 
@@ -49,10 +53,11 @@
 %token <fl> FLOAT
 %token <str> VAR
 
-%type <obj> PROGRAM INST ASSIGN VALUE
+%type <obj> PROGRAM INSTs VALUE
 %type <number> NUMBER
 %type <expression> EXPRESS
 %type <operation> OPERAT
+%type <assign> ASSIGN
 
 %precedence PLUS
 %precedence MINUS
@@ -66,13 +71,29 @@ PROGRAM : INST PROGRAM          { ; }
 		| INST                  { ; }
 		;
 
-INST    : ASSIGN ';'            { printf(";\n"); }
-		| EXPRESS ';'           { printf(";\n"); }
-		| ASSIGN ';' NEWLINE    { printf(";\n"); }
-		| EXPRESS ';' NEWLINE   { printf(";\n"); }
-		| ASSIGN NEWLINE        { 
+INST    : ASSIGN ';'            { 
+									printAssign($1);
 									printf(";\n");
-									printObject($1);
+									printf("\n"); 
+								}
+		| EXPRESS ';'           {
+									printExpr($1); 
+									printf(";\n");
+									printf("\n"); 
+								}
+		| ASSIGN ';' NEWLINE    { 
+									printAssign($1);
+									printf(";\n");
+									printf("\n"); 
+								}
+		| EXPRESS ';' NEWLINE   {
+									printExpr($1); 
+									printf(";\n");
+									printf("\n"); 
+								}
+		| ASSIGN NEWLINE        { 
+									printAssign($1);
+									printf(";\n");
 									printf("\n"); 
 								}
 		| EXPRESS NEWLINE       {
@@ -82,46 +103,82 @@ INST    : ASSIGN ';'            { printf(";\n"); }
 								}
 		;
 
-ASSIGN  : /*VAR EQ EXPRESS        {
-									$$ = $3;
-									addElementHT(var_table,$1,$$);
+ASSIGN  : VAR EQ EXPRESS        {
+									$$ = malloc(sizeof(*$$));
+									y_variable* var = malloc(sizeof(y_variable));
+									var->name = malloc(strlen($1) + 1);
+									strcpy(var->name, $1);
+									var->type = $3->type;
+									$$->var = var;
+									$$->exp = $3;
+									$$->opName = calloc(1, 1);
+									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
 								}
 		| VAR PLUSEQ EXPRESS    {
-									OperationT operation = getOperation(ADD, ((_object)getElementHT(var_table, $1))->type, $3->type);
-									$$ = operation->func(((_object)getElementHT(var_table, $1)),$3);
-									addElementHT(var_table, $1, $$);
+									$$ = malloc(sizeof(*$$));
+									y_variable* var = malloc(sizeof(y_variable));
+									var->name = malloc(strlen($1) + 1);
+									strcpy(var->name, $1);
+									var->type = $3->type;
+									$$->var = var;
+									$$->exp = $3;
+									OperationT operation = getOperation(ADD, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+									$$->opName = malloc(strlen(operation->func_name)+1);
+									strcpy($$->opName, operation->func_name);
+									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
 								}
 		| VAR MINUSEQ EXPRESS   {
-									OperationT operation = getOperation(ADD, ((_object)getElementHT(var_table, $1))->type, $3->type);
-									$$ = operation->func(((_object)getElementHT(var_table, $1)),$3);
-									addElementHT(var_table, $1, $$);
+									$$ = malloc(sizeof(*$$));
+									y_variable* var = malloc(sizeof(y_variable));
+									var->name = malloc(strlen($1) + 1);
+									strcpy(var->name, $1);
+									var->type = $3->type;
+									$$->var = var;
+									$$->exp = $3;
+									OperationT operation = getOperation(SUB, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+									$$->opName = malloc(strlen(operation->func_name)+1);
+									strcpy($$->opName, operation->func_name);
+									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
 								}
 		| VAR MULTEQ EXPRESS    {
-									OperationT operation = getOperation(MUL, ((_object)getElementHT(var_table, $1))->type, $3->type);
-									$$ = operation->func(((_object)getElementHT(var_table, $1)),$3);
-									addElementHT(var_table, $1, $$);
+									$$ = malloc(sizeof(*$$));
+									y_variable* var = malloc(sizeof(y_variable));
+									var->name = malloc(strlen($1) + 1);
+									strcpy(var->name, $1);
+									var->type = $3->type;
+									$$->var = var;
+									$$->exp = $3;
+									OperationT operation = getOperation(MUL, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+									$$->opName = malloc(strlen(operation->func_name)+1);
+									strcpy($$->opName, operation->func_name);
+									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
 								}
 		| VAR DIVEQ EXPRESS     {
-									OperationT operation = getOperation(DVN, ((_object)getElementHT(var_table, $1))->type, $3->type);
-									$$ = operation->func(((_object)getElementHT(var_table, $1)),$3);
-									addElementHT(var_table, $1, $$);
-								}*/VAR EQ NUMBER
+									$$ = malloc(sizeof(*$$));
+									y_variable* var = malloc(sizeof(y_variable));
+									var->name = malloc(strlen($1) + 1);
+									strcpy(var->name, $1);
+									var->type = $3->type;
+									$$->var = var;
+									$$->exp = $3;
+									OperationT operation = getOperation(DVN, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
+									$$->opName = malloc(strlen(operation->func_name)+1);
+									strcpy($$->opName, operation->func_name);
+									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+								}
 		;
 
 EXPRESS : VAR                   { 
-									/*$$ = malloc(sizeof(*$$));
-									$$->obj = (_object) getElementHT(var_table, $1); 
-										switch($$->type->id) {
-											case INTEGER:
-												
-												break;
-											case DECIMAL:
-												break;
-											case STR:
-												break;
-										}*/
+									$$ = malloc(sizeof(*$$));
+									$$->contentType = EXPR_VAR;
+									$$->type = ((y_variable*) getElementHT(var_table, $1))->type;
+									y_variable* var = malloc(sizeof(y_variable));
+									var->name = malloc(strlen($1) + 1);
+									strcpy(var->name, $1);
+									$$->content = var; 
+										
 								}
-		| NUMBER                { 
+		| NUMBER                {
 									$$ = malloc(sizeof(*$$));
 									$$->contentType = EXPR_NUM;
 									$$->type = $1->obj->type;
@@ -192,19 +249,19 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 NUMBER  : INT                   { 	
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createInt($1);
-									$$->funcCreator = malloc("createInt()" + 200 + 1);	// 200 is max chars
+									$$->funcCreator = malloc("createInt()" + digitCount($1) + 1);
 									sprintf($$->funcCreator, "createInt(%d)", $1);
 								}
 		| FLOAT                 { 
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createDecimal($1);
-									$$->funcCreator = malloc("createDecimal()" + 200 + 1);	// 200 is max chars
+									$$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
 									sprintf($$->funcCreator, "createDecimal(%ff)", $1);
 								}
 		| STRING 				{ 
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createString($1);
-									$$->funcCreator = malloc("createString()" + 200 + 1);	// 200 is max chars
+									$$->funcCreator = malloc("createString()" + strlen($1) + 1);
 									sprintf($$->funcCreator, "createString(\"%s\")", $1);
 								}
 		;
@@ -270,6 +327,22 @@ main(void)
 }
 
 
+void printAssign(y_assign* assign) {
+	printVariable(assign->var);
+	printf("=");
+	if (strcmp(assign->opName,"") != 0) {
+		printf("%s(%s,", assign->opName, assign->var->name);
+		printExpr(assign->exp);
+		printf(")");
+	} else {
+		printExpr(assign->exp);
+	}
+}
+
+void printVariable(y_variable* var) {
+	printf("%s", var->name);
+}
+
 void printOperation(y_operation* oper) {
 	printf("%s(", oper->opName);
 	printExpr(oper->exp1);
@@ -284,7 +357,7 @@ void printExpr(y_expression* expr) {
 			printNum((y_number*)expr->content);
 			break;
 		case EXPR_VAR:
-			//printVar(()
+			printVariable((y_variable*)expr->content);
 			break;
 		case EXPR_OPER:
 			printOperation((y_operation*)expr->content);

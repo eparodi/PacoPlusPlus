@@ -62,17 +62,20 @@ sub.c:31:2: warning: implicit declaration of function ‘strncpy’ [-Wimplicit-
 sub.c:31:2: warning: incompatible implicit declaration of built-in function ‘strncpy’ [enabled by default]
 make[1]: Leaving directory `/home/epord/Desktop/PacoPlusPlus/operations'
 yacc -d paco.y
-paco.y:52.33-37: warning: symbol VALUE is used, but is not defined as a token and has no rules [-Wother]
- %type <obj> PROGRAM INST ASSIGN VALUE
-                                 ^^^^^
-paco.y:108.68-80: warning: type clash on default action: <obj> != <str> [-Wother]
- 								}*/VAR EQ NUMBER
-                                                                    ^^^^^^^^^^^^^
-paco.y: warning: 1 nonterminal useless in grammar [-Wother]
-paco.y:52.33-37: warning: nonterminal useless in grammar: VALUE [-Wother]
- %type <obj> PROGRAM INST ASSIGN VALUE
-                                 ^^^^^
-paco.y: warning: 1 shift/reduce conflict [-Wconflicts-sr]
+paco.y:56.21-25: warning: symbol INSTs is used, but is not defined as a token and has no rules [-Wother]
+ %type <obj> PROGRAM INSTs VALUE
+                     ^^^^^
+paco.y:56.27-31: warning: symbol VALUE is used, but is not defined as a token and has no rules [-Wother]
+ %type <obj> PROGRAM INSTs VALUE
+                           ^^^^^
+paco.y: warning: 2 nonterminals useless in grammar [-Wother]
+paco.y:56.21-25: warning: nonterminal useless in grammar: INSTs [-Wother]
+ %type <obj> PROGRAM INSTs VALUE
+                     ^^^^^
+paco.y:56.27-31: warning: nonterminal useless in grammar: VALUE [-Wother]
+ %type <obj> PROGRAM INSTs VALUE
+                           ^^^^^
+paco.y: warning: 5 shift/reduce conflicts [-Wconflicts-sr]
 lex paco.l
 gcc -Wall -g -std=c99 *.c types/*.o hashtable/*.o operations/*.o -o pacopp.out -ly -lm
 lex.yy.c: In function ‘yy_init_buffer’:
@@ -87,45 +90,49 @@ lex.yy.c:1221:16: warning: ‘input’ defined but not used [-Wunused-function]
      static int input  (void)
                 ^
 y.tab.c: In function ‘yyparse’:
-y.tab.c:1196:7: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
+y.tab.c:1210:7: warning: implicit declaration of function ‘yylex’ [-Wimplicit-function-declaration]
        yychar = yylex ();
        ^
-paco.y:80:10: warning: passing argument 1 of ‘printObject’ from incompatible pointer type [enabled by default]
-          printObject($1); 
+paco.y:134:39: error: ‘y_varaible’ undeclared (first use in this function)
+          $$->type = ((y_varaible*) getElementHT(var_table, $1))->type;
+                                       ^
+paco.y:134:39: note: each undeclared identifier is reported only once for each function it appears in
+paco.y:134:50: error: expected expression before ‘)’ token
+          $$->type = ((y_varaible*) getElementHT(var_table, $1))->type;
+                                                  ^
+paco.y:135:10: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘uint64_t’ [-Wformat=]
+          printf("asdasdasd:%d\n", $$->type->id);
           ^
-paco.y:23:7: note: expected ‘_object’ but argument is of type ‘struct y_expression *’
-  void printObject(_object o);
-       ^
-paco.y:171:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
-          $$->funcCreator = malloc("createInt()" + 200 + 1); // 200 is max chars
-          ^
-In file included from paco.y:3:0:
-/usr/include/stdlib.h:466:14: note: expected ‘size_t’ but argument is of type ‘char *’
- extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
-              ^
-paco.y:177:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
-          $$->funcCreator = malloc("createDecimal()" + 200 + 1); // 200 is max chars
+paco.y:213:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
+          $$->funcCreator = malloc("createInt()" + digitCount($1) + 1);
           ^
 In file included from paco.y:3:0:
 /usr/include/stdlib.h:466:14: note: expected ‘size_t’ but argument is of type ‘char *’
  extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
               ^
-paco.y:183:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
-          $$->funcCreator = malloc("createString()" + 200 + 1); // 200 is max chars
+paco.y:219:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
+          $$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1); // 20 decimals max
+          ^
+In file included from paco.y:3:0:
+/usr/include/stdlib.h:466:14: note: expected ‘size_t’ but argument is of type ‘char *’
+ extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
+              ^
+paco.y:225:10: warning: passing argument 1 of ‘malloc’ makes integer from pointer without a cast [enabled by default]
+          $$->funcCreator = malloc("createString()" + strlen($1) + 1);
           ^
 In file included from paco.y:3:0:
 /usr/include/stdlib.h:466:14: note: expected ‘size_t’ but argument is of type ‘char *’
  extern void *malloc (size_t __size) __THROW __attribute_malloc__ __wur;
               ^
 paco.y: In function ‘main’:
-paco.y:198:3: warning: passing argument 3 of ‘createHashTable’ from incompatible pointer type [enabled by default]
+paco.y:240:3: warning: passing argument 3 of ‘createHashTable’ from incompatible pointer type [enabled by default]
    var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
    ^
 In file included from paco.y:9:0:
 hashtable/include/hashtable.h:61:1: note: expected ‘hashFunction’ but argument is of type ‘unsigned int (*)(char *)’
  createHashTable(size_t key_size, size_t value_size, \
  ^
-paco.y:198:3: warning: passing argument 5 of ‘createHashTable’ from incompatible pointer type [enabled by default]
+paco.y:240:3: warning: passing argument 5 of ‘createHashTable’ from incompatible pointer type [enabled by default]
    var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
    ^
 In file included from paco.y:9:0:
@@ -133,25 +140,18 @@ hashtable/include/hashtable.h:61:1: note: expected ‘equalsFunction’ but argu
  createHashTable(size_t key_size, size_t value_size, \
  ^
 paco.y: In function ‘printExpr’:
-paco.y:260:4: warning: implicit declaration of function ‘printNum’ [-Wimplicit-function-declaration]
+paco.y:318:4: warning: implicit declaration of function ‘printNum’ [-Wimplicit-function-declaration]
     printNum((y_number*)expr->content);
     ^
 paco.y: At top level:
-paco.y:271:6: warning: conflicting types for ‘printNum’ [enabled by default]
- void printNum(y_number num) {
+paco.y:329:6: warning: conflicting types for ‘printNum’ [enabled by default]
+ void printNum(y_number* num) {
       ^
-paco.y:260:4: note: previous implicit declaration of ‘printNum’ was here
+paco.y:318:4: note: previous implicit declaration of ‘printNum’ was here
     printNum((y_number*)expr->content);
     ^
-paco.y: In function ‘printNum’:
-paco.y:272:19: error: invalid type argument of ‘->’ (have ‘y_number’)
-  printf("%s(", num->funcCreator);
-                   ^
-paco.y:273:17: error: invalid type argument of ‘->’ (have ‘y_number’)
-  printObject(num->obj);
-                 ^
 paco.y: In function ‘printObject’:
-paco.y:280:5: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘uint64_t’ [-Wformat=]
+paco.y:336:5: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘uint64_t’ [-Wformat=]
      printf("TYPE = %d\n", o->type->id);
      ^
 make: *** [all] Error 1

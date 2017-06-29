@@ -10,8 +10,8 @@ typedef enum {
 } exprContent;
 
 typedef struct {
-	exprContent contentType;
 	TypeT type;
+	exprContent contentType;
 	void* content;
 } y_expression;
 
@@ -26,5 +26,16 @@ typedef struct {
 	TypeT retType;
 	char* opName;
 } y_operation;
+
+typedef struct {
+	char* name;
+	TypeT type;
+} y_variable;
+
+typedef struct {
+	y_variable* var;
+	y_expression* exp;
+	char* opName;
+} y_assign;
 
 #endif
