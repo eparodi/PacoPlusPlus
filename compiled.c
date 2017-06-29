@@ -94,6 +94,14 @@ printf("\n");
 printObject(mulStrInt(createString("sadasd"),createInt(7)));
 printf("\n");
 }
+while(BOOLEXPR){
+while(BOOLEXPR){
+printObject(addIntInt(createInt(1),createInt(1)));
+printf("\n");
+}
+printObject(addIntInt(createInt(1),createInt(1)));
+printf("\n");
+}
 printObject(addIntInt(createInt(2),createInt(2)));
 printf("\n");
 printObject(addIntInt(createInt(5),createInt(4)));

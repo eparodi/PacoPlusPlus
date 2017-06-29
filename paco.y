@@ -81,6 +81,8 @@
 %type <prog> PROGRAM
 %type <ifBlok> IFBLOCK
 %type <ifBlok> IFTOKEN
+%type <ifBlok> WHILEBLOCK
+%type <ifBlok> WHILETOKEN
 
 %precedence PLUS
 %precedence MINUS
@@ -136,7 +138,11 @@ INST    : ASSIGN ';'            {
 									$$->type = 6;
 									$$->content = $1;
 								}
-		| WHILEBLOCK  { printf("IF BLOCK HERE\n");}
+		| WHILEBLOCK  			{
+									$$ = malloc(sizeof(*$$));
+									$$->type = 7;
+									$$->content = $1;
+								}
 		;
 
 IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
@@ -154,13 +160,21 @@ IFTOKEN	: IF 					{
 									actualProg->first = NULL;
 								}
 
-WHILEBLOCK: WHILE '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
-																	printf("while(");
-																	printBoolExpr($3);
-																	printf("){\n");
-																	printf("}\n");
+WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+																	$$ = $1;
+																	$$->boolExp = $3;
+																	$$->prog = actualProg;
+																	actualProg = $$->prevProg;
 																}
 		;
+
+WHILETOKEN	: WHILE 				{
+									$$ = malloc(sizeof(*$$));
+									$$->prevProg = actualProg;
+									actualProg = malloc(sizeof(y_prog));
+									actualProg->first = NULL;
+								}
+			;
 
 BOOLEXPR: EXPRESS LT EXPRESS 	{
 									$$ = malloc(sizeof(*$$));
@@ -458,14 +472,20 @@ void printInst(y_inst* i) {
 			printf(");\n");
 			printf("printf(\"\\n\");\n");
 			break;
-		case 6:;
+		case 6:
 			printf("if(");
 			printBoolExpr(((y_if*) i->content)->boolExp);
 			printf("){\n");
 			printProg(((y_if*) i->content)->prog);
 			printf("}\n");
-		case 7:;
-			// IF BLOCK
+			break;
+		case 7:
+			printf("while(");
+			printBoolExpr(((y_if*) i->content)->boolExp);
+			printf("){\n");
+			printProg(((y_if*) i->content)->prog);
+			printf("}\n");
+			break;
 	}
 }
 
