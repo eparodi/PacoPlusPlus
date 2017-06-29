@@ -1,0 +1,7 @@
+var1=1
+var2="asd"
+if(5<5)
+	var2=2.0;
+end
+var2+=var1
+endPaco

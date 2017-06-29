@@ -4,20 +4,31 @@
 #include "include/sum.h"
 #include "include/operations.h"
 
+//--------------------------------------------------------
+
 _object addIntInt(_object o1, _object o2) {
 	return createInt(o1->cont.num + o2->cont.num);
 }
 
-_object addDecDec(_object o1, _object o2) {
-	return createDecimal(o1->cont.fl + o2->cont.fl);
+_object addIntStr(_object o1, _object o2) {
+	char* intStr = itoa(o1->cont.num);
+	return addStrStr(createString(intStr), o2);
 }
 
 _object addIntDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.num + o2->cont.fl);
 }
 
-_object addDecInt(_object o1, _object o2) {
-	return createDecimal(o1->cont.fl + o2->cont.num);
+_object addIntArr(_object o1, _object o2) {
+	//TODO
+	return 1;
+}
+
+//--------------------------------------------------------
+
+_object addStrInt(_object o1, _object o2) {
+	char* intStr = itoa(o2->cont.num);
+	return addStrStr(o1, createString(intStr));
 }
 
 _object addStrStr(_object o1, _object o2) {
@@ -27,12 +38,54 @@ _object addStrStr(_object o1, _object o2) {
 	return createString(auxStr);
 }
 
-_object addStrInt(_object o1, _object o2) {
-	char* intStr = itoa(o2->cont.num);
-	return addStrStr(o1, createString(intStr));
+_object addStrDec(_object o1, _object o2) {
+	char* decStr = floatToString(o2->cont.fl);
+	return addStrStr(o1, createString(decStr));
 }
 
-_object addIntStr(_object o1, _object o2) {
-	char* intStr = itoa(o1->cont.num);
-	return addStrStr(createString(intStr), o2);
+_object addStrArr(_object o1, _object o2) {
+	//TODO
+	return 1;
+}
+
+//--------------------------------------------------------
+
+_object addDecInt(_object o1, _object o2) {
+	return createDecimal(o1->cont.fl + o2->cont.num);
+}
+
+_object addDecStr(_object o1, _object o2) {
+	char * decStr = floatToString(o1->cont.fl);
+	return addStrStr(createString(decStr), o2);
+}
+
+_object addDecDec(_object o1, _object o2) {
+	return createDecimal(o1->cont.fl + o2->cont.fl);
+}
+
+_object addDecArr(_object o1, _object o2) {
+	//TODO
+	return 1;
+}
+
+//--------------------------------------------------------
+
+_object addArrInt(_object o1, _object o2) {
+	//TODO
+	return 1;
+}
+
+_object addArrStr(_object o1, _object o2) {
+	//TODO
+	return 1;
+}
+
+_object addArrDec(_object o1, _object o2) {
+	//TODO
+	return 1;
+}
+
+_object addArrArr(_object o1, _object o2) {
+	//TODO
+	return 1;
 }
