@@ -451,13 +451,16 @@ main(void)
     addOperation(&mulIntStr,"operationOneByOne",LIST, INTEGER,MUL,getType(LIST));
     addOperation(&dvnIntStr,"operationOneByOne",LIST, INTEGER,DVN,getType(LIST));
 
-		for (int i = 0 ; i < CANT_OPERATIONS ; i++){
-			for (int j = 0 ; j < CANT_OPERATIONS && i != j; j++){
-				addOperation(&differentType,"differentType", i, j, EQL ,getType(INTEGER));
-        addOperation(&differentType,"differentType", i, j, LTS ,getType(INTEGER));
-        addOperation(&differentType,"differentType", i, j, LES ,getType(INTEGER));
-        addOperation(&differentType,"differentType", i, j, GTS ,getType(INTEGER));
-        addOperation(&differentType,"differentType", i, j, GES ,getType(INTEGER));
+		for (int i = 0 ; i < CANT_TYPES ; i++){
+			for (int j = 0 ; j < CANT_TYPES; j++){
+        if ( i != j ){
+          printf("i:%d, j:%d\n", i, j);
+          addOperation(&differentType,"differentType", i, j, EQL ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, LTS ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, LES ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, GTS ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, GES ,getType(INTEGER));
+        }
 			}
 		}
 

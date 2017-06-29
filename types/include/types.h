@@ -58,7 +58,8 @@ typedef enum TypesID{
 	INTEGER,
 	DECIMAL,
 	STR,
-  LIST
+  LIST,
+  CANT_TYPES
 }TypesID;
 
 typedef struct Operation{
