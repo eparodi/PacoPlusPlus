@@ -451,6 +451,42 @@ main(void)
     addOperation(&mulIntStr,"operationOneByOne",LIST, INTEGER,MUL,getType(LIST));
     addOperation(&dvnIntStr,"operationOneByOne",LIST, INTEGER,DVN,getType(LIST));
 
+		for (int i = 0 ; i < CANT_OPERATIONS ; i++){
+			for (int j = 0 ; j < CANT_OPERATIONS && i != j; j++){
+				addOperation(&differentType,"differentType", i, j, EQL ,getType(INTEGER));
+        addOperation(&differentType,"differentType", i, j, LTS ,getType(INTEGER));
+        addOperation(&differentType,"differentType", i, j, LES ,getType(INTEGER));
+        addOperation(&differentType,"differentType", i, j, GTS ,getType(INTEGER));
+        addOperation(&differentType,"differentType", i, j, GES ,getType(INTEGER));
+			}
+		}
+
+    // EQUALS
+    addOperation(&compareInt,"compareInt",INTEGER, INTEGER,EQL,getType(INTEGER));
+    addOperation(&compareDecimal,"compareDecimal",DECIMAL, DECIMAL,EQL,getType(INTEGER));
+    addOperation(&compareString,"compareString",STR, STR, EQL,getType(INTEGER));
+    addOperation(&compareList,"compareList",LIST, LIST,EQL,getType(INTEGER));
+    // LESS THAN
+    addOperation(&ltInt,"ltInt",INTEGER, INTEGER,LTS,getType(INTEGER));
+    addOperation(&ltDecimal,"ltDecimal",DECIMAL, DECIMAL,LTS,getType(INTEGER));
+    addOperation(&ltString,"ltString",STR, STR, LTS,getType(INTEGER));
+    addOperation(&ltList,"ltList",LIST, LIST,LTS,getType(INTEGER));
+    // GREATER THAN
+    addOperation(&gtInt,"gtInt",INTEGER, INTEGER,GTS,getType(INTEGER));
+    addOperation(&gtDecimal,"gtDecimal",DECIMAL, DECIMAL,GTS,getType(INTEGER));
+    addOperation(&gtString,"gtString",STR, STR, GTS,getType(INTEGER));
+    addOperation(&gtList,"gtList",LIST, LIST, GTS,getType(INTEGER));
+    // LESS EQUALS
+    addOperation(&leInt,"leInt",INTEGER, INTEGER, LES,getType(INTEGER));
+    addOperation(&leDecimal,"leDecimal",DECIMAL, DECIMAL,LES,getType(INTEGER));
+    addOperation(&leString,"leString",STR, STR, LES,getType(INTEGER));
+    addOperation(&leList,"leList",LIST, LIST,LES,getType(INTEGER));
+    // GREATER EQUALS
+    addOperation(&geInt,"geInt",INTEGER, INTEGER,GES,getType(INTEGER));
+    addOperation(&geDecimal,"geDecimal",DECIMAL, DECIMAL,GES,getType(INTEGER));
+    addOperation(&geString,"geString",STR, STR, GES,getType(INTEGER));
+    addOperation(&geList,"geList",LIST, LIST,GES,getType(INTEGER));
+
 		startC();
 
 		actualProg = prog;
