@@ -19,6 +19,7 @@ _object powIntInt(_object o1, _object o2);
 int digitCount(int n);
 void invertStr(char* str);
 char* itoa(int n);
+char * floatToString(float f);
 void deleteSubstr(char* str, char* substr, char* dest);
 
 #endif
