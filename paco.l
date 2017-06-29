@@ -10,7 +10,7 @@ digit [0-9]
 varName [A-Za-z][0-9A-Za-z_-]*
 
 %%
-
+zzz						yyterminate();
 -?{digit}+            { yylval.num = atoi(yytext); return INT; }
 [\t ]                 ;
 [\n]				  return NEWLINE;

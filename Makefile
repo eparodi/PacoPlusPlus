@@ -14,8 +14,10 @@ all:
 clean:
 	cd hashtable; make clean
 	cd types; make clean
-	rm y.tab.*
-	rm lex.yy.c
-	rm pacopp.out
+	rm -f y.tab.*
+	rm -f lex.yy.c
+	rm -f pacopp.out
+	rm -f compiled.c
+	rm -f run
 
 .PHONY: all clean

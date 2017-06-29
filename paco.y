@@ -17,12 +17,16 @@
 
 	static unsigned int str_hash(char* key);
 	static unsigned int str_eql(const char * s1, const char * s2);
+
 	void printExpr(y_expression* expr);
 	void printOperation(y_operation* oper);
 	void printObject(_object o);
 	void printObject(_object o);
 	void printVariable(y_variable* var);
 	void printAssign(y_assign* assign);
+
+	void startC();
+	void endC();
 	
 	typedef _object(*opFunc)(_object, _object);
 
@@ -71,7 +75,10 @@ PROGRAM : INST PROGRAM          { ; }
 		| INST                  { ; }
 		;
 
-INST    : ASSIGN ';'            { 
+INST    : ASSIGN ';'            { 	
+									if ($1->isNew) {
+										printf("_object ");
+									}
 									printAssign($1);
 									printf(";\n");
 									printf("\n"); 
@@ -82,6 +89,9 @@ INST    : ASSIGN ';'            {
 									printf("\n"); 
 								}
 		| ASSIGN ';' NEWLINE    { 
+									if ($1->isNew) {
+										printf("_object ");
+									}
 									printAssign($1);
 									printf(";\n");
 									printf("\n"); 
@@ -92,14 +102,21 @@ INST    : ASSIGN ';'            {
 									printf("\n"); 
 								}
 		| ASSIGN NEWLINE        { 
+									if ($1->isNew) {
+										printf("_object ");
+									}
 									printAssign($1);
 									printf(";\n");
-									printf("\n"); 
+									printf("printObject(");
+									printExpr($1->exp);
+									printf(");\n");
+									printf("printf(\"\\n\");\n");
 								}
 		| EXPRESS NEWLINE       {
+									printf("printObject(");
 									printExpr($1); 
-									printf(";\n");
-									printf("\n"); 
+									printf(");\n");
+									printf("printf(\"\\n\");\n");
 								}
 		;
 
@@ -113,6 +130,7 @@ ASSIGN  : VAR EQ EXPRESS        {
 									$$->exp = $3;
 									$$->opName = calloc(1, 1);
 									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									$$->isNew = 1;
 								}
 		| VAR PLUSEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
@@ -126,6 +144,7 @@ ASSIGN  : VAR EQ EXPRESS        {
 									$$->opName = malloc(strlen(operation->func_name)+1);
 									strcpy($$->opName, operation->func_name);
 									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									$$->isNew = 0;
 								}
 		| VAR MINUSEQ EXPRESS   {
 									$$ = malloc(sizeof(*$$));
@@ -139,6 +158,7 @@ ASSIGN  : VAR EQ EXPRESS        {
 									$$->opName = malloc(strlen(operation->func_name)+1);
 									strcpy($$->opName, operation->func_name);
 									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									$$->isNew = 0;
 								}
 		| VAR MULTEQ EXPRESS    {
 									$$ = malloc(sizeof(*$$));
@@ -152,6 +172,7 @@ ASSIGN  : VAR EQ EXPRESS        {
 									$$->opName = malloc(strlen(operation->func_name)+1);
 									strcpy($$->opName, operation->func_name);
 									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									$$->isNew = 0;
 								}
 		| VAR DIVEQ EXPRESS     {
 									$$ = malloc(sizeof(*$$));
@@ -165,6 +186,7 @@ ASSIGN  : VAR EQ EXPRESS        {
 									$$->opName = malloc(strlen(operation->func_name)+1);
 									strcpy($$->opName, operation->func_name);
 									addElementHT(var_table,$1,var); //TODO: METERLO EN LA FUNCION PRINT
+									$$->isNew = 0;
 								}
 		;
 
@@ -323,7 +345,13 @@ main(void)
 		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL,getType(STR));
 		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN,getType(STR));
 
-	return yyparse();
+		startC();
+
+		yyparse();
+
+		endC();
+
+		return 0;
 }
 
 
@@ -399,4 +427,101 @@ static unsigned int str_hash(char* key){
 
 static unsigned int str_eql(const char * s1, const char * s2){
   return strcmp(s1,s2) == 0;
+}
+
+void endC() {
+	printf("}");
+}
+
+void startC() {
+	printf("\n\
+	#include <stdio.h>\n\
+	#include <stdlib.h>\n\
+	#include <math.h>\n\
+	#include <string.h>\n\
+	#include \"operations/include/operations.h\"\n\
+	#include \"types/include/object.h\"\n\
+	#include \"types/include/types.h\"\n\
+	#include \"hashtable/include/hashtable.h\"\n\
+	#include \"yaccObjects.h\"\n\
+\n\
+\n\
+	hashTableT var_table;\n\
+\n\
+	static unsigned int str_hash(char* key);\n\
+	static unsigned int str_eql(const char * s1, const char * s2);\n\
+\n\
+	static unsigned int str_hash(char* key){\n\
+		unsigned int h = 5381;\n\
+		while(*(key++))\n\
+			h = ((h << 5) + h) + (*key);\n\
+		return h;\n\
+	}\n\
+\n\
+	static unsigned int str_eql(const char * s1, const char * s2){\n\
+	  return strcmp(s1,s2) == 0;\n\
+	}\n\
+\n\
+\n\
+\n\
+void printObject(_object o) {\n\
+	switch(o->type->id) {\n\
+		case INTEGER:\n\
+			printf(\"%%d\", o->cont.num);\n\
+			break;\n\
+		case DECIMAL:\n\
+			printf(\"%%f\", o->cont.fl);\n\
+			break;\n\
+		case STR:\n\
+			printf(\"%%s\", o->cont.str);\n\
+			break;\n\
+	}\n\
+}\n\
+	int main() {\n\
+		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);\n\
+		startTypes();\n\
+		buildOpTable();\n\
+\n\
+		// INT INT OPERATIONS\n\
+		addOperation(&addIntInt,\"addIntInt\",INTEGER, INTEGER,ADD,getType(INTEGER));\n\
+		addOperation(&subIntInt,\"subIntInt\",INTEGER, INTEGER,SUB,getType(INTEGER));\n\
+		addOperation(&mulIntInt,\"mulIntInt\",INTEGER, INTEGER,MUL,getType(INTEGER));\n\
+		addOperation(&dvnIntInt,\"dvnIntInt\",INTEGER, INTEGER,DVN,getType(INTEGER));\n\
+		addOperation(&powIntInt,\"powIntInt\",INTEGER, INTEGER,PWR,getType(INTEGER));\n\
+\n\
+		// DECIMAL DECIMAL OPERATIONS		\n\
+		addOperation(&addDecDec,\"addDecDec\",DECIMAL, DECIMAL,ADD,getType(DECIMAL));\n\
+		addOperation(&subDecDec,\"subDecDec\",DECIMAL, DECIMAL,SUB,getType(DECIMAL));\n\
+		addOperation(&mulDecDec,\"mulDecDec\",DECIMAL, DECIMAL,MUL,getType(DECIMAL));\n\
+		addOperation(&dvnDecDec,\"dvnDecDec\",DECIMAL, DECIMAL,DVN,getType(DECIMAL));\n\
+\n\
+		// INT DECIMAL OPERATIONS		\n\
+		addOperation(&addIntDec,\"addIntDec\",INTEGER, DECIMAL,ADD,getType(DECIMAL));\n\
+		addOperation(&subIntDec,\"subIntDec\",INTEGER, DECIMAL,SUB,getType(DECIMAL));\n\
+		addOperation(&mulIntDec,\"mulIntDec\",INTEGER, DECIMAL,MUL,getType(DECIMAL));\n\
+		addOperation(&dvnIntDec,\"dvnIntDec\",INTEGER, DECIMAL,DVN,getType(DECIMAL));\n\
+\n\
+		// DECIMAL INT OPERATIONS		\n\
+		addOperation(&addDecInt,\"addDecInt\",DECIMAL, INTEGER,ADD,getType(DECIMAL));\n\
+		addOperation(&subDecInt,\"subDecInt\",DECIMAL, INTEGER,SUB,getType(DECIMAL));\n\
+		addOperation(&mulDecInt,\"mulDecInt\",DECIMAL, INTEGER,MUL,getType(DECIMAL));\n\
+		addOperation(&dvnDecInt,\"dvnDecInt\",DECIMAL, INTEGER,DVN,getType(DECIMAL));\n\
+\n\
+		// STRING STRING OPERATIONS		\n\
+		addOperation(&addStrStr,\"addStrStr\",STR, STR,ADD,getType(STR));\n\
+		addOperation(&subStrStr,\"subStrStr\",STR, STR,SUB,getType(STR));\n\
+		addOperation(&mulStrStr,\"mulStrStr\",STR, STR,MUL,getType(STR));\n\
+		addOperation(&dvnStrStr,\"dvnStrStr\",STR, STR,DVN,getType(STR));\n\
+\n\
+		// STRING INT OPERATIONS		\n\
+		addOperation(&addStrInt,\"addStrInt\",STR, INTEGER,ADD,getType(STR));\n\
+		addOperation(&subStrInt,\"subStrInt\",STR, INTEGER,SUB,getType(STR));\n\
+		addOperation(&mulStrInt,\"mulStrInt\",STR, INTEGER,MUL,getType(STR));\n\
+		addOperation(&dvnStrInt,\"dvnStrInt\",STR, INTEGER,DVN,getType(STR));\n\
+\n\
+		// INT STRING OPERATIONS		\n\
+		addOperation(&addIntStr,\"addIntStr\",INTEGER, STR,ADD,getType(STR));\n\
+		addOperation(&subIntStr,\"subIntStr\",INTEGER, STR,SUB,getType(STR));\n\
+		addOperation(&mulIntStr,\"mulIntStr\",INTEGER, STR,MUL,getType(STR));\n\
+		addOperation(&dvnIntStr,\"dvnIntStr\",INTEGER, STR,DVN,getType(STR));\n");
 }

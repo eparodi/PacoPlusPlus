@@ -6,6 +6,6 @@ all:
 	$(GCC) $(FLAGS) $(SOURCES) -I./include
 
 clean:
-	rm *.o
+	rm -f *.o
   
 .PHONY: all clean

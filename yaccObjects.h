@@ -35,6 +35,7 @@ typedef struct {
 typedef struct {
 	y_variable* var;
 	y_expression* exp;
+	int isNew;
 	char* opName;
 } y_assign;
 

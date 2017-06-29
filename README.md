@@ -6,14 +6,24 @@
 * Yacc or [Bison](https://www.gnu.org/software/bison/).
 * GCC.
 
-### Compile
+### Build Compiler
 
+First make sure to clean every unwanted file:
+```
+  make clean
+```
+Then build the compiler:
 ```
   make
 ```
 
-### Run
+This must generate an executable "pacopp.out".
+
+### Compile your code
 
 ```
-  ./pacopp.out < sample.ppp
+  ./compiler.sh sample.ppp
+  ./a.out
 ```
+
+Enjoy!
