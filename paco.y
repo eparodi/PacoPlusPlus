@@ -553,7 +553,6 @@ main(void)
 		for (int i = 0 ; i < CANT_TYPES ; i++){
 			for (int j = 0 ; j < CANT_TYPES; j++){
         if ( i != j ){
-          printf("i:%d, j:%d\n", i, j);
           addOperation(&differentType,"differentType", i, j, EQL ,getType(INTEGER));
           addOperation(&differentType,"differentType", i, j, LTS ,getType(INTEGER));
           addOperation(&differentType,"differentType", i, j, LES ,getType(INTEGER));
@@ -791,19 +790,6 @@ void startC() {
 \n\
 \n\
 \n\
-void printObject(_object o) {\n\
-	switch(o->type->id) {\n\
-		case INTEGER:\n\
-			printf(\"%%d\", o->cont.num);\n\
-			break;\n\
-		case DECIMAL:\n\
-			printf(\"%%f\", o->cont.fl);\n\
-			break;\n\
-		case STR:\n\
-			printf(\"%%s\", o->cont.str);\n\
-			break;\n\
-	}\n\
-}\n\
 	int main() {\n\
 		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);\n\
 		startTypes();\n\
