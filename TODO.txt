@@ -2,9 +2,6 @@
 >EOF
 >Si no compila que no genere a.out
 >imprimir las listas en C (Pedro)
->warnings y shift/reduce
->compradores en expresiones booleanas que no andan (mayor y quizas otros) (DONE)
->signo - (DONE)
+>warnings
 >declaracion de variables en bloques (Pedro)
 >informe y 5 test del lenguaje
->stdin/stdout
