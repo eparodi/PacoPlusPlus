@@ -37,7 +37,7 @@
 
 	typedef _object(*opFunc)(_object, _object);
 
-	int blockNum = 0;
+	int blockNum = 1;
 
 	y_prog* prog;
 	y_prog* actualProg;
@@ -98,7 +98,7 @@
 
 %%
 
-PROGRAM : INST PROGRAM	        {
+PROGRAM : INST NEWLINE PROGRAM	{
 									if ($1 != NULL)
 										addInstToProg(actualProg,$1);
 									// printInst($1);
@@ -108,41 +108,46 @@ PROGRAM : INST PROGRAM	        {
 										addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
+		| INST NEWLINE 			{
+									if ($1 != NULL)
+										addInstToProg(actualProg,$1);
+									// printInst($1);
+								}
 		;
    
 NEWLINE : ENTER					{ lineno++; }
 
-INST    : ASSIGN ';' NEWLINE    {
+INST    : ASSIGN ';' 	  	    {
 									$$ = malloc(sizeof(*$$));
 									$$->type = 2;
 									$$->content = $1;
 								}
-		| EXPRESS ';' NEWLINE   {
+		| EXPRESS ';'   		{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 3;
 									$$->content = $1;
 								}
-		| ASSIGN NEWLINE        {
+		| ASSIGN        		{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 4;
 									$$->content = $1;
 								}
-		| EXPRESS NEWLINE       {
+		| EXPRESS        		{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 5;
 									$$->content = $1;
 								}
-		| IFBLOCK  NEWLINE			{
+		| IFBLOCK  				{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 6;
 									$$->content = $1;
 								}
-		| WHILEBLOCK  NEWLINE			{
+		| WHILEBLOCK  			{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 7;
 									$$->content = $1;
 								}
-		| INSERTTOLIST	NEWLINE	{
+		| INSERTTOLIST			{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 8;
 									$$->content = $1;

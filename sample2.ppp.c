@@ -34,4 +34,6 @@
 		buildOpTable();
 printObject(addIntInt(createInt(1),createInt(1)));
 printf("\n");
+printObject(addIntInt(createInt(5),createInt(5)));
+printf("\n");
 }
