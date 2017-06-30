@@ -37,7 +37,6 @@
 
 	y_prog* prog;
 	y_prog* actualProg;
-
 %}
 
 
@@ -65,15 +64,13 @@
 %token PLUSEQ MINUSEQ MULTEQ DIVEQ EQ
 %token NEWLINE
 %token STDNUM STDSTR STDDEC
-%token IF WHILE END BEGINPROG LT LE GT GE EQLS
+%token IF WHILE END LT LE GT GE EQLS END_OF_FILE
 
 %token <num> INT
 %token <str> STRING
 %token <fl> FLOAT
 %token <str> VAR
 
-//%type <obj> VALUE
-%type <obj> ARRAY
 %type <number> NUMBER
 %type <expression> EXPRESS
 %type <operation> OPERAT
@@ -93,10 +90,8 @@
 
 %%
 
-//START 	: BEGINPROG NEWLINE PROGRAM END {  }
-
 PROGRAM : INST PROGRAM	        {
-									addInstToProg(actualProg,$1);
+                  addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
 		| INST                  {
@@ -125,12 +120,12 @@ INST    : ASSIGN ';' NEWLINE    {
 									$$->type = 5;
 									$$->content = $1;
 								}
-		| IFBLOCK  				{
+		| IFBLOCK  NEWLINE			{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 6;
 									$$->content = $1;
 								}
-		| WHILEBLOCK  			{
+		| WHILEBLOCK  NEWLINE			{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 7;
 									$$->content = $1;
@@ -140,6 +135,36 @@ INST    : ASSIGN ';' NEWLINE    {
 									$$->type = 8;
 									$$->content = $1;
 								}
+    | ASSIGN    {
+    							$$ = malloc(sizeof(*$$));
+    							$$->type = 4;
+    							$$->content = $1;
+    						}
+    | EXPRESS   {
+    							$$ = malloc(sizeof(*$$));
+    							$$->type = 5;
+    							$$->content = $1;
+    						}
+    | WHILEBLOCK  {
+    						  $$ = malloc(sizeof(*$$));
+            			$$->type = 7;
+            			$$->content = $1;
+                }
+    | IFBLOCK 	{
+  								$$ = malloc(sizeof(*$$));
+  								$$->type = 6;
+  								$$->content = $1;
+  							}
+    | ASSIGN ';' {
+                	$$ = malloc(sizeof(*$$));
+                	$$->type = 2;
+                	$$->content = $1;
+                }
+    | EXPRESS ';' {
+    							$$ = malloc(sizeof(*$$));
+    							$$->type = 3;
+    							$$->content = $1;
+    						}
 		;
 
 INSERTTOLIST: EXPRESS ':' VAR 	{
@@ -165,7 +190,7 @@ INSERTTOLIST: EXPRESS ':' VAR 	{
 								}
 			;
 
-IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END	{
 																	$$ = $1;
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
@@ -182,7 +207,7 @@ IFTOKEN	: IF 					{
 									blockNum++;
 								}
 
-WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END	{
 																	$$ = $1;
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
@@ -543,7 +568,7 @@ ARRAY: '[' ']'
 
 int yywrap(void)
 {
-  return 0;
+  return 1;
 }
 
 int
@@ -700,7 +725,7 @@ main(void)
 		actualProg = prog;
 		yyparse();
 
-		printProg(actualProg);
+		printProg(prog);
 
 		endC();
 
