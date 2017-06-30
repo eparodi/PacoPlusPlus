@@ -11,7 +11,7 @@
 	#include "yaccObjects.h"
   #include "y.tab.h"
 
-	int lineno = 0;
+	int lineno = 1;
 
 	void yyerror(char* s);
 
@@ -127,6 +127,9 @@ INST    : ASSIGN ';' 	  	    {
 									$$ = malloc(sizeof(*$$));
 									$$->type = 2;
 									$$->content = $1;
+									if($1->isNew) {
+										addToGlobVar($1->var);
+									}
 								}
 		| EXPRESS ';'   		{
 									$$ = malloc(sizeof(*$$));
