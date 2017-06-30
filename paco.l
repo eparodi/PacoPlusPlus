@@ -17,10 +17,8 @@ while				  return WHILE;
 end				  return END;
 startPaco			  return BEGINPROG;
 endPaco				  yyterminate();
--?{digit}+            { yylval.num = atoi(yytext); return INT; }
 [\t ]                 ;
 [\n]				  return NEWLINE;
--?{digit}+\.{digit}+  { yylval.fl = atof(yytext); return FLOAT; }
 \+                    return PLUS;
 \+=                   return PLUSEQ;
 -                     return MINUS;
@@ -32,6 +30,8 @@ endPaco				  yyterminate();
 \^                    return POW;
 ==                    return EQLS;
 =                     return EQ;
+-?{digit}+            { yylval.num = atoi(yytext); return INT; }
+-?{digit}+\.{digit}+  { yylval.fl = atof(yytext); return FLOAT; }
 {varName}		      {
 						yylval.str = malloc(strlen(yytext)+1);
 						strcpy(yylval.str, yytext);
