@@ -9,6 +9,7 @@
 	#include "types/include/list.h"
 	#include "hashtable/include/hashtable.h"
 	#include "yaccObjects.h"
+  #include "y.tab.h"
 
 	int lineno = 0; 
 
@@ -19,6 +20,7 @@
 	static unsigned int str_hash(char* key);
 	static unsigned int str_eql(const char * s1, const char * s2);
 
+    void printNum(y_number* num);
 	void printExpr(y_expression* expr);
 	void printOperation(y_operation* oper);
 	void printObject(_object o);
@@ -39,7 +41,9 @@
 
 	y_prog* prog;
 	y_prog* actualProg;
-
+  
+  FILE * f;
+  FILE * yyin;
 %}
 
 
@@ -67,15 +71,13 @@
 %token PLUSEQ MINUSEQ MULTEQ DIVEQ EQ
 %token ENTER
 %token STDNUM STDSTR STDDEC
-%token IF WHILE END BEGINPROG LT LE GT GE EQLS
+%token IF WHILE END LT LE GT GE EQLS END_OF_FILE
 
 %token <num> INT
 %token <str> STRING
 %token <fl> FLOAT
 %token <str> VAR
 
-//%type <obj> VALUE
-%type <obj> ARRAY
 %type <number> NUMBER
 %type <expression> EXPRESS
 %type <operation> OPERAT
@@ -95,8 +97,6 @@
 %left LT LE GT GE EQLS
 
 %%
-
-//START 	: BEGINPROG NEWLINE PROGRAM END {  }
 
 PROGRAM : INST PROGRAM	        {
 									if ($1 != NULL)
@@ -132,12 +132,12 @@ INST    : ASSIGN ';' NEWLINE    {
 									$$->type = 5;
 									$$->content = $1;
 								}
-		| IFBLOCK  				{
+		| IFBLOCK  NEWLINE			{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 6;
 									$$->content = $1;
 								}
-		| WHILEBLOCK  			{
+		| WHILEBLOCK  NEWLINE			{
 									$$ = malloc(sizeof(*$$));
 									$$->type = 7;
 									$$->content = $1;
@@ -147,7 +147,7 @@ INST    : ASSIGN ';' NEWLINE    {
 									$$->type = 8;
 									$$->content = $1;
 								}
-		| NEWLINE				{ $$ = NULL; }						
+		| NEWLINE				{ $$ = NULL; }		
 		;
 
 INSERTTOLIST: EXPRESS ':' VAR 	{
@@ -173,7 +173,7 @@ INSERTTOLIST: EXPRESS ':' VAR 	{
 								}
 			;
 
-IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END	{
 																	$$ = $1;
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
@@ -190,7 +190,7 @@ IFTOKEN	: IF 					{
 									blockNum++;
 								}
 
-WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
+WHILEBLOCK	: WHILETOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END	{
 																	$$ = $1;
 																	$$->boolExp = $3;
 																	$$->prog = actualProg;
@@ -522,25 +522,25 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 NUMBER  : INT                   {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createInt($1);
-									$$->funcCreator = malloc("createInt()" + digitCount($1) + 1);
+									$$->funcCreator = malloc((size_t)"createInt()" + digitCount($1) + 1);
 									sprintf($$->funcCreator, "createInt(%d)", $1);
 								}
 		| FLOAT                 {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createDecimal($1);
-									$$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
+									$$->funcCreator = malloc((size_t)"createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
 									sprintf($$->funcCreator, "createDecimal(%ff)", $1);
 								}
 		| STRING 				{
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createString($1);
-									$$->funcCreator = malloc("createString()" + strlen($1) + 1);
+									$$->funcCreator = malloc((size_t)"createString()" + strlen($1) + 1);
 									sprintf($$->funcCreator, "createString(\"%s\")", $1);
 								}
     	| ARRAY   		 		{
 									$$ = malloc(sizeof(*$$));
 									$$->obj = newList();
-									$$->funcCreator = malloc("newList()" + 1);
+									$$->funcCreator = malloc((size_t)"newList()" + 1);
 									sprintf($$->funcCreator, "newList()");
 								}
 		;
@@ -551,12 +551,28 @@ ARRAY: '[' ']'
 
 int yywrap(void)
 {
-  return 0;
+  return 1;
 }
 
 int
-main(void)
+main(int argc, char * argv[])
 {
+    if(argc != 2){
+      printf("Please, tell me the name of the file to compile. I'm not that smart!\n");
+      return 0;
+    }
+    yyin = fopen(argv[1],"r");
+    if (yyin == NULL){
+      printf("That file does not exist!\n");
+      return 0;
+    }
+    int length = strlen(argv[1]);
+    char * newFileName = malloc((length+3)*sizeof(char));
+    strcpy(newFileName,argv[1]);
+    newFileName[length] = '.';
+    newFileName[length+1] = 'c';
+    newFileName[length+2] = '\0';
+    
 		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
 		startTypes();
 		buildOpTable();
@@ -703,15 +719,24 @@ main(void)
     addOperation(&geString,"geString",STR, STR, GES,getType(INTEGER));
     addOperation(&geList,"geList",LIST, LIST,GES,getType(INTEGER));
 
-		startC();
-
 		actualProg = prog;
 		yyparse();
+    fclose(yyin);
+    
+    f = fopen(newFileName,"w+");
+    if (f == NULL){
+      printf("Buuh! I cannot write in %s. Stop using that file!\n", newFileName);
+      return 0;
+    }
+    
+    startC();
 
-		printProg(actualProg);
+		printProg(prog);
 
 		endC();
-
+    
+    fclose(f);
+    
 		return 0;
 }
 
@@ -720,99 +745,99 @@ void printInst(y_inst* i) {
 	switch(i->type) {
 		case 0:
 			if (((y_assign*) i->content)->isNew) {
-				printf("_object ");
+				fprintf(f,"_object ");
 			}
 			printAssign((y_assign*) i->content);
-			printf(";\n");
-			printf("\n");
+			fprintf(f,";\n");
+			fprintf(f,"\n");
 			break;
 		case 1:
 			printExpr((y_expression*) i->content);
-			printf(";\n");
-			printf("\n");
+			fprintf(f,";\n");
+			fprintf(f,"\n");
 			break;
 		case 2:
 			if (((y_assign*) i->content)->isNew) {
-				printf("_object ");
+				fprintf(f,"_object ");
 			}
 			printAssign((y_assign*) i->content);
-			printf(";\n");
-			printf("\n");
+			fprintf(f,";\n");
+			fprintf(f,"\n");
 			break;
 		case 3:
 			printExpr((y_expression*) i->content);
-			printf(";\n");
-			printf("\n");
+			fprintf(f,";\n");
+			fprintf(f,"\n");
 			break;
 		case 4:
 			if (((y_assign*) i->content)->isNew) {
-				printf("_object ");
+				fprintf(f,"_object ");
 			}
 			printAssign((y_assign*) i->content);
-			printf(";\n");
+			fprintf(f,";\n");
 			if (((y_assign*) i->content)->exp!=NULL){
-				printf("printObject(");
+				fprintf(f,"printObject(");
 				printVariable(((y_assign*) i->content)->var);
-				printf(");\n");
-				printf("printf(\"\\n\");\n");
+				fprintf(f,");\n");
+				fprintf(f,"printf(\"\\n\");\n");
 			}
 			break;
 		case 5:
-			printf("printObject(");
+			fprintf(f,"printObject(");
 			printExpr((y_expression*) i->content);
-			printf(");\n");
-			printf("printf(\"\\n\");\n");
+			fprintf(f,");\n");
+			fprintf(f,"printf(\"\\n\");\n");
 			break;
 		case 6:
-			printf("if(");
+			fprintf(f,"if(");
 			printBoolExpr(((y_if*) i->content)->boolExp);
-			printf("){\n");
+			fprintf(f,"){\n");
 			printProg(((y_if*) i->content)->prog);
-			printf("}\n");
+			fprintf(f,"}\n");
 			break;
 		case 7:
-			printf("while(");
+			fprintf(f,"while(");
 			printBoolExpr(((y_if*) i->content)->boolExp);
-			printf("){\n");
+			fprintf(f,"){\n");
 			printProg(((y_if*) i->content)->prog);
-			printf("}\n");
+			fprintf(f,"}\n");
 			break;
 		case 8:
-			printf("addList(");
+			fprintf(f,"addList(");
 			printVariable(((y_addList*) i->content)->var);
-			printf("->cont.obj,");
+			fprintf(f,"->cont.obj,");
 			printExpr(((y_addList*) i->content)->expr);
-			printf(");\n");
+			fprintf(f,");\n");
 			break;
 	}
 }
 
 void printAssign(y_assign* assign) {
 	printVariable(assign->var);
-  printf("=");
+  fprintf(f,"=");
   if(assign->exp == NULL){
-    printf("%s()",assign->opName);
+    fprintf(f,"%s()",assign->opName);
     return;
   }
 	if (strcmp(assign->opName,"") != 0) {
-		printf("%s(%s,", assign->opName, assign->var->name);
+		fprintf(f,"%s(%s,", assign->opName, assign->var->name);
 		printExpr(assign->exp);
-		printf(")");
+		fprintf(f,")");
 	} else {
 		printExpr(assign->exp);
 	}
 }
 
 void printVariable(y_variable* var) {
-	printf("%s", var->name);
+	fprintf(f,"%s", var->name);
 }
 
 void printOperation(y_operation* oper) {
-	printf("%s(", oper->opName);
+	fprintf(f,"%s(", oper->opName);
 	printExpr(oper->exp1);
-	printf(",");
+	fprintf(f,",");
 	printExpr(oper->exp2);
-	printf(")");
+	fprintf(f,")");
 }
 
 void printExpr(y_expression* expr) {
@@ -831,15 +856,15 @@ void printExpr(y_expression* expr) {
 
 
 void printBoolExpr(y_boolExpr* expr) {
-	printf("%s(", expr->compFunc);
+	fprintf(f,"%s(", expr->compFunc);
 	printExpr(expr->exp1);
-	printf(",");
+	fprintf(f,",");
 	printExpr(expr->exp2);
-	printf(")->cont.num");
+	fprintf(f,")->cont.num");
 }
 
 void printNum(y_number* num) {
-	printf("%s", num->funcCreator);
+	fprintf(f,"%s", num->funcCreator);
 
 }
 
@@ -870,6 +895,7 @@ void addInstToProg(y_prog* prog, y_inst* i) {
 
 void yyerror(char *s) {
     fprintf(stderr, "line %d: %s\n", lineno, s);
+    exit(1);
 }
 
 static unsigned int str_hash(char* key){
@@ -884,11 +910,11 @@ static unsigned int str_eql(const char * s1, const char * s2){
 }
 
 void endC() {
-	printf("}");
+	fprintf(f,"}");
 }
 
 void startC() {
-	printf("\n\
+	fprintf(f,"\n\
 	#include <stdio.h>\n\
 	#include <stdlib.h>\n\
 	#include <math.h>\n\
