@@ -30,7 +30,10 @@ typedef ListC * List;
 _object
 newList();
 
-void
+_object
+newListFromList(List l);
+
+List
 addList(List l, _object o);
 
 void

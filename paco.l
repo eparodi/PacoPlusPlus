@@ -13,8 +13,10 @@ varName [A-Za-z][0-9A-Za-z_-]*
 
 
 if 					  return IF;
+bloque_si 			  return IF;
 while				  return WHILE;
-end				  return END;
+ciclo_mientras		  return WHILE;
+end					  return END;
 startPaco			  return BEGINPROG;
 endPaco				  yyterminate();
 [\t ]                 ;

@@ -14,7 +14,16 @@ newList(){
   return o;
 }
 
-void
+
+_object
+newListFromList(List l){
+  _object o = malloc(sizeof(Object));
+  o->type = getType(LIST);
+  o->cont.obj = l;
+  return o;
+}
+
+List
 addList(List l, _object o){
   Node * n = malloc(sizeof(Node));
   n->next = l->first;
@@ -96,6 +105,7 @@ printList(List l) {
     printObject(current->obj);
     if(current->next)
       printf(", ");
+    current = current->next;
   }
   printf(" ]");
 }
