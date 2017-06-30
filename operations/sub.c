@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "include/sub.h"
 #include "include/operations.h"
 
@@ -18,10 +19,10 @@ _object subIntDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.num - o2->cont.fl);
 }
 
-_object subIntArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object subIntArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -48,10 +49,10 @@ _object subStrDec(_object o1, _object o2) {
 	return subStrStr(o1, createString(decStr));
 }
 
-_object subStrArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object subStrArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -68,29 +69,29 @@ _object subDecDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.fl - o2->cont.fl);
 }
 
-_object subDecArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object subDecArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
-_object subArrInt(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object subArrStr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object subArrDec(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object subArrArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object subArrInt(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object subArrStr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object subArrDec(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object subArrArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}

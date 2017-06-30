@@ -104,7 +104,6 @@ getOperation(OpValue op, TypeT type1, TypeT type2){
 
 void printObject(_object o) {
 	switch(o->type->id) {
-				printf("TYPE = %d", o->type->id);
 		case INTEGER:
 			printf("%d", o->cont.num);
 			break;

@@ -4,6 +4,8 @@
 #include <math.h>
 #include "include/operations.h"
 
+void removeZeros(char * str);
+
 
 _object createInt(int num) {
 	_object o = malloc(sizeof(Object));
@@ -103,7 +105,6 @@ void removeZeros(char * str) {
 void deleteSubstr(char * str, char * substr, char * dest) {
 	int i = 0, j = 0, k = 0;
 	int startSubstr = -1;
-	int strLen = strlen(str);
 	int substrLen = strlen(substr);
 
 	if (substrLen <= 0) {

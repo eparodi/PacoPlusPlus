@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "include/mul.h"
 #include "include/operations.h"
+#include <string.h>
 
 //--------------------------------------------------------
 
@@ -17,10 +18,10 @@ _object mulIntDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.num * o2->cont.fl);
 }
 
-_object mulIntArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object mulIntArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -34,10 +35,10 @@ _object mulStrInt(_object o1, _object o2) {
 }
 
 _object mulStrStr(_object o1, _object o2) {
-	int len1 = strlen(o1->cont.num);
-	int len2 = strlen(o2->cont.num);
+	int len1 = strlen(o1->cont.str);
+	int len2 = strlen(o2->cont.str);
 	char* aux = calloc(1, len1*(len2 + 1) + 1);
-	int i,j;
+	int i;
 	for (i = 0; i < len1; i++) {
 		aux[i*(len2+1)] = o1->cont.str[i];
 		strcat(aux,o2->cont.str);
@@ -55,10 +56,10 @@ _object mulStrDec(_object o1, _object o2) {
 	return createString(aux);
 }
 
-_object mulStrArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object mulStrArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -80,29 +81,29 @@ _object mulDecDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.fl * o2->cont.fl);
 }
 
-_object mulDecArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object mulDecArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
-_object mulArrInt(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object mulArrStr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object mulArrDec(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object mulArrArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object mulArrInt(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object mulArrStr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object mulArrDec(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object mulArrArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}

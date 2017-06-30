@@ -19,10 +19,10 @@ _object addIntDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.num + o2->cont.fl);
 }
 
-_object addIntArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object addIntArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -43,10 +43,10 @@ _object addStrDec(_object o1, _object o2) {
 	return addStrStr(o1, createString(decStr));
 }
 
-_object addStrArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object addStrArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -63,29 +63,29 @@ _object addDecDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.fl + o2->cont.fl);
 }
 
-_object addDecArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object addDecArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
-_object addArrInt(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object addArrStr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object addArrDec(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
-
-_object addArrArr(_object o1, _object o2) {
-	//TODO
-	return 1;
-}
+//_object addArrInt(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object addArrStr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object addArrDec(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}
+//
+//_object addArrArr(_object o1, _object o2) {
+//	//TODO
+//	return 1;
+//}

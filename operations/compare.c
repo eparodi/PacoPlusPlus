@@ -1,4 +1,5 @@
 #include "include/compare.h"
+#include "operations.h"
 #include <string.h>
 
 _object

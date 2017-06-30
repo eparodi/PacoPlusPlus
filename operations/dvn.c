@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "include/dvn.h"
 #include "include/operations.h"
 
@@ -18,9 +19,9 @@ _object dvnIntDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.num / o2->cont.fl);
 }
 
-_object dvnIntArr(_object o1, _object o2) {
-	return 1;
-}
+//_object dvnIntArr(_object o1, _object o2) {
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -40,9 +41,9 @@ _object dvnStrDec(_object o1, _object o2) {
 	return dvnStrStr(o1, createString(auxStr));
 }
 
-_object dvnStrArr(_object o1, _object o2) {
-	return 1;
-}
+//_object dvnStrArr(_object o1, _object o2) {
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
@@ -59,24 +60,24 @@ _object dvnDecDec(_object o1, _object o2) {
 	return createDecimal(o1->cont.fl / o2->cont.fl);
 }
 
-_object dvnDecArr(_object o1, _object o2) {
-	return 1;
-}
+//_object dvnDecArr(_object o1, _object o2) {
+//	return 1;
+//}
 
 //--------------------------------------------------------
 
-_object dvnArrInt(_object o1, _object o2) {
-	return 1;
-}
-
-_object dvnArrStr(_object o1, _object o2) {
-	return 1;
-}
-
-_object dvnArrDec(_object o1, _object o2) {
-	return 1;
-}
-
-_object dvnArrArr(_object o1, _object o2) {
-	return 1;
-}
+//_object dvnArrInt(_object o1, _object o2) {
+//	return 1;
+//}
+//
+//_object dvnArrStr(_object o1, _object o2) {
+//	return 1;
+//}
+//
+//_object dvnArrDec(_object o1, _object o2) {
+//	return 1;
+//}
+//
+//_object dvnArrArr(_object o1, _object o2) {
+//	return 1;
+//}
