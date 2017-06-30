@@ -63,7 +63,7 @@
 %token PLUS MINUS MULT DIV POW
 %token PLUSEQ MINUSEQ MULTEQ DIVEQ EQ
 %token NEWLINE
-
+%token STDNUM STDSTR STDDEC
 %token IF WHILE END BEGINPROG LT LE GT GE EQLS
 
 %token <num> INT
@@ -88,15 +88,10 @@
 %left PLUS MINUS
 %left MULT DIV
 %left POW
-/*%precedence PLUS
-%precedence MINUS
-%precedence MULT
-%precedence DIV
-%precedence POW*/
 
 %%
 
-START 	: BEGINPROG NEWLINE PROGRAM END {  }
+//START 	: BEGINPROG NEWLINE PROGRAM END {  }
 
 PROGRAM : INST PROGRAM	        {
 									addInstToProg(actualProg,$1);
@@ -337,6 +332,82 @@ ASSIGN  : VAR EQ EXPRESS        {
 									}
 									$$->isNew = 0;
 								}
+
+    | VAR STDNUM  {
+    							$$ = malloc(sizeof(*$$));
+    							y_variable* p = (y_variable*) getElementHT(var_table, $1);
+    							if( p == NULL) {
+    							  y_variable* var = malloc(sizeof(y_variable));
+                		var->name = malloc(strlen($1) + 1);
+                		strcpy(var->name, $1);
+                		var->type = getType(INTEGER);
+                		var->blockNum = blockNum;
+                		$$->var = var;
+                		$$->isNew = 1;
+                		addElementHT(var_table,$1,var);
+                	} else {
+                		int declaratedBlock = p->blockNum;
+                	  if (declaratedBlock > blockNum) {
+                		$$->isNew = 1;
+                		} else {
+                			$$->isNew = 0;
+                		}
+                		$$->var = p;
+                		p->type = getType(INTEGER);
+                	}
+                	$$->exp = NULL;
+                	$$->opName = "parseNum";
+                }
+      | VAR STDDEC{
+        $$ = malloc(sizeof(*$$));
+        y_variable* p = (y_variable*) getElementHT(var_table, $1);
+        if( p == NULL) {
+          y_variable* var = malloc(sizeof(y_variable));
+          var->name = malloc(strlen($1) + 1);
+          strcpy(var->name, $1);
+          var->type = getType(DECIMAL);
+          var->blockNum = blockNum;
+          $$->var = var;
+          $$->isNew = 1;
+          addElementHT(var_table,$1,var);
+        } else {
+          int declaratedBlock = p->blockNum;
+          if (declaratedBlock > blockNum) {
+          $$->isNew = 1;
+          } else {
+            $$->isNew = 0;
+          }
+          $$->var = p;
+          p->type = getType(DECIMAL);
+        }
+        $$->exp = NULL;
+        $$->opName = "parseDec";
+      }
+      | VAR STDSTR{
+        $$ = malloc(sizeof(*$$));
+        y_variable* p = (y_variable*) getElementHT(var_table, $1);
+        if( p == NULL) {
+          y_variable* var = malloc(sizeof(y_variable));
+          var->name = malloc(strlen($1) + 1);
+          strcpy(var->name, $1);
+          var->type = getType(STR);
+          var->blockNum = blockNum;
+          $$->var = var;
+          $$->isNew = 1;
+          addElementHT(var_table,$1,var);
+        } else {
+          int declaratedBlock = p->blockNum;
+          if (declaratedBlock > blockNum) {
+          $$->isNew = 1;
+          } else {
+            $$->isNew = 0;
+          }
+          $$->var = p;
+          p->type = getType(STR);
+        }
+        $$->exp = NULL;
+        $$->opName = "parseString";
+      }
 		;
 
 EXPRESS : VAR                   {
@@ -667,10 +738,12 @@ void printInst(y_inst* i) {
 			}
 			printAssign((y_assign*) i->content);
 			printf(";\n");
-			printf("printObject(");
-			printExpr(((y_assign*) i->content)->exp);
-			printf(");\n");
-			printf("printf(\"\\n\");\n");
+      if (((y_assign*) i->content)->exp!=NULL){
+        printf("printObject(");
+        printExpr(((y_assign*) i->content)->exp);
+        printf(");\n");
+        printf("printf(\"\\n\");\n");
+      }
 			break;
 		case 5:
 			printf("printObject(");
@@ -697,7 +770,11 @@ void printInst(y_inst* i) {
 
 void printAssign(y_assign* assign) {
 	printVariable(assign->var);
-	printf("=");
+  printf("=");
+  if(assign->exp == NULL){
+    printf("%s()",assign->opName);
+    return;
+  }
 	if (strcmp(assign->opName,"") != 0) {
 		printf("%s(%s,", assign->opName, assign->var->name);
 		printExpr(assign->exp);

@@ -37,7 +37,9 @@ endPaco				  yyterminate();
 						strcpy(yylval.str, yytext);
 						return VAR;
 					  }
-
+\<\<n         return STDNUM;
+\<\<d         return STDDEC;
+\<\<s         return STDSTR;
 \<					  return LT;
 \<=					  return LE;
 \>					  return GT;
