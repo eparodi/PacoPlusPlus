@@ -1,14 +1,33 @@
+"\nAdding number and number:"
 2+2
-5+4
+
+"\nAdding number and decimal:"
 4.5+5
+
+"\nDividing decimal and number:"
 9.0/6
+
+"\nAdding strings:"
 "asd"+"DSA"
+
+"\nAdding string and number:"
 "asd"+789
-4*"b"
-"OOOO"*"qwe"
+
+"\nMultiplying number and string"
+4*"ravioles"
+
+"\nMultiplying string and string:"
+"1234"*"abc"
+
+"\nDividing string and string"
 "holaBORRAME comBORRAMEo va?"/"BORRAME"
+
+"\nDividing string and number"
 "Pe123456dro"/123456
-var1="123"
-var1=12.2
-var2=var1
-endPaco
+
+"\nCreating list:"
+var1=[]
+5534:var1
+var1
+
+"\nMultiplying two lists:"

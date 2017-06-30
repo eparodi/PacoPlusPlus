@@ -24,5 +24,6 @@ void invertStr(char* str);
 char* itoa(int n);
 char * floatToString(float f);
 void deleteSubstr(char* str, char* substr, char* dest);
+void loadOperations();
 
 #endif

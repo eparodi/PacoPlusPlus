@@ -111,7 +111,7 @@ void printObject(_object o) {
 			printf("%f", o->cont.fl);
 			break;
 		case STR:
-			printf("\"%s\"", o->cont.str);
+			printf("%s", o->cont.str);
 			break;
     case LIST:
       printList(o->cont.obj);

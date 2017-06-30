@@ -39,7 +39,7 @@ operationOneByOne(List l, _object o, OpValue opV, ListOrder order){
   Node * current_new = NULL;
   _object lNew = newList();
   while(current){
-    Node * newNode = malloc(sizeof(Node));
+    Node * newNode = calloc(1,sizeof(Node));
     OperationT op = getOperation(opV, current->obj->type, o->type);
     if (order == FIRST_LIST){
       newNode->obj = op->func(current->obj, o);
@@ -49,7 +49,7 @@ operationOneByOne(List l, _object o, OpValue opV, ListOrder order){
     ((List) lNew->cont.obj)->size++;
     if (!current_new)
       ((List) lNew->cont.obj)->first = newNode;
-    else{
+    else{printf("nect\n");
       current->next = newNode;
       current = newNode;
     }

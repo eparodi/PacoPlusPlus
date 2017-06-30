@@ -131,3 +131,145 @@ void deleteSubstr(char * str, char * substr, char * dest) {
 	}
 	dest[k] = '\0';
 }
+
+void loadOperations() {
+	printf("Loading operations\n");
+			// SUM OPERATIONS
+		addOperation(&addIntInt,"addIntInt",INTEGER, INTEGER,ADD,getType(INTEGER));
+		addOperation(&addIntStr,"addIntStr",INTEGER, STR,ADD,getType(STR));
+		addOperation(&addIntDec,"addIntDec",INTEGER, DECIMAL,ADD,getType(DECIMAL));
+		//addOperation(&addIntArr,"addIntArr",INTEGER, ARRAY?,ADD,getType(?));
+
+		addOperation(&addStrInt,"addStrInt",STR, INTEGER,ADD,getType(STR));
+		addOperation(&addStrStr,"addStrStr",STR, STR,ADD,getType(STR));
+        addOperation(&addStrDec,"addStrDec",STR, DECIMAL,ADD,getType(STR));
+        //addOperation(&addStrArr,"addStrArr",STR, ARRAY,ADD,?);
+
+		addOperation(&addDecInt,"addDecInt",DECIMAL, INTEGER,ADD,getType(DECIMAL));
+		addOperation(&addDecStr,"addDecStr",DECIMAL, STR,ADD,getType(STR));
+		addOperation(&addDecDec,"addDecDec",DECIMAL, DECIMAL,ADD,getType(DECIMAL));
+        //addOperation(&addDecArr,"addDecArr",DECIMAL, ARRAY?,ADD,getType(?));
+
+        //addOperation(&addArrInt,"addArrInt",ARRAY, INTEGER,ADD,getType(?));
+        //addOperation(&addArrStr,"addArrStr",ARRAY, STR,ADD,getType(?));
+        //addOperation(&addArrDec,"addArrDec",ARRAY, DECIMAL,ADD,getType(?));
+        //addOperation(&addArrArr,"addArrArr",ARRAY, ARRAY,ADD,getType(?));
+		addOperation(&subStrStr,"subStrStr",STR, STR,SUB,getType(STR));
+
+
+        // SUB OPERATIONS
+		addOperation(&subIntInt,"subIntInt",INTEGER, INTEGER,SUB,getType(INTEGER));
+		addOperation(&subIntStr,"subIntStr",INTEGER, STR,SUB,getType(STR));
+		addOperation(&subIntDec,"subIntDec",INTEGER, DECIMAL,SUB,getType(DECIMAL));
+		//addOperation(&subIntArr,"subIntArr",INTEGER, ARRAY,SUB,getType(?));
+
+		addOperation(&subDecInt,"subDecInt",DECIMAL, INTEGER,SUB,getType(DECIMAL));
+		addOperation(&subDecStr,"subDecStr",DECIMAL, STR,SUB,getType(STR));
+		addOperation(&subDecDec,"subDecDec",DECIMAL, DECIMAL,SUB,getType(DECIMAL));
+		//addOperation(&subDecArr,"subDecArr",DECIMAL, ARRAY,SUB,getType(?));
+
+		addOperation(&subStrInt,"subStrInt",STR, INTEGER,SUB,getType(STR));
+		addOperation(&subStrStr,"subStrStr",STR, STR,SUB,getType(STR));
+		addOperation(&subStrDec,"subStrDec",STR, DECIMAL,SUB,getType(STR));
+		//addOperation(&subStrArr,"subStrArr",STR, ARRAY,SUB,getType(?));
+
+		//addOperation(&subArrInt,"subArrInt",ARRAY, INTEGER,SUB,getType(?));
+        //addOperation(&subArrStr,"subArrStr",ARRAY, STR,SUB,getType(?));
+        //addOperation(&subArrDec,"subArrDec",ARRAY, DECIMAL,SUB,getType(?));
+        //addOperation(&subArrArr,"subArrArr",ARRAY, ARRAY,SUB,getType(?));
+
+
+        // MUL OPERATIONS
+		addOperation(&mulIntInt,"mulIntInt",INTEGER, INTEGER,MUL,getType(INTEGER));
+		addOperation(&mulIntStr,"mulIntStr",INTEGER, STR,MUL,getType(STR));
+		addOperation(&mulIntDec,"mulIntDec",INTEGER, DECIMAL,MUL,getType(DECIMAL));
+		//addOperation(&mulIntArr,"mulIntArr",INTEGER, ARRAY,MUL,getType(?));
+
+		addOperation(&mulStrInt,"mulStrInt",STR, INTEGER,MUL,getType(STR));
+		addOperation(&mulStrStr,"mulStrStr",STR, STR,MUL,getType(STR));
+		addOperation(&mulStrDec,"mulStrDec",STR, DECIMAL,MUL,getType(STR));
+		//addOperation(&mulStrArr,"mulStrArr",STR, ARRAY,MUL,getType(?));
+
+		addOperation(&mulDecInt,"mulDecInt",DECIMAL, INTEGER,MUL,getType(DECIMAL));
+		addOperation(&mulDecStr,"mulDecStr",DECIMAL, STR,MUL,getType(STR));
+		addOperation(&mulDecDec,"mulDecDec",DECIMAL, DECIMAL,MUL,getType(DECIMAL));
+		//addOperation(&mulDecArr,"mulDecArr",DECIMAL, ARRAY,MUL,getType(?));
+
+		//addOperation(&mulArrInt,"mulArrInt",ARRAY, INTEGER,MUL,getType(?));
+        //addOperation(&mulArrStr,"mulArrStr",ARRAY, STR,MUL,getType(?));
+        //addOperation(&mulArrDec,"mulArrDec",ARRAY, DECIMAL,MUL,getType(?));
+        //addOperation(&mulArrArr,"mulArrArr",ARRAY, ARRAY,MUL,getType(?));
+
+		// DVN OPERATIONS
+		addOperation(&dvnIntInt,"dvnIntInt",INTEGER, INTEGER,DVN,getType(INTEGER));
+		addOperation(&dvnIntStr,"dvnIntStr",INTEGER, STR,DVN,getType(STR));
+		addOperation(&dvnIntDec,"dvnIntDec",INTEGER, DECIMAL,DVN,getType(DECIMAL));
+
+		addOperation(&dvnStrInt,"dvnStrInt",STR, INTEGER,DVN,getType(STR));
+		addOperation(&dvnStrStr,"dvnStrStr",STR, STR,DVN,getType(STR));
+		addOperation(&dvnStrDec,"dvnStrDec",STR, DECIMAL,DVN,getType(STR));
+		//addOperation(&dvnStrArr,"dvnStrArr",STR, ARRAY,DVN,getType(?));
+
+		addOperation(&dvnDecInt,"dvnDecInt",DECIMAL, INTEGER,DVN,getType(DECIMAL));
+		addOperation(&dvnDecStr,"dvnDecStr",DECIMAL, STR,DVN,getType(STR));
+		addOperation(&dvnDecDec,"dvnDecDec",DECIMAL, DECIMAL,DVN,getType(DECIMAL));
+		//addOperation(&dvnDecArr,"dvnDecArr",DECIMAL, ARRAY,DVN,getType(?));
+
+		//addOperation(&dvnArrInt,"dvnArrInt",ARRAY, INTEGER,DVN,getType(?));
+        //addOperation(&dvnArrStr,"dvnArrStr",ARRAY, STR,DVN,getType(?));
+        //addOperation(&dvnArrDec,"dvnArrDec",ARRAY, DECIMAL,DVN,getType(?));
+        //addOperation(&dvnArrArr,"dvnArrArr",ARRAY, ARRAY,DVN,getType(?));
+
+		addOperation(&powIntInt,"powIntInt",INTEGER, INTEGER,PWR,getType(INTEGER));
+
+
+    // LIST INT OPERATIONS
+    for (int i = 0; i < CANT_TYPES ; i++){
+      addOperation(&addListAny,"addListAny",LIST, i,ADD,getType(LIST));
+      addOperation(&subListAny,"subListAny",LIST, i,SUB,getType(LIST));
+      addOperation(&multListAny,"multListAny",LIST, i,MUL,getType(LIST));
+      addOperation(&divListAny,"divListAny",LIST, i,DVN,getType(LIST));
+      addOperation(&addAnyList,"addAnyList",i, LIST,ADD,getType(LIST));
+      addOperation(&subAnyList,"subAnyList", i, LIST,SUB,getType(LIST));
+      addOperation(&multAnyList,"multAnyList", i, LIST,MUL,getType(LIST));
+      addOperation(&divAnyList,"divAnyList", i, LIST,DVN,getType(LIST));
+    }
+
+		for (int i = 0 ; i < CANT_TYPES ; i++){
+			for (int j = 0 ; j < CANT_TYPES; j++){
+        if ( i != j ){
+          addOperation(&differentType,"differentType", i, j, EQL ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, LTS ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, LES ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, GTS ,getType(INTEGER));
+          addOperation(&differentType,"differentType", i, j, GES ,getType(INTEGER));
+        }
+			}
+		}
+
+    // EQUALS
+    addOperation(&compareInt,"compareInt",INTEGER, INTEGER,EQL,getType(INTEGER));
+    addOperation(&compareDecimal,"compareDecimal",DECIMAL, DECIMAL,EQL,getType(INTEGER));
+    addOperation(&compareString,"compareString",STR, STR, EQL,getType(INTEGER));
+    addOperation(&compareList,"compareList",LIST, LIST,EQL,getType(INTEGER));
+    // LESS THAN
+    addOperation(&ltInt,"ltInt",INTEGER, INTEGER,LTS,getType(INTEGER));
+    addOperation(&ltDecimal,"ltDecimal",DECIMAL, DECIMAL,LTS,getType(INTEGER));
+    addOperation(&ltString,"ltString",STR, STR, LTS,getType(INTEGER));
+    addOperation(&ltList,"ltList",LIST, LIST,LTS,getType(INTEGER));
+    // GREATER THAN
+    addOperation(&gtInt,"gtInt",INTEGER, INTEGER,GTS,getType(INTEGER));
+    addOperation(&gtDecimal,"gtDecimal",DECIMAL, DECIMAL,GTS,getType(INTEGER));
+    addOperation(&gtString,"gtString",STR, STR, GTS,getType(INTEGER));
+    addOperation(&gtList,"gtList",LIST, LIST, GTS,getType(INTEGER));
+    // LESS EQUALS
+    addOperation(&leInt,"leInt",INTEGER, INTEGER, LES,getType(INTEGER));
+    addOperation(&leDecimal,"leDecimal",DECIMAL, DECIMAL,LES,getType(INTEGER));
+    addOperation(&leString,"leString",STR, STR, LES,getType(INTEGER));
+    addOperation(&leList,"leList",LIST, LIST,LES,getType(INTEGER));
+    // GREATER EQUALS
+    addOperation(&geInt,"geInt",INTEGER, INTEGER,GES,getType(INTEGER));
+    addOperation(&geDecimal,"geDecimal",DECIMAL, DECIMAL,GES,getType(INTEGER));
+    addOperation(&geString,"geString",STR, STR, GES,getType(INTEGER));
+    addOperation(&geList,"geList",LIST, LIST,GES,getType(INTEGER));
+}
