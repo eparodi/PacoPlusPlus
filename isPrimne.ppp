@@ -1,0 +1,22 @@
+
+
+flag = 0;
+n=0;
+i=2;
+"Enter a positive integer:"
+n<<n
+while(i<=n/2)
+    isDivider = "not yet";
+    auxn = i;
+    while(isDivider == "not yet")
+        if (n==auxn)
+            isDivider = "yes"
+        end
+        if (n<auxn)
+            isDivider = "no";
+        end
+        auxn += i;
+    end
+end
+
+endPaco

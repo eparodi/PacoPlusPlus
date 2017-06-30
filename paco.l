@@ -11,16 +11,13 @@ varName [A-Za-z][0-9A-Za-z_-]*
 
 %%
 
-
 if 					  return IF;
 bloque_si 			  return IF;
 while				  return WHILE;
 ciclo_mientras		  return WHILE;
 end					  return END;
-startPaco			  return BEGINPROG;
-endPaco				  yyterminate();
 [\t ]                 ;
-[\n]				  return NEWLINE;
+[\n]				  return ENTER;
 \+                    return PLUS;
 \+=                   return PLUSEQ;
 -                     return MINUS;
@@ -39,9 +36,9 @@ endPaco				  yyterminate();
 						strcpy(yylval.str, yytext);
 						return VAR;
 					  }
-\<\<n         return STDNUM;
-\<\<d         return STDDEC;
-\<\<s         return STDSTR;
+\<\<n         		  return STDNUM;
+\<\<d         	  	  return STDDEC;
+\<\<s         		  return STDSTR;
 \<					  return LT;
 \<=					  return LE;
 \>					  return GT;
@@ -54,5 +51,4 @@ endPaco				  yyterminate();
 						return STRING;
 					}
 .                     return yytext[0];
-
 %%

@@ -1,6 +1,4 @@
 -TODO REALES
->EOF
->Si no compila que no genere a.out
 >imprimir las listas en C (Pedro)
 >warnings
 >declaracion de variables en bloques (Pedro)
