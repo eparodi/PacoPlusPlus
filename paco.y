@@ -550,7 +550,7 @@ int yywrap(void)
 int
 main(void)
 {
-		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
+		var_table = createHashTable(sizeof(char *), sizeof(_object), (hashFunction)&str_hash, 20, (equalsFunction)&str_eql);
 		startTypes();
 		buildOpTable();
 		prog = malloc(sizeof(y_prog));
@@ -912,7 +912,7 @@ void startC() {
 \n\
 \n\
 	int main() {\n\
-		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);\n\
+		var_table = createHashTable(sizeof(char *), sizeof(_object), (hashFunction)&str_hash, 20, (equalsFunction)&str_eql);\n\
 		startTypes();\n\
 		buildOpTable();\n");
 }
