@@ -66,5 +66,10 @@ typedef struct {
 	y_prog* prog;
 } y_if;
 
+typedef struct {
+	y_variable* var;
+	y_expression* expr;
+} y_addList;
+
 
 #endif

@@ -57,6 +57,7 @@
 	y_inst* inst;
 	y_prog* prog;
 	y_if* ifBlok;
+	y_addList* addList;
 }
 %start PROGRAM
 
@@ -84,6 +85,7 @@
 %type <ifBlok> IFTOKEN
 %type <ifBlok> WHILEBLOCK
 %type <ifBlok> WHILETOKEN
+%type <addList> INSERTTOLIST
 
 %left PLUS MINUS
 %left MULT DIV
@@ -103,17 +105,7 @@ PROGRAM : INST PROGRAM	        {
 								}
 		;
     
-INST    : ASSIGN ';'            {
-									$$ = malloc(sizeof(*$$));
-									$$->type = 0;
-									$$->content = $1;
-								}
-		| EXPRESS ';'           {
-									$$ = malloc(sizeof(*$$));
-									$$->type = 1;
-									$$->content = $1;
-								}
-		| ASSIGN ';' NEWLINE    {
+INST    : ASSIGN ';' NEWLINE    {
 									$$ = malloc(sizeof(*$$));
 									$$->type = 2;
 									$$->content = $1;
@@ -143,7 +135,35 @@ INST    : ASSIGN ';'            {
 									$$->type = 7;
 									$$->content = $1;
 								}
+		| INSERTTOLIST	NEWLINE	{
+									$$ = malloc(sizeof(*$$));
+									$$->type = 8;
+									$$->content = $1;
+								}
 		;
+
+INSERTTOLIST: EXPRESS ':' VAR 	{
+									$$ = malloc(sizeof(*$$));
+									$$->expr = $1;
+									y_variable* p = (y_variable*) getElementHT(var_table, $3);
+									if (p == NULL) {
+										yyerror("Variable not defined");
+										exit(0);
+									} else {
+										int declaratedBlock = p->blockNum;
+										if (declaratedBlock > blockNum) {
+											yyerror("Variable not defined");
+											exit(0);
+										} else {
+											if (p->type->id != LIST) {
+												yyerror("Variable is not a list");
+												exit(0);
+											}
+											$$->var = p;
+										}
+									}
+								}
+			;
 
 IFBLOCK	: IFTOKEN '(' BOOLEXPR ')' NEWLINE PROGRAM END NEWLINE	{
 																	$$ = $1;
@@ -334,10 +354,10 @@ ASSIGN  : VAR EQ EXPRESS        {
 								}
 
     | VAR STDNUM  {
-    							$$ = malloc(sizeof(*$$));
-    							y_variable* p = (y_variable*) getElementHT(var_table, $1);
-    							if( p == NULL) {
-    							  y_variable* var = malloc(sizeof(y_variable));
+					$$ = malloc(sizeof(*$$));
+					y_variable* p = (y_variable*) getElementHT(var_table, $1);
+					if( p == NULL) {
+						  y_variable* var = malloc(sizeof(y_variable));
                 		var->name = malloc(strlen($1) + 1);
                 		strcpy(var->name, $1);
                 		var->type = getType(INTEGER);
@@ -503,38 +523,22 @@ NUMBER  : INT                   {
 									$$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
 									sprintf($$->funcCreator, "createDecimal(%ff)", $1);
 								}
-		| STRING 		{
+		| STRING 				{
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createString($1);
 									$$->funcCreator = malloc("createString()" + strlen($1) + 1);
 									sprintf($$->funcCreator, "createString(\"%s\")", $1);
 								}
-    | ARRAY     {
-                  $$ = $1;
-                }
+    	| ARRAY   		 		{
+									$$ = malloc(sizeof(*$$));
+									$$->obj = newList();
+									$$->funcCreator = malloc("newList()" + 1);
+									sprintf($$->funcCreator, "newList()");
+								}
 		;
 /* TODO: To create a list use newList() and add a list with addList(l, obj) */
-ARRAY: '[' LIST ']' {
-                      /* $$ = $2; */
-                    }
-		| '[' EXPRESS ']' {
-                        /*_object l = newList();
-                        addList(l.cont.obj, $2);
-                        $$ = l;*/
-                      }
-		;
-
-LIST: EXPRESS ',' EXPRESS {
-														/*_object l = newList();
-                            addList(l.cont.obj, $3);
-                            addList(l.cont.obj, $1);
-                            $$ = l.cont.obj;*/
-													}
-		| LIST ',' EXPRESS {
-                          /*addList($1, $3);
-                          $$ = $1;*/
-                       }
-		;
+ARRAY: '[' ']'
+	 ;
 %%
 
 int yywrap(void)
@@ -738,12 +742,12 @@ void printInst(y_inst* i) {
 			}
 			printAssign((y_assign*) i->content);
 			printf(";\n");
-      if (((y_assign*) i->content)->exp!=NULL){
-        printf("printObject(");
-        printExpr(((y_assign*) i->content)->exp);
-        printf(");\n");
-        printf("printf(\"\\n\");\n");
-      }
+			if (((y_assign*) i->content)->exp!=NULL){
+				printf("printObject(");
+				printVariable(((y_assign*) i->content)->var);
+				printf(");\n");
+				printf("printf(\"\\n\");\n");
+			}
 			break;
 		case 5:
 			printf("printObject(");
@@ -764,6 +768,13 @@ void printInst(y_inst* i) {
 			printf("){\n");
 			printProg(((y_if*) i->content)->prog);
 			printf("}\n");
+			break;
+		case 8:
+			printf("addList(");
+			printVariable(((y_addList*) i->content)->var);
+			printf("->cont.obj,");
+			printExpr(((y_addList*) i->content)->expr);
+			printf(");\n");
 			break;
 	}
 }
@@ -847,7 +858,7 @@ void addInstToProg(y_prog* prog, y_inst* i) {
 		n->inst = i;
 		prog->first = n;
 	}
-}
+}	
 
 void yyerror(char *s) {
     fprintf(stderr, "line %d: %s\n", 42, s);
