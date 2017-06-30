@@ -11,7 +11,7 @@
 	#include "yaccObjects.h"
   #include "y.tab.h"
 
-	int lineno = 0; 
+	int lineno = 0;
 
 	void yyerror(char* s);
 
@@ -41,7 +41,7 @@
 
 	y_prog* prog;
 	y_prog* actualProg;
-  
+
   FILE * f;
   FILE * yyin;
 %}
@@ -116,7 +116,7 @@ PROGRAM : INST NEWLINE PROGRAM	{
 		| NEWLINE PROGRAM		{
 								}
 		;
-   
+
 NEWLINE : ENTER					{ lineno++; }
 
 INST    : ASSIGN ';' 	  	    {
@@ -159,8 +159,7 @@ INST    : ASSIGN ';' 	  	    {
 									$$->type = 9;
 									$$->content = $1;
 								}
-		| NEWLINE				{ $$ = NULL; }		
-		;
+		| NEWLINE				{ $$ = NULL; }	
 
 INSERTTOLIST: EXPRESS ':' VAR 	{
 									$$ = malloc(sizeof(*$$));
@@ -601,21 +600,21 @@ main(int argc, char * argv[])
 	actualProg = prog;
 	yyparse();
     fclose(yyin);
-    
+
     f = fopen(newFileName,"w+");
     if (f == NULL){
       printf("Buuh! I cannot write in %s. Stop using that file!\n", newFileName);
       return 0;
     }
-    
+
     startC();
 
 		printProg(prog);
 
 		endC();
-    
+
     fclose(f);
-    
+
 		return 0;
 }
 

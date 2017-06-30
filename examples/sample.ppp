@@ -1,0 +1,36 @@
+"Adding number and number:"
+2+2
+
+"Adding number and decimal:"
+4.5+5
+
+"Dividing decimal and number:"
+9.0/6
+
+"Adding strings:"
+"asd"+"DSA"
+
+"Adding string and number:"
+"asd"+789
+
+"Multiplying number and string"
+4*"ravioles"
+
+"Multiplying string and string:"
+"1234"*"abc"
+
+"Dividing string and string"
+"holaBORRAME comBORRAMEo va?"/"BORRAME"
+
+"Dividing string and number"
+"Pe123456dro"/123456
+
+"Creating list:"
+var1=[]
+5534:var1
+55.5:var1
+"qwerty":var1
+var1
+
+"Multiplying two lists:"
+var1*var1
