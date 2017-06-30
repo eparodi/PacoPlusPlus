@@ -85,11 +85,14 @@
 %type <ifBlok> WHILEBLOCK
 %type <ifBlok> WHILETOKEN
 
-%precedence PLUS
+%left PLUS MINUS
+%left MULT DIV
+%left POW
+/*%precedence PLUS
 %precedence MINUS
 %precedence MULT
 %precedence DIV
-%precedence POW
+%precedence POW*/
 
 %%
 
@@ -375,8 +378,7 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 									strcpy($$->opName, operation->func_name);
 									$$->exp1 = $1;
 									$$->exp2 = $3;
-									//$$ = operation->func($1,$3);
-									//printf("%s(", operation->func_name);
+                  $$->retType = operation->return_type;
 								}
 		| EXPRESS MINUS EXPRESS {
 									OperationT operation = getOperation(SUB, $1->type, $3->type);
@@ -385,8 +387,7 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 									strcpy($$->opName, operation->func_name);
 									$$->exp1 = $1;
 									$$->exp2 = $3;
-									//$$ = operation->func($1,$3);
-									//printf("%s(", operation->func_name);
+                  $$->retType = operation->return_type;
 								}
 		| EXPRESS MULT EXPRESS  {
 									OperationT operation = getOperation(MUL, $1->type, $3->type);
@@ -395,8 +396,7 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 									strcpy($$->opName, operation->func_name);
 									$$->exp1 = $1;
 									$$->exp2 = $3;
-									//$$ = operation->func($1,$3);
-									//printf("%s(", operation->func_name);
+                  $$->retType = operation->return_type;
 								}
 		| EXPRESS DIV EXPRESS   {
 									OperationT operation = getOperation(DVN, $1->type, $3->type);
@@ -405,8 +405,6 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 									strcpy($$->opName, operation->func_name);
 									$$->exp1 = $1;
 									$$->exp2 = $3;
-									//$$ = operation->func($1,$3);
-									//printf("%s(", operation->func_name);
 								}
 		| EXPRESS POW EXPRESS   {
 									OperationT operation = getOperation(PWR, $1->type, $3->type);
@@ -415,8 +413,8 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 									strcpy($$->opName, operation->func_name);
 									$$->exp1 = $1;
 									$$->exp2 = $3;
-									//$$ = operation->func($1,$3);
-									//printf("%s(", operation->func_name);
+                  $$->retType = operation->return_type;
+
 								}
 		/*| EXPRESS '?'			{ $$ = createString($1->type->name);}*/
 		;
