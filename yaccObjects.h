@@ -71,5 +71,10 @@ typedef struct {
 	y_expression* expr;
 } y_addList;
 
+typedef struct GlobVars{
+	y_variable* var;
+	struct GlobVars* next;
+} y_globVars;
+
 
 #endif
