@@ -5,4 +5,4 @@ a.out
 lex.yy.c
 pacopp.out
 test.c
-compile.c
+compiled.c
