@@ -33,7 +33,7 @@ newList();
 _object
 newListFromList(List l);
 
-List
+void
 addList(List l, _object o);
 
 void

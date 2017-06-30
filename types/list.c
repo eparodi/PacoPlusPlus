@@ -23,7 +23,7 @@ newListFromList(List l){
   return o;
 }
 
-List
+void
 addList(List l, _object o){
   Node * n = malloc(sizeof(Node));
   n->next = l->first;
