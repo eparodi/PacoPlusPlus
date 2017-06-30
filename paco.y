@@ -17,6 +17,7 @@
 	static unsigned int str_hash(char* key);
 	static unsigned int str_eql(const char * s1, const char * s2);
 
+    void printNum(y_number* num);
 	void printExpr(y_expression* expr);
 	void printOperation(y_operation* oper);
 	void printObject(_object o);
@@ -539,25 +540,25 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 NUMBER  : INT                   {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createInt($1);
-									$$->funcCreator = malloc("createInt()" + digitCount($1) + 1);
+									$$->funcCreator = malloc((size_t)"createInt()" + digitCount($1) + 1);
 									sprintf($$->funcCreator, "createInt(%d)", $1);
 								}
 		| FLOAT                 {
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createDecimal($1);
-									$$->funcCreator = malloc("createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
+									$$->funcCreator = malloc((size_t)"createDecimal()" + digitCount($1) + 20 + 1);	// 20 decimals max
 									sprintf($$->funcCreator, "createDecimal(%ff)", $1);
 								}
 		| STRING 				{
 									$$ = malloc(sizeof(*$$));
 									$$->obj = createString($1);
-									$$->funcCreator = malloc("createString()" + strlen($1) + 1);
+									$$->funcCreator = malloc((size_t)"createString()" + strlen($1) + 1);
 									sprintf($$->funcCreator, "createString(\"%s\")", $1);
 								}
     	| ARRAY   		 		{
 									$$ = malloc(sizeof(*$$));
 									$$->obj = newList();
-									$$->funcCreator = malloc("newList()" + 1);
+									$$->funcCreator = malloc((size_t)"newList()" + 1);
 									sprintf($$->funcCreator, "newList()");
 								}
 		;
