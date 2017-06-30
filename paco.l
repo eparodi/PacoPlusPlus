@@ -30,6 +30,7 @@ endPaco				  yyterminate();
 \/                    return DIV;
 \/=                   return DIVEQ;
 \^                    return POW;
+==                    return EQLS;
 =                     return EQ;
 {varName}		      {
 						yylval.str = malloc(strlen(yytext)+1);

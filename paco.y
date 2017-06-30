@@ -10,8 +10,6 @@
 	#include "hashtable/include/hashtable.h"
 	#include "yaccObjects.h"
 
-	#define MAXVAR 8192
-
 	void yyerror(char* s);
 
 	hashTableT var_table;
@@ -66,14 +64,14 @@
 %token PLUSEQ MINUSEQ MULTEQ DIVEQ EQ
 %token NEWLINE
 
-%token IF WHILE END BEGINPROG LT LE GT GE
+%token IF WHILE END BEGINPROG LT LE GT GE EQLS
 
 %token <num> INT
 %token <str> STRING
 %token <fl> FLOAT
 %token <str> VAR
 
-%type <obj> VALUE
+//%type <obj> VALUE
 %type <obj> ARRAY
 %type <number> NUMBER
 %type <expression> EXPRESS
@@ -106,6 +104,7 @@ PROGRAM : INST PROGRAM	        {
 									// printInst($1);
 								}
 		;
+    
 INST    : ASSIGN ';'            {
 									$$ = malloc(sizeof(*$$));
 									$$->type = 0;
@@ -191,9 +190,38 @@ BOOLEXPR: EXPRESS LT EXPRESS 	{
 									$$->exp1 = $1;
 									$$->exp2 = $3;
 								}
-		| EXPRESS LE EXPRESS
-		| EXPRESS GT EXPRESS
-		| EXPRESS GE EXPRESS
+		| EXPRESS LE EXPRESS  {
+    									$$ = malloc(sizeof(*$$));
+    									OperationT operation = getOperation(LES, $1->type, $3->type);
+    									$$->compFunc = malloc(strlen(operation->func_name) + 1);
+    									strcpy($$->compFunc, operation->func_name);
+    									$$->exp1 = $1;
+    									$$->exp2 = $3;
+    								}
+		| EXPRESS GT EXPRESS  {
+    									$$ = malloc(sizeof(*$$));
+    									OperationT operation = getOperation(GTS, $1->type, $3->type);
+    									$$->compFunc = malloc(strlen(operation->func_name) + 1);
+    									strcpy($$->compFunc, operation->func_name);
+    									$$->exp1 = $1;
+    									$$->exp2 = $3;
+    								}
+		| EXPRESS GE EXPRESS {
+    									$$ = malloc(sizeof(*$$));
+    									OperationT operation = getOperation(GES, $1->type, $3->type);
+    									$$->compFunc = malloc(strlen(operation->func_name) + 1);
+    									strcpy($$->compFunc, operation->func_name);
+    									$$->exp1 = $1;
+    									$$->exp2 = $3;
+    								}
+		| EXPRESS EQLS EXPRESS {
+											$$ = malloc(sizeof(*$$));
+											OperationT operation = getOperation(EQL, $1->type, $3->type);
+											$$->compFunc = malloc(strlen(operation->func_name) + 1);
+											strcpy($$->compFunc, operation->func_name);
+											$$->exp1 = $1;
+											$$->exp2 = $3;
+										}
 		;
 
 ASSIGN  : VAR EQ EXPRESS        {
@@ -312,7 +340,7 @@ EXPRESS : VAR                   {
 									$$ = malloc(sizeof(*$$));
 									y_variable* p = (y_variable*) getElementHT(var_table, $1);
 									if (p == NULL) {
-										yyerror("Variable not defined");
+										yyerror("Variable not defined.");
 										exit(0);
 									} else {
 										int declaratedBlock = p->blockNum;
