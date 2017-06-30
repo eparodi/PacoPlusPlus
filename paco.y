@@ -10,6 +10,8 @@
 	#include "hashtable/include/hashtable.h"
 	#include "yaccObjects.h"
 
+	int lineno = 0; 
+
 	void yyerror(char* s);
 
 	hashTableT var_table;
@@ -63,7 +65,7 @@
 
 %token PLUS MINUS MULT DIV POW
 %token PLUSEQ MINUSEQ MULTEQ DIVEQ EQ
-%token NEWLINE
+%token ENTER
 %token STDNUM STDSTR STDDEC
 %token IF WHILE END BEGINPROG LT LE GT GE EQLS
 
@@ -90,21 +92,26 @@
 %left PLUS MINUS
 %left MULT DIV
 %left POW
+%left LT LE GT GE EQLS
 
 %%
 
 //START 	: BEGINPROG NEWLINE PROGRAM END {  }
 
 PROGRAM : INST PROGRAM	        {
-									addInstToProg(actualProg,$1);
+									if ($1 != NULL)
+										addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
 		| INST                  {
-									addInstToProg(actualProg,$1);
+									if ($1 != NULL)
+										addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
 		;
-    
+   
+NEWLINE : ENTER					{ lineno++; }
+
 INST    : ASSIGN ';' NEWLINE    {
 									$$ = malloc(sizeof(*$$));
 									$$->type = 2;
@@ -140,6 +147,7 @@ INST    : ASSIGN ';' NEWLINE    {
 									$$->type = 8;
 									$$->content = $1;
 								}
+		| NEWLINE				{ $$ = NULL; }						
 		;
 
 INSERTTOLIST: EXPRESS ':' VAR 	{
@@ -861,7 +869,7 @@ void addInstToProg(y_prog* prog, y_inst* i) {
 }	
 
 void yyerror(char *s) {
-    fprintf(stderr, "line %d: %s\n", 42, s);
+    fprintf(stderr, "line %d: %s\n", lineno, s);
 }
 
 static unsigned int str_hash(char* key){
