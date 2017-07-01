@@ -22,7 +22,7 @@ This must generate an executable "pacopp.out".
 ### Compile your code
 
 ```
-  ./compiler.sh sample.ppp
+  ./compile.sh sample.ppp
   ./a.out
 ```
 
@@ -30,9 +30,12 @@ This must generate an executable "pacopp.out".
 
 isPrime.ppp, collatz.ppp, numOculto.ppp, operations.ppp and fibo.ppp are examples of algorithms coded in Paco++. You can run them by running:
 ```
-  ./compiler.sh <nameOfProgram>.ppp
+  ./compile.sh <nameOfProgram>.ppp
   ./a.out
 ```
-
+or by compiling them all together:
+```
+  ./compileExamples.sh
+```
 
 Enjoy!
