@@ -9,23 +9,26 @@
 "\nIngrese un número:"
 n<<n;
 k = n;
-if(k>47)
-    "n debe ser menor a 47"
-    k = 0;
-end
 if(k>=2)
-    i = n-2;
-    a = 0;
-    b = 1;
-        "> "+a
-    while(i>=0)
-        "> "+b
-        aux = a;
-        a = b;
-        b = aux+b;
-        i-=1;
+    if(k<=47)
+        i = n-2;
+        a = 0;
+        b = 1;
+            "> "+a
+        while(i>=0)
+            "> "+b
+            aux = a;
+            a = b;
+            b = aux+b;
+            i-=1;
+        end
     end
 end
 if(k<=2)
     "n debe ser mayor a 2"
+end
+
+if(k>47)
+    "n debe ser menor a 47"
+    k = 0;
 end

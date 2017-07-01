@@ -15,3 +15,7 @@ rm -f numOculto.ppp.c
 ./pacopp.out  operations.ppp
 gcc -Wall -g -std=c99 isPrime.ppp.c types/*.o hashtable/*.o operations/*.o -o isPrime.out -ly -lm &> /dev/null
 rm -f operations.ppp.c
+
+./pacopp.out  fibo.ppp
+gcc -Wall -g -std=c99 isPrime.ppp.c types/*.o hashtable/*.o operations/*.o -o fibo.out -ly -lm &> /dev/null
+rm -f fibo.ppp.c
