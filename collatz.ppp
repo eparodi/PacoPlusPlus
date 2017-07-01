@@ -10,7 +10,8 @@
 n<<n;
 if(n>1)
 	i= n;
-	">"+i
+	count=0;
+	"CURRENT = "+i
 	k=1;
 	while(k==1)
 		resto= i/2.0 - i/2;
@@ -18,10 +19,12 @@ if(n>1)
 			i=3*i+1;
 		end
 		if(resto==0.0)
-			i=i/2;
+			i/=2;
 		end
-		">"+i
+		"CURRENT = "+i
+		count+=1;
 		if(i==1)
+			"LLEGUE!! (luego de " + count + " pasos)"
 			k=0;
 		end
 	end
