@@ -1,5 +1,0 @@
--TODO REALES
->imprimir las listas en C (Pedro)
->warnings
->declaracion de variables en bloques (Pedro)
->informe y 5 test del lenguaje
