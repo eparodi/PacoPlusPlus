@@ -1,0 +1,35 @@
+" ----------------------------------------------------"
+"|                                                    |"
+"|    Este programa determina si el número entrado    |"
+"|              es o no un número primo               |"
+"|                                                    |"
+" ----------------------------------------------------"
+"\nIngrese un número:"
+n<<n
+if(n > 0)
+	i = 2;
+	ifloat = 2.0;
+	flag = 0;
+
+	while(i <= n/2)
+		resto= n/ifloat - n/i;
+		if (resto == 0.0)
+			flag = 1;
+			i = n;
+		end
+		i += 1;
+		ifloat += 1.0;
+	end
+
+	if (flag == 1)
+		n + " no es primo."
+	end
+
+	if (flag == 0)
+		n + " es primo."
+	end
+end
+
+if (n <= 0)
+	"El número ingresado debe ser positivo y mayor a 0."
+end
