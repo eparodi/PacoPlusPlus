@@ -1,0 +1,24 @@
+" ----------------------------------------------------"
+"|                                                    |"
+"|   Este programa tiene almacenado un número oculto  |"
+"|           y tiene que tratar de adivinarlo         |"
+"|                                                    |"
+"|                    ¡Suerte!                        |"
+"|                                                    |"
+" ----------------------------------------------------"
+
+n=0
+
+while(n != 6854)
+	"\nIngrese un número:"
+	n<<n
+	if (n < 6854)
+		"El número oculto es mayor a " + n
+	end
+	if (n > 6854)
+		"El número oculto es menor a " + n
+	end
+	if (n == 6854)
+		"¡Felicidades, ha encontrado el número oculto!"
+	end
+end
