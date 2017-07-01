@@ -246,7 +246,11 @@ void loadOperations() {
         }
 			}
 		}
-
+    // LIST AND LIST
+    addOperation(&addListList,"addListList",LIST, LIST,ADD,getType(LIST));
+    addOperation(&subListList,"subListList",LIST, LIST,SUB,getType(LIST));
+    addOperation(&divListList,"divListList",LIST, LIST,DVN,getType(LIST));
+    addOperation(&multListList,"multListList",LIST, LIST,MUL,getType(LIST));
     // EQUALS
     addOperation(&compareInt,"compareInt",INTEGER, INTEGER,EQL,getType(INTEGER));
     addOperation(&compareDecimal,"compareDecimal",DECIMAL, DECIMAL,EQL,getType(INTEGER));

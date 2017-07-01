@@ -11,7 +11,7 @@
 	#include "yaccObjects.h"
   #include "y.tab.h"
 
-	int lineno = 0;
+	int lineno = 1;
 
 	void yyerror(char* s);
 

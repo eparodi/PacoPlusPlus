@@ -21,5 +21,7 @@ clean:
 	rm -f pacopp.out
 	rm -f compiled.c
 	rm -f run
+	rm -f *.ppp.c
+	rm -f examples/*.ppp.c
 
 .PHONY: all clean

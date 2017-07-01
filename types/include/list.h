@@ -55,4 +55,12 @@ _object
 multAnyList(_object o1, _object o2);
 _object
 divAnyList(_object o1, _object o2);
+_object
+addListList(_object o1, _object o2);
+_object
+subListList(_object o1, _object o2);
+_object
+multListList(_object o1, _object o2);
+_object
+divListList(_object o1, _object o2);
 #endif

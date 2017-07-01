@@ -6,3 +6,4 @@ lex.yy.c
 pacopp.out
 test.c
 compiled.c
+*.ppp.c
