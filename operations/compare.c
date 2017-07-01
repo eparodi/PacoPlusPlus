@@ -130,3 +130,49 @@ checkList(_object li1, _object li2, OpValue oper){
   }
   return TRUE;
 }
+
+_object
+eqIntDec(_object o1, _object o2){
+  return createInt(o1->cont.num == o2->cont.fl);
+}
+_object
+ltIntDec(_object o1, _object o2){
+  return createInt(o1->cont.num < o2->cont.fl);
+}_object
+gtIntDec(_object o1, _object o2){
+  return createInt(o1->cont.num > o2->cont.fl);
+}
+_object
+leIntDec(_object o1, _object o2){
+  return createInt(o1->cont.num <= o2->cont.fl);
+}
+_object
+geIntDec(_object o1, _object o2){
+  return createInt(o1->cont.num >= o2->cont.fl);
+}
+_object
+eqDecInt(_object o1, _object o2){
+  return createInt(o1->cont.fl == o2->cont.num);
+}
+_object
+ltDecInt(_object o1, _object o2){
+  return createInt(o1->cont.fl < o2->cont.num);
+}_object
+gtDecInt(_object o1, _object o2){
+  return createInt(o1->cont.fl > o2->cont.num);
+}
+_object
+leDecInt(_object o1, _object o2){
+  return createInt(o1->cont.fl <= o2->cont.num);
+}
+_object
+geDecInt(_object o1, _object o2){
+  return createInt(o1->cont.fl >= o2->cont.num);
+}
+
+_object
+areDifferent(_object o1, _object o2){
+  OperationT op = getOperation(EQL, o1->type, o2->type);
+  _object ret = op->func(o1,o2);
+  return createInt(ret->cont.num == 0);;
+}

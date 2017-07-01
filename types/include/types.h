@@ -50,6 +50,7 @@ typedef enum OpValue{
   LES,
   GTS,
   GES,
+  DIFS,
   CANT_OPERATIONS // ALWAYS AT THE END. Use this instead of sizeof(OpValues), it does not work.
 }OpValue;
 

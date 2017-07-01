@@ -29,6 +29,7 @@ end					  return END;
 \^                    return POW;
 ==                    return EQLS;
 =                     return EQ;
+!=                    return DIFF;
 {digit}+            { yylval.num = atoi(yytext); return INT; }
 {digit}+\.{digit}+  { yylval.fl = atof(yytext); return FLOAT; }
 {varName}		      {

@@ -75,7 +75,7 @@
 %token PLUSEQ MINUSEQ MULTEQ DIVEQ EQ
 %token ENTER
 %token STDNUM STDSTR STDDEC
-%token IF WHILE END LT LE GT GE EQLS END_OF_FILE
+%token IF WHILE END LT LE GT GE EQLS DIFF
 
 %token <num> INT
 %token <str> STRING
@@ -98,7 +98,7 @@
 %left PLUS MINUS
 %left MULT DIV
 %left POW
-%left LT LE GT GE EQLS
+%left LT LE GT GE EQLS DIFF
 
 %%
 
@@ -270,6 +270,14 @@ BOOLEXPR: EXPRESS LT EXPRESS 	{
 											$$->exp1 = $1;
 											$$->exp2 = $3;
 										}
+    | EXPRESS DIFF EXPRESS {
+                      $$ = malloc(sizeof(*$$));
+                      OperationT operation = getOperation(DIFS, $1->type, $3->type);
+                      $$->compFunc = malloc(strlen(operation->func_name) + 1);
+                      strcpy($$->compFunc, operation->func_name);
+                      $$->exp1 = $1;
+                      $$->exp2 = $3;
+    }
 		;
 
 ASSIGN  : VAR EQ EXPRESS        {

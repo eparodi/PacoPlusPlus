@@ -49,4 +49,26 @@ _object
 geString(_object o1, _object o2);
 _object
 geList(_object o1, _object o2);
+_object
+eqIntDec(_object o1, _object o2);
+_object
+ltIntDec(_object o1, _object o2);
+_object
+gtIntDec(_object o1, _object o2);
+_object
+leIntDec(_object o1, _object o2);
+_object
+geIntDec(_object o1, _object o2);
+_object
+eqDecInt(_object o1, _object o2);
+_object
+ltDecInt(_object o1, _object o2);
+_object
+gtDecInt(_object o1, _object o2);
+_object
+leDecInt(_object o1, _object o2);
+_object
+geDecInt(_object o1, _object o2);
+_object
+areDifferent(_object o1, _object o2);
 #endif
