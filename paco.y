@@ -35,12 +35,16 @@
 	void startC();
 	void endC();
 
+	void addToGlobVar(y_variable* v);
+	void printGlobVar();
+
 	typedef _object(*opFunc)(_object, _object);
 
 	int blockNum = 1;
 
 	y_prog* prog;
 	y_prog* actualProg;
+	y_globVars* globVars = NULL;
 
   FILE * f;
   FILE * yyin;
@@ -123,6 +127,9 @@ INST    : ASSIGN ';' 	  	    {
 									$$ = malloc(sizeof(*$$));
 									$$->type = 2;
 									$$->content = $1;
+									if($1->isNew) {
+										addToGlobVar($1->var);
+									}
 								}
 		| EXPRESS ';'   		{
 									$$ = malloc(sizeof(*$$));
@@ -133,6 +140,9 @@ INST    : ASSIGN ';' 	  	    {
 									$$ = malloc(sizeof(*$$));
 									$$->type = 4;
 									$$->content = $1;
+									if($1->isNew) {
+										addToGlobVar($1->var);
+									}
 								}
 		| EXPRESS        		{
 									$$ = malloc(sizeof(*$$));
@@ -169,17 +179,13 @@ INSERTTOLIST: EXPRESS ':' VAR 	{
 										yyerror("Variable not defined");
 										exit(0);
 									} else {
-										int declaratedBlock = p->blockNum;
-										if (declaratedBlock > blockNum) {
-											yyerror("Variable not defined");
-											exit(0);
-										} else {
+										
 											if (p->type->id != LIST) {
 												yyerror("Variable is not a list");
 												exit(0);
 											}
 											$$->var = p;
-										}
+										
 									}
 								}
 			;
@@ -298,17 +304,12 @@ ASSIGN  : VAR EQ EXPRESS        {
 										yyerror("Variable not defined");
 										exit(0);
 									} else {
-										int declaratedBlock = p->blockNum;
-										if (declaratedBlock > blockNum) {
-											yyerror("Variable not defined");
-											exit(0);
-										} else {
 											$$->var = p;
 											$$->exp = $3;
 											OperationT operation = getOperation(ADD, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
 											$$->opName = malloc(strlen(operation->func_name)+1);
 											strcpy($$->opName, operation->func_name);
-										}
+										
 									}
 									$$->isNew = 0;
 
@@ -320,17 +321,13 @@ ASSIGN  : VAR EQ EXPRESS        {
 										yyerror("Variable not defined");
 										exit(0);
 									} else {
-										int declaratedBlock = p->blockNum;
-										if (declaratedBlock > blockNum) {
-											yyerror("Variable not defined");
-											exit(0);
-										} else {
+										
 											$$->var = p;
 											$$->exp = $3;
 											OperationT operation = getOperation(SUB, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
 											$$->opName = malloc(strlen(operation->func_name)+1);
 											strcpy($$->opName, operation->func_name);
-										}
+										
 									}
 									$$->isNew = 0;
 								}
@@ -341,17 +338,13 @@ ASSIGN  : VAR EQ EXPRESS        {
 										yyerror("Variable not defined");
 										exit(0);
 									} else {
-										int declaratedBlock = p->blockNum;
-										if (declaratedBlock > blockNum) {
-											yyerror("Variable not defined");
-											exit(0);
-										} else {
+										
 											$$->var = p;
 											$$->exp = $3;
 											OperationT operation = getOperation(MUL, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
 											$$->opName = malloc(strlen(operation->func_name)+1);
 											strcpy($$->opName, operation->func_name);
-										}
+										
 									}
 									$$->isNew = 0;
 								}
@@ -362,17 +355,13 @@ ASSIGN  : VAR EQ EXPRESS        {
 										yyerror("Variable not defined");
 										exit(0);
 									} else {
-										int declaratedBlock = p->blockNum;
-										if (declaratedBlock > blockNum) {
-											yyerror("Variable not defined");
-											exit(0);
-										} else {
+										
 											$$->var = p;
 											$$->exp = $3;
 											OperationT operation = getOperation(DVN, ((y_variable*)getElementHT(var_table, $1))->type, $3->type);
 											$$->opName = malloc(strlen(operation->func_name)+1);
 											strcpy($$->opName, operation->func_name);
-										}
+										
 									}
 									$$->isNew = 0;
 								}
@@ -461,15 +450,11 @@ EXPRESS : VAR                   {
 										yyerror("Variable not defined.");
 										exit(0);
 									} else {
-										int declaratedBlock = p->blockNum;
-										if (declaratedBlock > blockNum) {
-											yyerror("Variable not defined");
-											exit(0);
-										} else {
+										
 											$$->contentType = EXPR_VAR;
 											$$->content = p;
 											$$->type = p->type;
-										}
+										
 									}
 								}
 		| NUMBER                {
@@ -608,10 +593,9 @@ main(int argc, char * argv[])
     }
 
     startC();
-
-		printProg(prog);
-
-		endC();
+	printGlobVar();
+	printProg(prog);
+	endC();
 
     fclose(f);
 
@@ -619,12 +603,33 @@ main(int argc, char * argv[])
 }
 
 
+void addToGlobVar(y_variable* v) {
+	y_globVars* gv = calloc(1,sizeof(*gv));
+	gv->var = v;
+	if (globVars == NULL) {
+		globVars = gv;
+	} else {
+		y_globVars* aux = globVars;
+		while(aux->next != NULL) {
+			aux = aux->next;
+		}
+		aux->next = gv;
+	}
+}
+
+void printGlobVar() {
+	y_globVars* aux = globVars;
+	while(aux != NULL) {
+		fprintf(f,"_object ");
+		printVariable(aux->var);
+		fprintf(f,";\n");
+		aux = aux->next;
+	}
+}
+
 void printInst(y_inst* i) {
 	switch(i->type) {
 		case 0:
-			if (((y_assign*) i->content)->isNew) {
-				fprintf(f,"_object ");
-			}
 			printAssign((y_assign*) i->content);
 			fprintf(f,";\n");
 			fprintf(f,"\n");
@@ -635,9 +640,6 @@ void printInst(y_inst* i) {
 			fprintf(f,"\n");
 			break;
 		case 2:
-			if (((y_assign*) i->content)->isNew) {
-				fprintf(f,"_object ");
-			}
 			printAssign((y_assign*) i->content);
 			fprintf(f,";\n");
 			fprintf(f,"\n");
@@ -648,9 +650,6 @@ void printInst(y_inst* i) {
 			fprintf(f,"\n");
 			break;
 		case 4:
-			if (((y_assign*) i->content)->isNew) {
-				fprintf(f,"_object ");
-			}
 			printAssign((y_assign*) i->content);
 			fprintf(f,";\n");
 			if (((y_assign*) i->content)->exp!=NULL){

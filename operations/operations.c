@@ -133,8 +133,7 @@ void deleteSubstr(char * str, char * substr, char * dest) {
 }
 
 void loadOperations() {
-	printf("Loading operations\n");
-			// SUM OPERATIONS
+		// SUM OPERATIONS
 		addOperation(&addIntInt,"addIntInt",INTEGER, INTEGER,ADD,getType(INTEGER));
 		addOperation(&addIntStr,"addIntStr",INTEGER, STR,ADD,getType(STR));
 		addOperation(&addIntDec,"addIntDec",INTEGER, DECIMAL,ADD,getType(DECIMAL));
