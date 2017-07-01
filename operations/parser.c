@@ -25,8 +25,7 @@ parseString(){
   while((c=getchar())!= '\n'){
     if (size == index){
       size *= 2;
-		//TODO: Aca tira un warning porque no se usa el puntero que te retorna realloc
-      realloc(str,size*2);
+      str = realloc(str,size);
     }
     str[index++] = c;
   }
