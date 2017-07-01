@@ -505,6 +505,7 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
 									strcpy($$->opName, operation->func_name);
 									$$->exp1 = $1;
 									$$->exp2 = $3;
+                  $$->retType = operation->return_type;
 								}
 		| EXPRESS POW EXPRESS   {
 									OperationT operation = getOperation(PWR, $1->type, $3->type);
