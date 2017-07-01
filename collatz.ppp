@@ -1,3 +1,13 @@
+" ----------------------------------------------------"
+"|                                                    |"
+"|    Este programa imprime la sucesión de números    |"
+"|       generados con la conjectura de Collatz       |"
+"|                                                    |"
+"| https://es.wikipedia.org/wiki/Conjetura_de_Collatz |"
+"|                                                    |"
+" ----------------------------------------------------"
+"\nIngrese un número:"
+n<<n;
 n= 223452333;
 if(n>1)
 	i= n;
