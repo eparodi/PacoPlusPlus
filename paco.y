@@ -117,8 +117,6 @@ PROGRAM : INST NEWLINE PROGRAM	{
 										addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
-		| NEWLINE PROGRAM		{
-								}
 		;
 
 NEWLINE : ENTER					{ lineno++; }
@@ -594,7 +592,7 @@ main(int argc, char * argv[])
     newFileName[length+1] = 'c';
     newFileName[length+2] = '\0';
     
-	var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);
+	var_table = createHashTable(sizeof(char *), sizeof(_object), (hashFunction)&str_hash, 20, (equalsFunction)&str_eql);
 	startTypes();
 	buildOpTable();
 	loadOperations();

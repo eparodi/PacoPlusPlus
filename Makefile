@@ -1,4 +1,4 @@
-FLAGS= -Wall -g -std=c99
+FLAGS= -std=c99 -Wno-implicit-function-declaration
 ENDFLADS= -ly -lm
 PROGRAM_NAME = pacopp.out
 OBJECTS = types/*.o hashtable/*.o operations/*.o
