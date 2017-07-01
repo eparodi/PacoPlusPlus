@@ -29,8 +29,8 @@ end					  return END;
 \^                    return POW;
 ==                    return EQLS;
 =                     return EQ;
--?{digit}+            { yylval.num = atoi(yytext); return INT; }
--?{digit}+\.{digit}+  { yylval.fl = atof(yytext); return FLOAT; }
+{digit}+            { yylval.num = atoi(yytext); return INT; }
+{digit}+\.{digit}+  { yylval.fl = atof(yytext); return FLOAT; }
 {varName}		      {
 						yylval.str = malloc(strlen(yytext)+1);
 						strcpy(yylval.str, yytext);

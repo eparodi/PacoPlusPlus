@@ -516,7 +516,6 @@ OPERAT  : EXPRESS PLUS EXPRESS  {
                   $$->retType = operation->return_type;
 
 								}
-		/*| EXPRESS '?'			{ $$ = createString($1->type->name);}*/
 		;
 
 
@@ -544,8 +543,20 @@ NUMBER  : INT                   {
 									$$->funcCreator = malloc((size_t)"newList()" + 1);
 									sprintf($$->funcCreator, "newList()");
 								}
+    | MINUS INT {
+                  $$ = malloc(sizeof(*$$));
+                  $$->obj = createInt($2*-1);
+                  $$->funcCreator = malloc((size_t)"createInt()" + digitCount($2*1) + 1);
+                  sprintf($$->funcCreator, "createInt(%d)", $2*-1);
+                }
+    | MINUS FLOAT{
+                  $$ = malloc(sizeof(*$$));
+                  $$->obj = createDecimal($2*-1);
+                  $$->funcCreator = malloc((size_t)"createDecimal()" + digitCount($2*-1) + 20 + 1);	// 20 decimals max
+                  sprintf($$->funcCreator, "createDecimal(%ff)", $2*-1);
+                }
 		;
-/* TODO: To create a list use newList() and add a list with addList(l, obj) */
+
 ARRAY: '[' ']'
 	 ;
 %%
