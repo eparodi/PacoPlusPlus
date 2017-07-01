@@ -8,7 +8,6 @@
 " ----------------------------------------------------"
 "\nIngrese un número:"
 n<<n;
-n= 223452333;
 if(n>1)
 	i= n;
 	count=0;
@@ -23,11 +22,11 @@ if(n>1)
 			i/=2;
 		end
 		"CURRENT = "+i
+		count+=1;
 		if(i==1)
 			"LLEGUE!! (luego de " + count + " pasos)"
 			k=0;
 		end
-		count+=1;
 	end
 end
 if(n<=1)
