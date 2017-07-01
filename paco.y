@@ -117,6 +117,8 @@ PROGRAM : INST NEWLINE PROGRAM	{
 										addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
+		| NEWLINE PROGRAM		{
+								}
 		;
 
 NEWLINE : ENTER					{ lineno++; }
@@ -792,7 +794,7 @@ void addInstToProg(y_prog* prog, y_inst* i) {
 }	
 
 void yyerror(char *s) {
-    fprintf(stderr, "line %d: %s\n", lineno, s);
+    fprintf(stderr, "Error in line %d: %s\n", lineno, s);
     exit(1);
 }
 
