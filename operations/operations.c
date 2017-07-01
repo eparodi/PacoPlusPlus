@@ -243,6 +243,7 @@ void loadOperations() {
           addOperation(&differentType,"differentType", i, j, GTS ,getType(INTEGER));
           addOperation(&differentType,"differentType", i, j, GES ,getType(INTEGER));
         }
+        addOperation(&areDifferent,"areDifferent", i, j, DIFS ,getType(INTEGER));
 			}
 		}
     // LIST AND LIST
@@ -255,24 +256,34 @@ void loadOperations() {
     addOperation(&compareDecimal,"compareDecimal",DECIMAL, DECIMAL,EQL,getType(INTEGER));
     addOperation(&compareString,"compareString",STR, STR, EQL,getType(INTEGER));
     addOperation(&compareList,"compareList",LIST, LIST,EQL,getType(INTEGER));
+    addOperation(&eqIntDec,"eqIntDec",INTEGER, DECIMAL,EQL,getType(INTEGER));
+    addOperation(&eqDecInt,"eqDecInt",DECIMAL, INTEGER,EQL,getType(INTEGER));
     // LESS THAN
     addOperation(&ltInt,"ltInt",INTEGER, INTEGER,LTS,getType(INTEGER));
     addOperation(&ltDecimal,"ltDecimal",DECIMAL, DECIMAL,LTS,getType(INTEGER));
     addOperation(&ltString,"ltString",STR, STR, LTS,getType(INTEGER));
     addOperation(&ltList,"ltList",LIST, LIST,LTS,getType(INTEGER));
+    addOperation(&ltIntDec,"ltIntDec",INTEGER, DECIMAL,LTS,getType(INTEGER));
+    addOperation(&ltDecInt,"ltDecInt",DECIMAL, INTEGER,LTS,getType(INTEGER));
     // GREATER THAN
     addOperation(&gtInt,"gtInt",INTEGER, INTEGER,GTS,getType(INTEGER));
     addOperation(&gtDecimal,"gtDecimal",DECIMAL, DECIMAL,GTS,getType(INTEGER));
     addOperation(&gtString,"gtString",STR, STR, GTS,getType(INTEGER));
     addOperation(&gtList,"gtList",LIST, LIST, GTS,getType(INTEGER));
+    addOperation(&gtIntDec,"gtIntDec",INTEGER, DECIMAL,GTS,getType(INTEGER));
+    addOperation(&gtDecInt,"gtDecInt",DECIMAL, INTEGER,GTS,getType(INTEGER));
     // LESS EQUALS
     addOperation(&leInt,"leInt",INTEGER, INTEGER, LES,getType(INTEGER));
     addOperation(&leDecimal,"leDecimal",DECIMAL, DECIMAL,LES,getType(INTEGER));
     addOperation(&leString,"leString",STR, STR, LES,getType(INTEGER));
     addOperation(&leList,"leList",LIST, LIST,LES,getType(INTEGER));
+    addOperation(&leIntDec,"leIntDec",INTEGER, DECIMAL,LES,getType(INTEGER));
+    addOperation(&leDecInt,"leDecInt",DECIMAL, INTEGER,LES,getType(INTEGER));
     // GREATER EQUALS
     addOperation(&geInt,"geInt",INTEGER, INTEGER,GES,getType(INTEGER));
     addOperation(&geDecimal,"geDecimal",DECIMAL, DECIMAL,GES,getType(INTEGER));
     addOperation(&geString,"geString",STR, STR, GES,getType(INTEGER));
     addOperation(&geList,"geList",LIST, LIST,GES,getType(INTEGER));
+    addOperation(&geIntDec,"geIntDec",INTEGER, DECIMAL,GES,getType(INTEGER));
+    addOperation(&geDecInt,"geDecInt",DECIMAL, INTEGER,GES,getType(INTEGER));
 }
