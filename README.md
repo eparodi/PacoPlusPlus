@@ -26,4 +26,13 @@ This must generate an executable "pacopp.out".
   ./a.out
 ```
 
+### Examples
+
+isPrime.ppp, collatz.ppp, numOculto.ppp, operations.ppp and fibo.ppp are examples of algorithms coded in Paco++. You can run them by running:
+```
+  ./compiler.sh <nameOfProgram>.ppp
+  ./a.out
+```
+
+
 Enjoy!
