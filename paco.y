@@ -117,8 +117,6 @@ PROGRAM : INST NEWLINE PROGRAM	{
 										addInstToProg(actualProg,$1);
 									// printInst($1);
 								}
-		| NEWLINE PROGRAM		{
-								}
 		;
 
 NEWLINE : ENTER					{ lineno++; }
