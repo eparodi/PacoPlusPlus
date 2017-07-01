@@ -7,7 +7,7 @@
 
 alpha [A-Za-z]
 digit [0-9]
-varName [A-Za-z][0-9A-Za-z_-]*
+varName [A-Za-z][0-9A-Za-z_]*
 
 %%
 
