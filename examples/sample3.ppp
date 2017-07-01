@@ -1,6 +1,0 @@
-"Escriba un string"
-var1 <<s
-"Escriba un número"
-var2 <<n
-var1 * var2
-endPaco

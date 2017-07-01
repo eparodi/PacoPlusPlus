@@ -11,7 +11,9 @@ all:
 	yacc -d paco.y
 	lex paco.l
 	gcc $(FLAGS) $(PACO_FILES) $(OBJECTS) -o $(PROGRAM_NAME) $(ENDFLADS)
-
+	rm -f y.tab.*
+	rm -f lex.yy.c
+	
 clean:
 	cd hashtable; make clean
 	cd types; make clean
@@ -20,8 +22,6 @@ clean:
 	rm -f lex.yy.c
 	rm -f pacopp.out
 	rm -f compiled.c
-	rm -f run
 	rm -f *.ppp.c
-	rm -f examples/*.ppp.c
 
 .PHONY: all clean
