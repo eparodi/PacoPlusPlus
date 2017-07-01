@@ -826,7 +826,6 @@ void startC() {
 \n\
 \n\
 	int main() {\n\
-		var_table = createHashTable(sizeof(char *), sizeof(_object), &str_hash, 20, &str_eql);\n\
 		startTypes();\n\
 		buildOpTable();\n\
 		loadOperations();\n");
